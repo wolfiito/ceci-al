@@ -1,96 +1,107 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { useRef } from "react";
+import { motion, useScroll, useTransform } from "framer-motion";
 import { useCountdown } from "@/hooks/useCountdown";
 import { CalendarDays } from "lucide-react";
+import Image from "next/image";
 import { cn } from "@/lib/utils";
 
 const WEDDING_DATE = new Date('2026-05-09T14:00:00');
 
-// Componente de Número "Editorial" con efecto Shimmer
-const LuxuryNumber = ({ value, label, showSeparator }: { value: number; label: string, showSeparator?: boolean }) => (
-  <div className="flex items-center">
-    <div className="flex flex-col items-center mx-2 md:mx-6">
-      {/* EL NÚMERO: Grande, Serif, con gradiente animado */}
-      <div className={cn(
-        "text-5xl md:text-7xl font-serif font-medium tabular-nums leading-none mb-2",
-        // Gradiente: Verde Oscuro -> Rosa Palo (Brillo) -> Verde Oscuro
-        "bg-clip-text text-transparent bg-gradient-to-r from-wedding-dark via-wedding-secondary to-wedding-dark",
-        "bg-[length:200%_auto] animate-shimmer"
+// Componente TimeBox (Diseño Micro Minimalista)
+const TimeBox = ({ value, label }: { value: number; label: string }) => (
+  <div className="relative group w-full">
+    {/* Caja con fondo semi-transparente para asegurar lectura */}
+    <div className="relative h-20 sm:h-24 md:h-32 flex flex-col items-center justify-center overflow-hidden border-t border-[#E8DCC4]/30 bg-black/20 backdrop-blur-sm">
+      
+      {/* Número */}
+      <span className={cn(
+        "text-3xl sm:text-4xl md:text-6xl font-serif tabular-nums leading-none mb-1",
+        "text-[#E8DCC4]",
+        "drop-shadow-md"
       )}>
         {value.toString().padStart(2, '0')}
-      </div>
-      
-      {/* La Etiqueta: Pequeña, sans-serif, muy espaciada */}
-      <span className="text-[10px] md:text-xs uppercase tracking-[0.3em] text-gray-400 font-sans">
+      </span>
+
+      {/* Etiqueta */}
+      <span className="text-[9px] sm:text-[10px] md:text-xs uppercase tracking-[0.2em] text-white/80 font-sans">
         {label}
       </span>
     </div>
-
-    {/* SEPARADOR: Línea vertical fina y elegante (solo si no es el último) */}
-    {showSeparator && (
-      <div className="h-12 w-[1px] bg-wedding-secondary/30 mx-2 hidden md:block" />
-    )}
   </div>
 );
 
 export default function Countdown() {
   const timeLeft = useCountdown(WEDDING_DATE);
+  const containerRef = useRef(null);
 
-  const handleAddToCalendar = () => {
-    console.log("Agregar al calendario");
-  };
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start end", "end start"]
+  });
+  
+  // Parallax suave para la foto de fondo
+  const yBg = useTransform(scrollYProgress, [0, 1], ["-5%", "5%"]);
 
   return (
-    // SECCIÓN FONDO ROSA (#D4B9B9)
-    <section className="py-20 px-4 flex justify-center bg-[#D4B9B9] rounded-t-[3rem]">
-        
-        {/* CARD BLANCA TIPO MEDIA LUNA */}
-        <motion.div 
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-            className="bg-white w-full max-w-3xl rounded-t-[12rem] rounded-b-[3rem] shadow-2xl px-6 pt-24 pb-14 text-center relative"
-        >
-            {/* Título */}
-            <h2 className="font-serif italic text-5xl md:text-6xl text-wedding-dark mb-4 drop-shadow-sm">
-                ¡Nos Casamos!
-            </h2>
-            
-            {/* Fecha Estilizada */}
-            <div className="flex items-center justify-center gap-4 mb-14 opacity-90">
-                <span className="h-[1px] w-12 bg-wedding-primary/20"></span>
-                <p className="font-serif text-wedding-primary text-lg md:text-2xl tracking-wide">
-                    Sábado 09 de Mayo, 2026
-                </p>
-                <span className="h-[1px] w-12 bg-wedding-primary/20"></span>
-            </div>
-
-            {/* CONTADOR EDITORIAL */}
-            {/* Flex row para alinearlos horizontalmente */}
-            <div className="flex flex-wrap justify-center items-center mb-14">
-                <LuxuryNumber value={timeLeft.days} label="Días" showSeparator />
-                <LuxuryNumber value={timeLeft.hours} label="Hrs" showSeparator />
-                <LuxuryNumber value={timeLeft.minutes} label="Min" showSeparator />
-                <LuxuryNumber value={timeLeft.seconds} label="Seg" />
-            </div>
-
-            {/* Botón Sofisticado */}
-            <button 
-                onClick={handleAddToCalendar}
-                className="group relative overflow-hidden bg-wedding-primary text-white font-serif py-4 px-10 rounded-full shadow-lg transition-all hover:shadow-xl mx-auto flex items-center gap-3"
-            >
-                {/* Efecto de fondo al hover */}
-                <div className="absolute inset-0 w-full h-full bg-wedding-dark opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                
-                <span className="relative z-10 flex items-center gap-2">
-                    <CalendarDays size={18} />
-                    <span className="tracking-widest text-sm uppercase">Agendar Fecha</span>
-                </span>
-            </button>
-
+    <div ref={containerRef} className="relative w-full h-screen overflow-hidden bg-black flex flex-col justify-end">
+      
+      {/* 1. IMAGEN FULL SCREEN */}
+      <div className="absolute inset-0 w-full h-full z-0">
+        <motion.div style={{ y: yBg }} className="absolute inset-0 w-full h-[110%] -top-[5%]">
+          <Image
+            src="/images/couple-seated.jpg" 
+            alt="Fondo textura"
+            fill
+            className="object-cover opacity-80" 
+          />
         </motion.div>
-    </section>
+        
+        {/* Gradiente solo abajo para que el texto se lea */}
+        <div className="absolute bottom-0 left-0 w-full h-[60%] bg-gradient-to-t from-black via-black/40 to-transparent" />
+        
+        {/* Ruido sutil */}
+        <div className="absolute inset-0 bg-[url('/noise.png')] opacity-10 mix-blend-overlay" />
+      </div>
+
+      {/* 2. CONTENIDO (Alineado Abajo) */}
+      <motion.div 
+        initial={{ opacity: 0, y: 30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.5 }} 
+        transition={{ duration: 0.8, ease: "easeOut" }}
+        className="relative z-10 w-full max-w-4xl mx-auto px-4 pb-12 md:pb-20 text-center"
+      >
+        
+        {/* Título Sutil */}
+        <div className="mb-8">
+            <h2 className="font-serif text-2xl md:text-4xl text-white drop-shadow-lg italic mb-2">
+                &ldquo;El tiempo vuela...&rdquo;
+            </h2>
+            <p className="text-[10px] md:text-xs uppercase tracking-[0.4em] text-[#E8DCC4] opacity-80">
+                Faltan para el gran día
+            </p>
+        </div>
+
+        {/* GRID PEGADO ABAJO */}
+        <div className="grid grid-cols-4 w-full border-b border-[#E8DCC4]/30">
+          <TimeBox value={timeLeft.days} label="Días" />
+          <TimeBox value={timeLeft.hours} label="Hrs" />
+          <TimeBox value={timeLeft.minutes} label="Min" />
+          <TimeBox value={timeLeft.seconds} label="Seg" />
+        </div>
+
+        {/* Botón Discreto (CORREGIDO) */}
+        <div className="mt-8">
+            {/* AGREGADO: text-[#E8DCC4] para que se vea el texto */}
+            <button className="group relative inline-flex items-center gap-2 px-6 py-2 border border-[#E8DCC4]/50 rounded-full text-[#E8DCC4] hover:bg-[#E8DCC4] hover:text-black transition-all duration-300">
+                <CalendarDays size={14} />
+                <span className="font-sans text-[10px] uppercase tracking-widest">Agendar</span>
+            </button>
+        </div>
+
+      </motion.div>
+    </div>
   );
 }

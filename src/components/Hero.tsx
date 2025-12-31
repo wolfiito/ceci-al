@@ -3,6 +3,7 @@
 import { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import Image from "next/image";
+import { ChevronDown } from "lucide-react";
 
 export default function Hero() {
   const ref = useRef(null);
@@ -12,25 +13,18 @@ export default function Hero() {
     offset: ["start start", "end start"],
   });
 
-  // 1. Parallax del fondo (se mueve lento)
-  const backgroundY = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
-  
-  // 2. EL TEXTO VIAJERO (Con parada técnica)
-  // Del 0% al 70% del scroll: Baja de 0vh a 60vh.
-  // Del 70% al 100% del scroll: Se queda en 60vh (Fijo).
-  const textY = useTransform(scrollYProgress, [0, 0.7, 1], ["0vh", "60vh", "60vh"]);
-  
-  // 3. Opacidad
-  // Se mantiene visible casi todo el tiempo, solo se desvanece un poco al puro final
-  // para que la tarjeta blanca lo tape suavemente.
-  const textOpacity = useTransform(scrollYProgress, [0.8, 1], [1, 0]);
+  // Efectos Parallax
+  const backgroundY = useTransform(scrollYProgress, [0, 1], ["0%", "20%"]);
+  const textY = useTransform(scrollYProgress, [0, 1], ["0%", "-50%"]); 
+  const dateY = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
+  const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
 
   return (
     <div 
       ref={ref} 
-      className="sticky top-0 h-screen w-full overflow-hidden flex justify-center pt-32 -z-10"
+      className="relative h-svh w-full overflow-hidden flex flex-col justify-between py-24 md:py-12 items-center"
     >
-      {/* Fondo */}
+      {/* 1. FONDO */}
       <motion.div 
         style={{ y: backgroundY }}
         className="absolute inset-0 z-0"
@@ -40,25 +34,86 @@ export default function Hero() {
           alt="Ceci y Alejandro"
           fill
           priority
-          className="object-cover object-center"
+          className="object-cover object-center" 
         />
-        {/* Gradiente superior para leer el texto al inicio */}
-        <div className="absolute top-0 left-0 w-full h-[40vh] bg-gradient-to-b from-black/60 to-transparent" />
-        {/* Gradiente inferior para leer el texto cuando aterriza */}
-        <div className="absolute bottom-0 left-0 w-full h-[50vh] bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+        
+        {/* Ruido sutil */}
+        <div className="absolute inset-0 bg-[url('/noise.png')] opacity-20 mix-blend-overlay" />
+        
+        {/* Gradientes para asegurar legibilidad */}
+        <div className="absolute top-0 left-0 w-full h-[30vh] bg-gradient-to-b from-black/50 to-transparent" />
+        <div className="absolute bottom-0 left-0 w-full h-[30vh] bg-gradient-to-t from-black/60 to-transparent" />
       </motion.div>
 
-      {/* Texto */}
+      {/* 2. SUPERIOR: NOMBRES */}
       <motion.div 
-        style={{ y: textY, opacity: textOpacity }}
-        className="relative z-10 text-center px-4"
+        style={{ y: textY, opacity }}
+        className="relative z-10 w-full text-center mt-8 md:mt-0"
       >
-        <p className="text-lg md:text-2xl font-sans tracking-[0.2em] mb-4 uppercase text-white drop-shadow-md opacity-90">
-          Nuestra Boda
-        </p>
-        <h1 className="font-serif text-6xl sm:text-7xl md:text-8xl lg:text-9xl text-white drop-shadow-xl">
-          Ceci <span className="font-light italic text-wedding-secondary/90">&</span> Alejandro
-        </h1>
+        <div className="flex flex-col items-center leading-[0.85] md:leading-[0.9] text-white drop-shadow-2xl">
+          <motion.h1
+            initial={{ opacity: 0, y: -30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
+            className="font-serif text-[15vw] md:text-[9vw] font-medium tracking-tight"
+          >
+            Ceci
+          </motion.h1>
+
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.8, delay: 0.4 }}
+            // CAMBIO: Usamos el color dorado/crema (#E8DCC4) en lugar del rosa
+            className="text-[6vw] md:text-[4vw] font-light italic text-[#E8DCC4] my-1"
+          >
+            &
+          </motion.div>
+
+          <motion.h1
+            initial={{ opacity: 0, y: -30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.6, ease: "easeOut" }}
+            className="font-serif text-[15vw] md:text-[9vw] font-medium tracking-tight"
+          >
+            Alejandro
+          </motion.h1>
+        </div>
+      </motion.div>
+
+      {/* 3. INFERIOR: FECHA */}
+      <motion.div
+        style={{ y: dateY, opacity }}
+        className="relative z-10 w-full text-center flex flex-col items-center mb-8"
+      >
+         <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 1, duration: 0.8 }}
+            className="mb-6"
+        >
+            {/* CAMBIO: Borde dorado sutil y fondo oscuro para conectar con el Countdown */}
+            <div className="inline-block px-8 py-3 border border-[#E8DCC4]/30 rounded-full bg-black/30 backdrop-blur-md shadow-lg">
+                 <p className="font-serif text-2xl md:text-3xl text-white tracking-widest drop-shadow-md">
+                    09 <span className="text-[#E8DCC4] mx-1">.</span> 05 <span className="text-[#E8DCC4] mx-1">.</span> 2026
+                </p>
+            </div>
+        </motion.div>
+
+        {/* Scroll Indicator */}
+        <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 1.5, duration: 1 }}
+            className="text-[#E8DCC4]/60" // También el icono en dorado sutil
+        >
+            <motion.div
+                animate={{ y: [0, 5, 0] }}
+                transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
+            >
+                <ChevronDown size={28} />
+            </motion.div>
+        </motion.div>
       </motion.div>
     </div>
   );
