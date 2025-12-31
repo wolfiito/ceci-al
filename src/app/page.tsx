@@ -3,7 +3,7 @@ import Introduction from "@/components/Introduction";
 import Countdown from "@/components/Countdown";
 import MusicPlayer from "@/components/MusicPlayer";
 import Timeline from "@/components/Timeline";
-import ParallaxDivider from "@/components/ParallaxDivider";
+import GalleryMarquee from "@/components/GalleryMarquee";
 import Location from "@/components/Location";
 import DressCode from "@/components/DressCode";
 import Gifts from "@/components/Gifts";
@@ -32,11 +32,12 @@ export default function Home() {
         <div className="bg-white relative z-20">
            <Timeline />
         </div>
-
+        <GalleryMarquee />
+        <Location />
         {/* 5. LOCACIÓN Y RESTO (Suben tapando la foto) */}
         <div className="relative z-30 bg-white">
            {/* Location tiene 'rounded-t' y fondo blanco para hacer el efecto de tarjeta subiendo */}
-           <Location />
+           
            
            <div className="bg-[#F9F5F0] py-16">
               <RevealImage />

@@ -10,7 +10,7 @@ export default function ScenicReveal() {
       {/* 2. LA IMAGEN FIJA (Sticky/Fixed) */}
       {/* CAMBIO CLAVE: Usamos 'z-0' en lugar de '-z-50'. 
           Esto la pone SOBRE el fondo del body, pero DEBAJO de las secciones con 'z-10' */}
-      <div className="fixed top-0 left-0 w-full h-full z-0">
+      <div className="relative top-0 left-0 w-full h-full z-0">
         <Image
           src="/images/walking.jpg"
           alt="Caminar Juntos"
