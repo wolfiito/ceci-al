@@ -11,27 +11,30 @@ export default function ParallaxDivider() {
     offset: ["start end", "end start"]
   });
   
-  // Parallax más suave para una imagen tan grande
-  const y = useTransform(scrollYProgress, [0, 1], ["-10%", "10%"]);
+  // Movimiento Parallax Suave (La foto se mueve más lento que el scroll)
+  const y = useTransform(scrollYProgress, [0, 1], ["-15%", "15%"]);
+  // Un leve zoom para darle vida
+  const scale = useTransform(scrollYProgress, [0, 1], [1, 1.1]);
 
   return (
-    // CAMBIO: h-screen para ocupar toda la vertical
-    <div ref={ref} className="relative w-full h-screen overflow-hidden flex items-center justify-center">
+    // Altura de 70vh (no pantalla completa, pero sí grande) para que funcione como separador
+    <div ref={ref} className="relative w-full h-[70vh] md:h-[90vh] overflow-hidden flex items-center justify-center bg-black">
       
-      {/* 1. FONDO CON MOVIMIENTO */}
-      <motion.div style={{ y }} className="absolute inset-0 w-full h-[120%] -top-[10%]">
+      {/* IMAGEN DE FONDO */}
+      <motion.div 
+        style={{ y, scale }} 
+        className="absolute inset-0 w-full h-[130%] -top-[15%]"
+      >
         <Image
-          src="/images/walking.jpg" 
-          alt="Nuestra Historia"
+          src="/images/walking.jpg" // Asegúrate de tener esta foto en public/images/
+          alt="Nosotros"
           fill
-          priority
-          className="object-cover"
+          className="object-cover object-center"
+          priority={false}
         />
-        {/* Capa oscura sutil para que el texto resalte, pero la foto brille */}
-        <div className="absolute inset-0 bg-black/20" />
         
-        {/* Gradiente abajo para integrar con la siguiente sección blanca */}
-        <div className="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-white/10 to-transparent" />
+        {/* Capa oscura muy sutil para homogeneizar */}
+        <div className="absolute inset-0 bg-black/20" />
       </motion.div>
     </div>
   );

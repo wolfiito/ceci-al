@@ -1,16 +1,16 @@
 "use client";
 
 import { useRef } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion, useScroll, useTransform, Variants } from "framer-motion";
 import { Church, GlassWater, Utensils, Music, Sparkles, type LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-// 1. DEFINIMOS EL TIPO DE DATO (Para evitar el 'any')
+// DATOS
 interface TimelineEvent {
   time: string;
   title: string;
   description: string;
-  icon: LucideIcon; // Tipo correcto para los iconos de Lucide
+  icon: LucideIcon;
 }
 
 const EVENTS: TimelineEvent[] = [
@@ -21,6 +21,8 @@ const EVENTS: TimelineEvent[] = [
     { time: "00:00", title: "Tornaboda", description: "Un snack para seguir", icon: Sparkles },
 ];
 
+const EASE_LUXURY: [number, number, number, number] = [0.22, 1, 0.36, 1];
+
 export default function Timeline() {
   const containerRef = useRef(null);
   const { scrollYProgress } = useScroll({
@@ -28,98 +30,100 @@ export default function Timeline() {
     offset: ["start center", "end center"]
   });
 
-  const lineHeight = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
+  const lineHeight = useTransform(scrollYProgress, [0, 0.9], ["0%", "100%"]);
 
   return (
-    <section ref={containerRef} className="relative py-32 bg-white overflow-hidden">
+    <section ref={containerRef} className="relative z-20 py-32 bg-wedding-light overflow-hidden">
       
-      {/* TÍTULO */}
+      {/* TEXTURA */}
+      <div className="absolute inset-0 pointer-events-none opacity-[0.06] mix-blend-multiply bg-[url('/noise.png')] z-0" />
+
+      {/* HEADER ANIMADO */}
       <motion.div 
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
-        className="text-center mb-24 md:mb-32"
+        transition={{ duration: 1, ease: EASE_LUXURY }}
+        className="text-center mb-20 relative z-10"
       >
-        <span className="text-[#E8DCC4] text-xs uppercase tracking-[0.4em] font-sans block mb-2">
+        <span className="text-wedding-primary text-xs uppercase tracking-[0.4em] font-sans block mb-3">
             Agenda
         </span>
-        <h2 className="font-serif text-5xl text-[#2C3E2E]">
+        <h2 className="font-serif text-5xl md:text-6xl text-wedding-dark">
             Gran Día
         </h2>
       </motion.div>
 
-      <div className="max-w-5xl mx-auto relative px-4">
+      <div className="max-w-6xl mx-auto relative px-4 z-10">
         
-        {/* LÍNEA CENTRAL */}
-        <div className="absolute left-1/2 top-0 bottom-0 w-[2px] -translate-x-1/2 h-full z-0">
-            <div className="w-full h-full bg-[#E8DCC4]/20" />
-            <motion.div 
+        {/* === LÍNEA CENTRAL (Solo Desktop) === */}
+        <div className="absolute left-8 md:left-1/2 top-0 bottom-0 w-[1px] md:-translate-x-1/2 h-full z-0 bg-wedding-primary/10">
+             <motion.div 
                 style={{ height: lineHeight }}
-                className="absolute top-0 left-0 w-full bg-[#E8DCC4] shadow-[0_0_15px_rgba(232,220,196,0.6)]"
+                className="w-full bg-wedding-primary origin-top"
             />
         </div>
 
-        {/* EVENTOS */}
-        <div className="relative z-10 space-y-24 md:space-y-32">
+        {/* === EVENTOS === */}
+        <div className="space-y-12 md:space-y-24">
           {EVENTS.map((event, index) => {
             const Icon = event.icon;
-            const isEven = index % 2 === 0;
+            const isEven = index % 2 === 0; 
             
             return (
-              <div key={index} className="relative flex items-center justify-center w-full">
+              <motion.div 
+                key={index}
+                // ANIMACIÓN: Detecta cuando la fila entra en pantalla
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true, margin: "-100px" }} // Margen para que anime cuando ya esté bien adentro
+                variants={{
+                    hidden: { opacity: 0 },
+                    visible: { opacity: 1, transition: { staggerChildren: 0.2 } } // Lógica de Cascada
+                }}
+                className="relative flex flex-col md:flex-row items-center w-full"
+              >
                 
-                {/* IZQUIERDA */}
+                {/* 1. IZQUIERDA */}
                 <div className={cn(
-                  "hidden md:flex w-1/2 justify-end pr-16",
-                  !isEven && "invisible"
+                    "hidden md:flex w-[45%] justify-end pr-12 text-right",
+                    !isEven ? "invisible" : "" 
                 )}>
-                  <EventCard event={event} align="right" delay={index} />
+                    {/* Pasamos 'right' para animar desde la derecha */}
+                    <EventDetails event={event} align="right" />
                 </div>
 
-                {/* CENTRO (Icono) */}
-                <div className="absolute left-1/2 -translate-x-1/2 flex items-center justify-center">
-                   <motion.div
-                     initial={{ scale: 0, opacity: 0 }}
-                     whileInView={{ scale: 1, opacity: 1 }}
-                     viewport={{ once: true, margin: "-100px" }}
-                     transition={{ type: "spring", bounce: 0.5, delay: 0.2 }}
-                     className="w-14 h-14 rounded-full bg-white border border-[#E8DCC4] shadow-xl flex items-center justify-center relative z-20"
-                   >
-                     <Icon size={20} className="text-[#2C3E2E]" />
-                     <div className="absolute -inset-2 rounded-full border border-[#E8DCC4]/20" />
-                   </motion.div>
+                {/* 2. ICONO CENTRAL (Pop Effect) */}
+                <div className="relative w-full md:w-[10%] flex md:justify-center items-center pl-8 md:pl-0 mb-4 md:mb-0">
+                    <motion.div 
+                        variants={{
+                            hidden: { scale: 0, opacity: 0 },
+                            visible: { 
+                                scale: 1, 
+                                opacity: 1,
+                                transition: { type: "spring", stiffness: 200, damping: 20, duration: 0.8 } 
+                            }
+                        }}
+                        className="relative z-10 w-12 h-12 md:w-16 md:h-16 rounded-full bg-white border border-wedding-secondary/50 flex items-center justify-center shadow-md"
+                    >
+                        <Icon size={20} className="text-wedding-dark" strokeWidth={1.5} />
+                    </motion.div>
                 </div>
 
-                {/* DERECHA */}
+                {/* 3. DERECHA */}
                 <div className={cn(
-                  "hidden md:flex w-1/2 justify-start pl-16",
-                  isEven && "invisible"
+                    "hidden md:flex w-[45%] justify-start pl-12 text-left",
+                    isEven ? "invisible" : "" 
                 )}>
-                  <EventCard event={event} align="left" delay={index} />
+                     <EventDetails event={event} align="left" />
                 </div>
 
-                {/* MÓVIL */}
-                <div className="md:hidden w-full pl-20 relative">
-                   <div className="absolute left-1/2 -translate-x-1/2 top-0">
-                      {/* El icono usa el espacio del absolute padre */}
-                   </div>
-                   
-                   <motion.div
-                      initial={{ opacity: 0, y: 20 }}
-                      whileInView={{ opacity: 1, y: 0 }}
-                      viewport={{ once: true }}
-                      className={cn(
-                        "text-center pt-16",
-                        isEven ? "text-right pr-8 -ml-20" : "text-left pl-8"
-                      )}
-                   >
-                      <span className="font-serif text-2xl text-[#E8DCC4] block mb-1">{event.time}</span>
-                      <h3 className="font-serif text-xl text-[#2C3E2E] leading-tight">{event.title}</h3>
-                      <p className="text-gray-400 text-xs uppercase tracking-widest mt-2">{event.description}</p>
-                   </motion.div>
+                {/* === MÓVIL === */}
+                <div className="md:hidden pl-24 pr-4 w-full -mt-10">
+                    <EventDetails event={event} align="left" />
                 </div>
 
-              </div>
+              </motion.div>
             );
           })}
         </div>
@@ -128,29 +132,32 @@ export default function Timeline() {
   );
 }
 
-// 2. CORRECCIÓN AQUÍ: Usamos la interfaz 'TimelineEvent' en lugar de 'any'
-function EventCard({ event, align, delay }: { event: TimelineEvent, align: "left" | "right", delay: number }) {
+// Subcomponente animado
+function EventDetails({ event, align }: { event: TimelineEvent, align: "left" | "right" }) {
+    // Configuramos la dirección de entrada del texto
+    const xOffset = align === "left" ? 30 : -30;
+
     return (
-        <motion.div
-            initial={{ opacity: 0, x: align === "left" ? 50 : -50 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8, delay: delay * 0.1 }}
-            className={cn(
-                "flex flex-col",
-                align === "right" ? "items-end text-right" : "items-start text-left"
-            )}
+        <motion.div 
+            variants={{
+                hidden: { opacity: 0, x: xOffset },
+                visible: { 
+                    opacity: 1, 
+                    x: 0,
+                    transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] } // EASE_LUXURY
+                }
+            }}
+            className={cn("flex flex-col", align === "right" ? "items-end" : "items-start")}
         >
-            <div className="flex items-center gap-4 mb-2">
-                {align === "right" && <div className="h-[1px] w-12 bg-[#E8DCC4]" />}
-                <span className="font-serif text-4xl text-[#E8DCC4]">{event.time}</span>
-                {align === "left" && <div className="h-[1px] w-12 bg-[#E8DCC4]" />}
-            </div>
-            
-            <h3 className="font-serif text-3xl text-[#2C3E2E] mb-2">{event.title}</h3>
-            <p className="font-sans text-sm text-gray-500 uppercase tracking-widest font-light">
+            <span className="font-serif text-3xl md:text-4xl text-wedding-secondary italic mb-2">
+                {event.time}
+            </span>
+            <h3 className="font-serif text-xl md:text-2xl text-wedding-dark mb-1">
+                {event.title}
+            </h3>
+            <p className="font-sans text-xs md:text-sm text-gray-500 uppercase tracking-widest font-light">
                 {event.description}
             </p>
         </motion.div>
-    )
+    );
 }

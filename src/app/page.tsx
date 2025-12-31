@@ -8,6 +8,9 @@ import Location from "@/components/Location";
 import DressCode from "@/components/DressCode";
 import Gifts from "@/components/Gifts";
 import RSVPSection from "@/components/RSVPSection";
+import FormalInvitation from "@/components/FormalInvitation";
+import RevealImage from "@/components/RevealImage";
+import ScenicReveal from "@/components/ScenicReveal";
 
 export default function Home() {
   return (
@@ -15,7 +18,7 @@ export default function Home() {
       <MusicPlayer />
       
       {/* 1. HERO (Fondo Sticky) */}
-      <div className="sticky top-0 z-0 h-[100svh] w-full">
+      <div className="relative top-0 z-20 h-[100svh] w-full">
          <Hero />
       </div>
       
@@ -23,16 +26,11 @@ export default function Home() {
       <div className="relative z-10 bg-transparent">
         <Introduction />
         <Countdown />
-        
+        <FormalInvitation />
+        <ScenicReveal />
         {/* 3. BLOQUE BLANCO (Timeline) */}
         <div className="bg-white relative z-20">
            <Timeline />
-        </div>
-
-        {/* 4. PARALLAX "STICKY" (Segunda Foto Fija) */}
-        {/* Esto hace que la foto se quede quieta mientras lo demás sube */}
-        <div className="sticky top-0 h-screen z-0">
-           <ParallaxDivider />
         </div>
 
         {/* 5. LOCACIÓN Y RESTO (Suben tapando la foto) */}
@@ -41,6 +39,7 @@ export default function Home() {
            <Location />
            
            <div className="bg-[#F9F5F0] py-16">
+              <RevealImage />
               <DressCode />
               <div className="my-10" />
               <Gifts />
