@@ -26,7 +26,7 @@ export default function MusicPlayer() {
       {/* Usamos una canción libre de derechos como placeholder */}
       <audio 
         ref={audioRef} 
-        src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" 
+        src="sound.mp3" 
         loop 
       />
 
