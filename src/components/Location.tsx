@@ -1,14 +1,13 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { MapPin, Navigation } from "lucide-react";
-
-const EASE_LUXURY: [number, number, number, number] = [0.22, 1, 0.36, 1];
+import { MapPin, Car } from "lucide-react";
 
 export default function Location() {
   const handleOpenMap = (app: 'waze' | 'google') => {
     const lat = "20.9144";
     const lng = "-100.7438"; 
+    
     if (app === 'waze') {
       window.open(`https://waze.com/ul?ll=${lat},${lng}&navigate=yes`, '_blank');
     } else {
@@ -17,87 +16,66 @@ export default function Location() {
   };
 
   return (
-    <section className="relative w-full py-24 bg-wedding-dark overflow-hidden rounded-t-[3rem] md:rounded-t-[5rem] -mt-20 z-20 shadow-[0_-20px_60px_rgba(0,0,0,0.3)]">
+    <section className="relative w-full py-24 md:py-32 bg-[#fff0f3] flex flex-col items-center text-center overflow-hidden">
       
-      {/* Textura */}
-      <div className="absolute inset-0 pointer-events-none opacity-[0.03] bg-[url('/noise.png')] z-0 mix-blend-overlay" />
+      {/* Elemento Decorativo de Fondo (Opcional, muy sutil) */}
+      <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-white/40 to-transparent" />
 
-      <div className="max-w-4xl mx-auto px-6 relative z-10">
+      <motion.div 
+        initial={{ opacity: 0, y: 30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.8 }}
+        className="relative z-10 max-w-3xl px-6"
+      >
         
-        <div className="flex flex-col md:flex-row gap-10 items-center justify-center md:justify-between">
-            
-            {/* 1. INFORMACIÓN (Izquierda) */}
-            <motion.div 
-                initial={{ opacity: 0, x: -20 }} 
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 1, ease: EASE_LUXURY }}
-                className="text-center md:text-left flex-1"
-            >
-                <span className="text-wedding-secondary text-xs uppercase tracking-[0.4em] font-sans block mb-4">
-                    Destino
-                </span>
-                <h3 className="text-3xl md:text-4xl font-serif text-wedding-light mb-4 leading-tight">
-                    Hacienda Los Arcángeles
-                </h3>
-                
-                <p className="text-wedding-light/70 font-sans text-base font-light mb-8 max-w-md mx-auto md:mx-0">
-                    San Miguel de Allende, Guanajuato.
-                </p>
-
-                {/* Botones compactos */}
-                <div className="flex flex-wrap gap-3 justify-center md:justify-start">
-                    <button 
-                        onClick={() => handleOpenMap('waze')}
-                        className="group relative px-5 py-3 bg-wedding-light text-wedding-dark overflow-hidden rounded-full shadow-md hover:shadow-lg transition-all"
-                    >
-                        <div className="absolute inset-0 w-full h-full bg-wedding-secondary translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-out" />
-                        <div className="relative flex items-center justify-center gap-2">
-                            <Navigation size={14} className="text-wedding-dark group-hover:text-white transition-colors" />
-                            <span className="tracking-widest uppercase text-[9px] font-bold group-hover:text-white transition-colors">Waze</span>
-                        </div>
-                    </button>
-
-                    <button 
-                        onClick={() => handleOpenMap('google')}
-                        className="group px-5 py-3 bg-transparent border border-wedding-light/30 text-wedding-light rounded-full hover:bg-wedding-light/10 transition-all duration-300"
-                    >
-                        <div className="flex items-center justify-center gap-2">
-                            <MapPin size={14} />
-                            <span className="tracking-widest uppercase text-[9px] font-bold">Mapa</span>
-                        </div>
-                    </button>
-                </div>
-            </motion.div>
-
-            {/* 2. EL MAPA CIRCULAR (Derecha - Icono de lujo) */}
-            <motion.div 
-                initial={{ opacity: 0, scale: 0.5, rotate: -10 }} 
-                whileInView={{ opacity: 1, scale: 1, rotate: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 1, ease: "backOut", delay: 0.2 }}
-                // Tamaño fijo, circular, borde grueso elegante
-                className="relative w-36 h-36 md:w-44 md:h-44 rounded-full overflow-hidden shadow-2xl border-4 border-wedding-light/10 bg-black/50 shrink-0 hover:scale-105 hover:rotate-6 transition-all duration-500 ease-out cursor-pointer group"
-                onClick={() => handleOpenMap('google')} // Al hacer clic en el círculo abre Google Maps
-            >
-                <iframe 
-                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3720.970104117076!2d-100.74602682496358!3d20.91448838070868!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x842b51bc0d663b33%3A0xc3f8319f626154c1!2sHacienda%20Los%20Arcangeles!5e0!3m2!1ses-419!2smx!4v1709230000000!5m2!1ses-419!2smx" 
-                    width="100%" 
-                    height="100%" 
-                    style={{ border: 0, pointerEvents: 'none' }} // pointer-events-none para que el click lo detecte el div padre
-                    allowFullScreen={true} 
-                    loading="lazy"
-                    // Siempre grayscale y oscuro para que sea abstracto
-                    className="opacity-50 grayscale transition-all duration-500 group-hover:opacity-70 group-hover:scale-110" 
-                />
-                {/* Icono central decorativo */}
-                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                    <MapPin className="text-wedding-secondary opacity-80 drop-shadow-lg" size={28} />
-                </div>
-            </motion.div>
-
+        {/* ETIQUETA SUPERIOR */}
+        <div className="flex flex-col items-center gap-4 mb-8">
+            <span className="text-[10px] md:text-xs uppercase tracking-[0.4em] text-rose-950/50 font-bold">
+                El Destino
+            </span>
+            <div className="w-12 h-[1px] bg-rose-950/20"></div>
         </div>
-      </div>
+
+        {/* TÍTULO PRINCIPAL */}
+        <h2 className="font-serif text-5xl md:text-7xl text-rose-950 mb-6 leading-none">
+            Hacienda <br />
+            <span className="italic text-rose-400">Los Arcángeles</span>
+        </h2>
+
+        {/* DESCRIPCIÓN Y DIRECCIÓN */}
+        <div className="space-y-6 text-rose-950/70 font-sans text-sm md:text-base leading-relaxed max-w-lg mx-auto mb-12">
+            <p>
+                San Miguel de Allende, Guanajuato.
+            </p>
+            <p className="opacity-80 font-light">
+                Salida a Real de Querétaro #145
+            </p>
+        </div>
+
+        {/* BOTONES DE ACCIÓN (Centrados) */}
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+            
+            {/* Waze: Botón Sólido y Elegante */}
+            <button 
+                onClick={() => handleOpenMap('waze')}
+                className="group w-full sm:w-auto flex items-center justify-center gap-3 px-8 py-4 bg-rose-950 text-white rounded-full shadow-[0_10px_20px_-5px_rgba(88,28,60,0.3)] hover:bg-rose-900 hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
+            >
+                <Car size={18} className="text-rose-200" />
+                <span className="uppercase tracking-widest text-xs font-bold">Ir con Waze</span>
+            </button>
+
+            {/* Google Maps: Botón Outline Minimalista */}
+            <button 
+                onClick={() => handleOpenMap('google')}
+                className="group w-full sm:w-auto flex items-center justify-center gap-3 px-8 py-4 bg-transparent border border-rose-950/20 text-rose-950 rounded-full hover:bg-rose-950 hover:text-white hover:border-transparent transition-all duration-300"
+            >
+                <MapPin size={18} />
+                <span className="uppercase tracking-widest text-xs font-bold">Google Maps</span>
+            </button>
+        </div>
+
+      </motion.div>
     </section>
   );
 }

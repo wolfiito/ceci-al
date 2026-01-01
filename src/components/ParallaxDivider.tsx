@@ -5,37 +5,47 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import Image from "next/image";
 
 export default function ParallaxDivider() {
-  const ref = useRef(null);
+  const containerRef = useRef(null);
   const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ["start end", "end start"]
+    target: containerRef,
+    offset: ["start end", "end start"],
   });
+
+  // La imagen se moverá más lento que el scroll, creando profundidad
+  const y = useTransform(scrollYProgress, [0, 1], ["-20%", "20%"]);
   
-  // Movimiento Parallax Suave (La foto se mueve más lento que el scroll)
-  const y = useTransform(scrollYProgress, [0, 1], ["-15%", "15%"]);
-  // Un leve zoom para darle vida
-  const scale = useTransform(scrollYProgress, [0, 1], [1, 1.1]);
+  // Texto que aparece suavemente
+  const opacity = useTransform(scrollYProgress, [0.2, 0.5, 0.8], [0, 1, 0]);
 
   return (
-    // Altura de 70vh (no pantalla completa, pero sí grande) para que funcione como separador
-    <div ref={ref} className="relative w-full h-[70vh] md:h-[90vh] overflow-hidden flex items-center justify-center bg-black">
-      
-      {/* IMAGEN DE FONDO */}
+    <div 
+      ref={containerRef} 
+      className="relative w-full h-[40vh] overflow-hidden flex items-center justify-center"
+    >
+      {/* IMAGEN DE FONDO PARALLAX */}
       <motion.div 
-        style={{ y, scale }} 
-        className="absolute inset-0 w-full h-[130%] -top-[15%]"
+        style={{ y }} 
+        className="absolute inset-0 w-full h-[140%] -top-[20%]"
       >
         <Image
-          src="/images/walking.jpg" // Asegúrate de tener esta foto en public/images/
-          alt="Nosotros"
+          src="/images/hero-2.jpg" // Usa una foto linda horizontal aquí
+          alt="Divider"
           fill
-          className="object-cover object-center"
-          priority={false}
+          className="object-cover object-center grayscale brightness-75"
         />
-        
-        {/* Capa oscura muy sutil para homogeneizar */}
-        <div className="absolute inset-0 bg-black/20" />
       </motion.div>
+
+      {/* TEXTO FLOTANTE */}
+      <motion.div 
+        style={{ opacity }}
+        className="relative z-10 text-center text-white px-4"
+      >
+        <p className="font-serif text-3xl md:text-5xl italic drop-shadow-lg">
+          &ldquo;Nuestros mejores momentos&rdquo;
+        </p>
+        <div className="w-12 h-[1px] bg-white/60 mx-auto mt-4" />
+      </motion.div>
+
     </div>
   );
 }

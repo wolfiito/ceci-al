@@ -9,13 +9,11 @@ import DressCode from "@/components/DressCode";
 import Gifts from "@/components/Gifts";
 import RSVPSection from "@/components/RSVPSection";
 import FormalInvitation from "@/components/FormalInvitation";
-import RevealImage from "@/components/RevealImage";
-// Importamos el nuevo ScenicReveal
+import ParallaxDivider from "@/components/ParallaxDivider"
 import ScenicReveal from "@/components/ScenicReveal";
-
 export default function Home() {
   return (
-    <main className="min-h-screen relative bg-wedding-light/0"> {/* bg transparente aquí */}
+       <main className="min-h-screen relative bg-wedding-light/0"> {/* bg transparente aquí */}
       <MusicPlayer />
       
       {/* --- CAPA 1 (Fondo Absoluto): HERO ---
@@ -54,18 +52,16 @@ export default function Home() {
         {/* BLOQUE SÓLIDO 2: El resto del contenido
             Este bloque vuelve a tener fondo y tapa la "ventana mágica".
         */}
-        <div className="relative bg-white rounded-t-[3rem] shadow-[0_-25px_60px_rgba(0,0,0,0.2)] overflow-hidden">
+        <div className="relative bg-white shadow-[0_-25px_60px_rgba(0,0,0,0.2)]">
            {/* Pequeño handle visual */}
-           <div className="w-full flex justify-center pt-4 pb-2 opacity-30">
-              <div className="w-12 h-1 bg-gray-400 rounded-full" />
-           </div>
 
            <Timeline />
+           <ParallaxDivider />
            <GalleryMarquee />
            <Location />
            
-           <div className="bg-[#F9F5F0] py-16 rounded-t-3xl shadow-inner relative z-10">
-              <RevealImage />
+           <div className="bg-[#F9F5F0] py-16  shadow-inner relative z-10">
+              
               <DressCode />
               <div className="my-10" />
               <Gifts />
