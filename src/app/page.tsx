@@ -10,36 +10,61 @@ import Gifts from "@/components/Gifts";
 import RSVPSection from "@/components/RSVPSection";
 import FormalInvitation from "@/components/FormalInvitation";
 import RevealImage from "@/components/RevealImage";
+// Importamos el nuevo ScenicReveal
 import ScenicReveal from "@/components/ScenicReveal";
 
 export default function Home() {
   return (
-    <main className="min-h-screen bg-wedding-light">
+    <main className="min-h-screen relative bg-wedding-light/0"> {/* bg transparente aquí */}
       <MusicPlayer />
       
-      {/* 1. HERO (Fondo Sticky) */}
-      <div className="relative top-0 z-20 h-[100svh] w-full">
+      {/* --- CAPA 1 (Fondo Absoluto): HERO ---
+          z-index: 0. Siempre está al fondo. 
+      */}
+      <div className="fixed top-0 left-0 w-full h-[100svh] z-0 pointer-events-none">
          <Hero />
       </div>
-      
-      {/* 2. CAPA SUPERIOR (Intro + Countdown) */}
-      <div className="relative z-10 bg-transparent">
-        <Introduction />
-        <Countdown />
-        <FormalInvitation />
-        <ScenicReveal />
-        {/* 3. BLOQUE BLANCO (Timeline) */}
-        <div className="bg-white relative z-20">
-           <Timeline />
+      <ScenicReveal />
+      <div className="relative z-20">
+        
+        {/* Espaciador 1: Permite ver el Hero al inicio */}
+        <div className="h-[100svh] w-full bg-transparent" />
+
+        {/* BLOQUE SÓLIDO 1: Introducción
+            Este bloque TIENE fondo (bg-wedding-light). 
+            Al subir, tapa el Hero y, si ya se activó, tapa el ScenicReveal.
+        */}
+        <div className="bg-wedding-light shadow-[0_-10px_30px_rgba(0,0,0,0.1)] relative">
+            <Introduction />
+            <Countdown />
+            <FormalInvitation />
+            {/* NOTA: Hemos quitado <ScenicReveal /> de aquí dentro */}
+            <div className="pb-20 bg-wedding-light"></div> {/* Margen inferior extra */}
         </div>
-        <GalleryMarquee />
-        <Location />
-        {/* 5. LOCACIÓN Y RESTO (Suben tapando la foto) */}
-        <div className="relative z-30 bg-white">
-           {/* Location tiene 'rounded-t' y fondo blanco para hacer el efecto de tarjeta subiendo */}
+
+        {/* --- LA VENTANA MÁGICA --- 
+            Este es un espaciador TRANSPARENTE.
+            Cuando el bloque de arriba termine de pasar, este hueco dejará ver
+            la capa z-10 (ScenicReveal) que ya estará activada en el fondo.
+            Ajusta el h-[85vh] según cuánto tiempo quieres ver la foto.
+        */}
+        <div className="h-[85vh] w-full bg-transparent pointer-events-none relative" />
+
+
+        {/* BLOQUE SÓLIDO 2: El resto del contenido
+            Este bloque vuelve a tener fondo y tapa la "ventana mágica".
+        */}
+        <div className="relative bg-white rounded-t-[3rem] shadow-[0_-25px_60px_rgba(0,0,0,0.2)] overflow-hidden">
+           {/* Pequeño handle visual */}
+           <div className="w-full flex justify-center pt-4 pb-2 opacity-30">
+              <div className="w-12 h-1 bg-gray-400 rounded-full" />
+           </div>
+
+           <Timeline />
+           <GalleryMarquee />
+           <Location />
            
-           
-           <div className="bg-[#F9F5F0] py-16">
+           <div className="bg-[#F9F5F0] py-16 rounded-t-3xl shadow-inner relative z-10">
               <RevealImage />
               <DressCode />
               <div className="my-10" />
@@ -50,7 +75,6 @@ export default function Home() {
            
            <footer className="text-center py-12 bg-black text-white/60 text-sm">
              <p className="font-serif text-2xl mb-2 text-white">Ceci & Alejandro</p>
-             <p className="tracking-widest uppercase text-xs">09 . Mayo . 2026</p>
            </footer>
         </div>
 

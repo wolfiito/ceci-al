@@ -27,7 +27,7 @@ export default function RootLayout({
   return (
     <html lang="es">
       <body className={cn(
-        "min-h-screen bg-wedding-light font-sans antialiased text-wedding-dark selection:bg-wedding-secondary selection:text-white",
+        "min-h-screen bg-wedding-light font-sans antialiased text-wedding-dark selection:bg-wedding-secondary selection:text-white `antialiased overflow-x-hidden`",
         playfair.variable,
         lato.variable
       )}>

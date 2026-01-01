@@ -8,7 +8,7 @@ const EASE_LUXURY: [number, number, number, number] = [0.22, 1, 0.36, 1];
 
 export default function Introduction() {
   return (
-    <section className="relative w-full z-20 py-8 px-2 bg-wedding-light flex justify-center items-center overflow-hidden">
+    <section className="relative w-fullz-20 py-8 px-2 bg-wedding-light flex justify-center items-center overflow-hidden">
       
       {/* 1. TEXTURA DE PAPEL (Noise) */}
       {/* Solo se ve aquí, sobre el color claro, dando efecto de papelería fina */}
