@@ -3,172 +3,120 @@
 import { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { 
-  Church, 
-  GlassWater, 
-  Music, 
-  Utensils, 
-  PartyPopper, 
-  Moon,
-  Camera
+  Church, GlassWater, Music, Utensils, PartyPopper, 
+  Moon, Camera, MapPin, Heart, Bus, Coffee, Star, Sparkles,
+  LucideIcon 
 } from "lucide-react";
 
-// DATOS DEL ITINERARIO
-const EVENTS = [
-  {
-    time: "14:00",
-    title: "Ceremonia Religiosa",
-    description: "Capilla de la Hacienda Los Arcángeles. Un momento solemne para unir nuestras vidas.",
-    icon: Church,
-  },
-  {
-    time: "15:30",
-    title: "Cóctel de Bienvenida",
-    description: "Jardín Principal. Música acústica, mixología de autor y canapés.",
-    icon: GlassWater,
-  },
-  {
-    time: "16:30",
-    title: "Sesión de Fotos",
-    description: "Acompañanos en la escalinata para la foto oficial con todos los invitados.",
-    icon: Camera,
-  },
-  {
-    time: "17:30",
-    title: "Recepción y Banquete",
-    description: "Gran Salón. Menú de 4 tiempos diseñado por el Chef ejecutivo.",
-    icon: Utensils,
-  },
-  {
-    time: "19:30",
-    title: "Primer Baile",
-    description: "Nuestro momento mágico en la pista. ¡Preparen sus pañuelos!",
-    icon: Music,
-  },
-  {
-    time: "21:00",
-    title: "¡La Fiesta!",
-    description: "DJ Set en vivo, pista iluminada y sorpresas de medianoche.",
-    icon: PartyPopper,
-  },
-  {
-    time: "02:00",
-    title: "Fin del Evento",
-    description: "Despedida y agradecimientos. Gracias por hacer historia con nosotros.",
-    icon: Moon,
-  },
-];
+// 1. DEFINICIÓN DE INTERFACES (Para limpiar los errores ts(2304) y ts(7006))
+interface TimelineItemData {
+  id: string;
+  time: string;
+  title: string;
+  description: string;
+  icon: string;
+}
 
-// Componente individual de cada evento
-const TimelineItem = ({ data, index }: { data: typeof EVENTS[0], index: number }) => {
+interface TimelineProps {
+  items?: TimelineItemData[];
+}
+
+// Mapeo de iconos
+const ICON_MAP: Record<string, LucideIcon> = {
+  Church, GlassWater, Music, Utensils, PartyPopper, 
+  Moon, Camera, MapPin, Heart, Bus, Coffee, Star, Sparkles
+};
+
+// Componente Interno con Tipado Estricto
+const TimelineItem = ({ data, index, isLast }: { data: TimelineItemData, index: number, isLast: boolean }) => {
+    const IconComponent = ICON_MAP[data.icon] || Star;
+
     return (
         <motion.div 
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0, x: 20 }}
+            whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, margin: "-50px" }}
-            transition={{ duration: 0.6, delay: index * 0.1 }}
-            className="relative pl-12 sm:pl-32 py-8 group"
+            transition={{ duration: 0.8, delay: index * 0.1 }}
+            className="relative pl-12 sm:pl-40 py-10 group"
         >
-            {/* LÍNEA GUÍA (Gris claro detrás) */}
-            <div className="absolute left-[0.6rem] sm:left-[6.1rem] top-0 bottom-0 w-[1px] bg-wedding-primary/5 group-last:bottom-auto group-last:h-0"></div>
+            {!isLast && (
+                <div className="absolute left-[0.6rem] sm:left-[6.1rem] top-12 bottom-0 w-[0.5px] bg-wedding-secondary/20 z-0" />
+            )}
             
-            {/* PUNTO DE CONEXIÓN */}
-            <div className="absolute left-[0.2rem] sm:left-[5.7rem] top-10 w-4 h-4 bg-[#Fdfbf7] border border-wedding-secondary rounded-full flex items-center justify-center z-10 shadow-sm group-hover:scale-125 transition-transform duration-300">
-                 <div className="w-1.5 h-1.5 bg-wedding-secondary rounded-full" />
-            </div>
+            <div className="absolute left-[0.35rem] sm:left-[5.85rem] top-11 w-2 h-2 bg-wedding-secondary rounded-full z-10" />
 
-            {/* CONTENIDO */}
-            <div className="flex flex-col sm:flex-row sm:items-baseline gap-2 sm:gap-10">
-                
-                {/* HORA */}
+            <div className="flex flex-col sm:flex-row sm:items-start gap-4 sm:gap-16">
                 <div className="sm:w-24 text-left sm:text-right shrink-0">
-                    <span className="font-serif text-2xl sm:text-3xl text-wedding-secondary font-bold tabular-nums">
+                    <span className="font-serif text-3xl sm:text-4xl text-wedding-secondary/40 font-light italic tabular-nums block sm:mt-[-8px]">
                         {data.time}
                     </span>
                 </div>
 
-                {/* TARJETA DE DETALLE */}
-                <div className="relative bg-white/80 backdrop-blur-sm p-6 rounded-xl border border-wedding-primary/10 shadow-sm hover:shadow-lg transition-all duration-300 w-full max-w-md group-hover:-translate-y-1">
-                    {/* Triángulo decorativo (Speech bubble) */}
-                    <div className="absolute -left-2 top-8 w-4 h-4 bg-white border-l border-b border-wedding-primary/10 rotate-45 hidden sm:block" />
-                    
-                    <div className="flex items-center gap-3 mb-3 text-wedding-secondary">
-                        <data.icon size={20} strokeWidth={1.5} />
-                        <h3 className="font-serif text-lg font-medium text-wedding-dark">{data.title}</h3>
+                <div className="flex-1 space-y-2">
+                    <div className="flex items-center gap-3 text-wedding-secondary/70">
+                        <IconComponent size={18} strokeWidth={1.2} />
+                        <h3 className="font-serif text-2xl text-wedding-dark tracking-tight">
+                            {data.title}
+                        </h3>
                     </div>
                     
-                    <p className="text-sm font-sans text-wedding-dark/60 leading-relaxed">
+                    <p className="text-base font-sans text-wedding-dark/50 leading-relaxed max-w-lg font-light">
                         {data.description}
                     </p>
                 </div>
             </div>
         </motion.div>
-    )
-}
+    );
+};
 
-export default function Timeline() {
+export default function Timeline({ items = [] }: TimelineProps) {
   const containerRef = useRef(null);
   const { scrollYProgress } = useScroll({
     target: containerRef,
-    offset: ["start 20%", "end 80%"],
+    offset: ["start 30%", "end 70%"],
   });
 
   const height = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
 
-  return (
-    <section ref={containerRef} className="relative py-24 px-4 overflow-hidden bg-[#Fdfbf7]">
-      
-      {/* 1. TEXTURA DE RUIDO (NOISE)
-          Le da el toque "Papel de Algodón". Sutil y elegante. 
-      */}
-      <div className="absolute inset-0 pointer-events-none opacity-[0.06] mix-blend-multiply bg-[url('/noise.png')] z-0" />
-      
-      {/* Gradiente sutil superior para suavizar la entrada desde la sección anterior */}
-      <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-white to-transparent z-0 opacity-50" />
+  if (items.length === 0) return null;
 
+  return (
+    <section ref={containerRef} className="relative py-32 px-6 overflow-hidden bg-[#Fdfbf7]">
+      <div className="absolute inset-0 pointer-events-none opacity-[0.04] bg-[url('/noise.png')] z-0" />
+      
       <div className="max-w-4xl mx-auto relative z-10">
-         
-         {/* CABECERA (Alineada a la izquierda con el eje) */}
-         <div className="relative pl-12 sm:pl-32 mb-16">
-            {/* Start Dot */}
-            <div className="absolute left-[0.2rem] sm:left-[5.7rem] top-2 w-4 h-4 border-2 border-wedding-secondary rounded-full bg-[#Fdfbf7] z-20" />
-            
+         <div className="relative pl-12 sm:pl-40 mb-20 text-left">
             <motion.div 
-                initial={{ opacity: 0, x: -20 }}
-                whileInView={{ opacity: 1, x: 0 }}
+                initial={{ opacity: 0, y: 10 }}
+                whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                className="text-left"
             >
-                <p className="text-[10px] md:text-xs uppercase tracking-[0.3em] text-wedding-secondary mb-3 font-bold">
-                    Agenda del Día
-                </p>
-                <h2 className="font-serif text-4xl md:text-6xl text-wedding-dark leading-none">
-                    Celebración
+                <h2 className="font-serif text-5xl md:text-7xl text-wedding-dark font-light italic leading-none mb-6">
+                    El Itinerario
                 </h2>
-                <p className="mt-4 text-wedding-dark/50 font-sans text-sm max-w-md leading-relaxed">
-                    Cada momento ha sido planeado con amor para compartirlo con ustedes.
-                </p>
+                <div className="h-[1px] w-24 bg-wedding-secondary/30" />
             </motion.div>
          </div>
 
          <div className="relative">
-            {/* EJE PRINCIPAL (Gris tenue) */}
-            <div className="absolute left-[0.6rem] sm:left-[6.1rem] -top-8 bottom-0 w-[1px] bg-wedding-primary/10 z-0" />
+            <div className="absolute left-[0.6rem] sm:left-[6.1rem] top-0 bottom-0 w-[1px] bg-wedding-primary/5 z-0" />
             
-            {/* EL HILO DORADO (Barra de progreso animada) */}
             <motion.div 
                 style={{ height }}
-                className="absolute left-[0.6rem] sm:left-[6.1rem] -top-8 w-[1px] bg-wedding-secondary z-0 origin-top shadow-[0_0_10px_rgba(212,175,55,0.4)]"
+                className="absolute left-[0.6rem] sm:left-[6.1rem] top-0 w-[1px] bg-wedding-secondary z-10 origin-top opacity-60"
             />
 
-            {/* EVENTOS */}
-            <div className="space-y-4 pt-2">
-                {EVENTS.map((event, index) => (
-                    <TimelineItem key={index} data={event} index={index} />
+            <div className="space-y-2 pt-4">
+                {/* TIPADO EXPLÍCITO EN EL MAP PARA ELIMINAR TS(7006) */}
+                {items.map((event: TimelineItemData, index: number) => (
+                    <TimelineItem 
+                        key={event.id} 
+                        data={event} 
+                        index={index} 
+                        isLast={index === items.length - 1} 
+                    />
                 ))}
             </div>
-            
-            {/* PUNTO FINAL */}
-             <div className="absolute left-[0.2rem] sm:left-[5.7rem] bottom-0 w-4 h-4 border border-wedding-secondary/50 rounded-full bg-[#Fdfbf7] z-10" />
          </div>
       </div>
     </section>

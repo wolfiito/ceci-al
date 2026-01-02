@@ -2,13 +2,15 @@
 
 import { motion } from "framer-motion";
 
+// 1. DEFINIMOS LA INTERFAZ DE PROPS
+interface FormalInvitationProps {
+  guestName: string;
+}
+
 // NUESTRA FIRMA DE SUAVIDAD
 const EASE_LUXURY: [number, number, number, number] = [0.22, 1, 0.36, 1];
 
-// Puedes cambiar este nombre por una prop después para hacerlo dinámico
-const GUEST_NAME = "Familia y Amigos"; 
-
-export default function FormalInvitation() {
+export default function FormalInvitation({ guestName }: { guestName: string }) {
   return (
     <section className="relative z-20 py-32 px-6 bg-wedding-light flex justify-center items-center overflow-hidden">
       
@@ -37,7 +39,7 @@ export default function FormalInvitation() {
             </p>
         </div>
 
-        {/* NOMBRE DEL INVITADO (Highlight) */}
+        {/* NOMBRE DEL INVITADO DINÁMICO */}
         <div className="mb-12">
             <motion.div
                 initial={{ scale: 0.9, opacity: 0 }}
@@ -46,9 +48,8 @@ export default function FormalInvitation() {
                 transition={{ duration: 1.2, delay: 0.3, ease: EASE_LUXURY }}
                 className="inline-block relative"
             >
-                {/* Decoración sutil alrededor del nombre */}
                 <span className="font-serif text-4xl md:text-6xl text-wedding-primary block py-2 px-8 min-w-[300px] border-b border-wedding-secondary/30">
-                    {GUEST_NAME}
+                    {guestName}
                 </span>
             </motion.div>
         </div>
