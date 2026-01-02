@@ -3,9 +3,7 @@
 import { motion } from "framer-motion";
 
 // 1. DEFINIMOS LA INTERFAZ DE PROPS
-interface FormalInvitationProps {
-  guestName: string;
-}
+
 
 // NUESTRA FIRMA DE SUAVIDAD
 const EASE_LUXURY: [number, number, number, number] = [0.22, 1, 0.36, 1];

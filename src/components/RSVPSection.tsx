@@ -14,7 +14,7 @@ interface RSVPSectionProps {
   eventDate: string;
 }
 
-export default function RSVPSection({ guestData, eventNames, eventDate }: RSVPSectionProps) {
+export default function RSVPSection({ guestData, eventNames }: RSVPSectionProps) {
   const [step, setStep] = useState(1); // 1: Cantidad, 2: Selección individual, 3: Mensaje
   const [isConfirming, setIsConfirming] = useState(false);
   const [isFinished, setIsFinished] = useState(guestData?.status === 'confirmed');
