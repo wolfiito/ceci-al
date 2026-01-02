@@ -17,7 +17,7 @@ export default function Hero({ names, date }: HeroProps) {
   
   // LOGICA PARA MANTENER TU DISEÑO:
   // Si el nombre es "Ceci & Alejandro", lo separamos para animarlos individualmente
-  const nameArray = names.split("&").map(n => n.trim());
+  const nameArray = names.split(/&| y /i).map(n => n.trim());
   const name1 = nameArray[0] || "Ceci";
   const name2 = nameArray[1] || "Alejandro";
 
@@ -25,7 +25,7 @@ export default function Hero({ names, date }: HeroProps) {
   const formattedDate = date ? date.split("-").reverse().join(" . ") : "09 . 05 . 2026";
 
   return (
-    <div className="relative h-full w-full overflow-hidden flex flex-col justify-start items-center pt-32 md:pt-24 bg-black">
+    <div className="relative h-full w-full overflow-hidden flex flex-col justify-start items-center pt-16 md:pt-24 bg-black">
       
       {/* 1. IMAGEN DE FONDO */}
       <motion.div 
@@ -35,7 +35,7 @@ export default function Hero({ names, date }: HeroProps) {
         className="absolute inset-0 z-0"
       >
         <Image
-          src="/images/hero.jpg"
+          src="/images/hero-1.jpg"
           alt={names}
           fill
           priority
@@ -54,7 +54,7 @@ export default function Hero({ names, date }: HeroProps) {
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1.2, ease: EASE_LUXURY, delay: 0.2 }}
-            className="font-serif text-[16vw] md:text-[10vw] font-medium tracking-tight"
+            className="font-serif text-[24vw] md:text-[10vw] font-medium tracking-tight"
           >
             {name1}
           </motion.h1>
@@ -63,7 +63,7 @@ export default function Hero({ names, date }: HeroProps) {
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 1, ease: EASE_LUXURY, delay: 0.4 }}
-            className="text-[5vw] md:text-[3vw] font-light italic text-[#E8DCC4] my-2"
+            className="text-[7vw] md:text-[3vw] font-light italic text-[#E8DCC4] my-2"
           >
             &
           </motion.div>
@@ -85,7 +85,7 @@ export default function Hero({ names, date }: HeroProps) {
             transition={{ duration: 1.5, delay: 1 }}
             className="mt-8 md:mt-12"
         >
-            <p className="font-serif text-lg md:text-2xl text-[#E8DCC4] tracking-[0.4em] uppercase font-light drop-shadow-lg">
+            <p className="text-[6vw] md:text-[5vw] font-medium font-serif text-xl md:text-2xl text-[#E8DCC4] tracking-[0.4em] uppercase font-light drop-shadow-lg">
                 {formattedDate}
             </p>
         </motion.div>

@@ -28,7 +28,7 @@ export default function ParallaxDivider() {
         className="absolute inset-0 w-full h-[140%] -top-[20%]"
       >
         <Image
-          src="/images/hero-2.jpg" // Usa una foto linda horizontal aquí
+          src="/images/hero-1.jpg" // Usa una foto linda horizontal aquí
           alt="Divider"
           fill
           className="object-cover object-center grayscale brightness-75"

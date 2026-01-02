@@ -1,12 +1,8 @@
-"use client";
-
-import { useEffect, useState, Suspense } from "react";
-import { useSearchParams } from "next/navigation";
-import { doc, getDoc } from "firebase/firestore";
+import { doc, DocumentData, getDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
-import { GuestData, EventData } from "@/types/wedding"; // Importamos los tipos
+import { GuestData, EventData } from "@/types/wedding";
 
-// Importaciones de tus componentes
+// Componentes de UI
 import Hero from "@/components/Hero";
 import Introduction from "@/components/Introduction";
 import Countdown from "@/components/Countdown";
@@ -21,80 +17,96 @@ import FormalInvitation from "@/components/FormalInvitation";
 import ParallaxDivider from "@/components/ParallaxDivider";
 import ScenicReveal from "@/components/ScenicReveal";
 
-function InvitationContent() {
-  const searchParams = useSearchParams();
-  const ticketId = searchParams.get("ticket");
+// --- HELPER (Lo mantenemos igual) ---
+const sanitizeData = (data: DocumentData) => {
+  if (!data) return null;
+  return JSON.parse(JSON.stringify(data));
+};
 
-  const [guestData, setGuestData] = useState<GuestData | null>(null);
-  const [eventData, setEventData] = useState<EventData | null>(null);
-  const [loading, setLoading] = useState(true);
+async function getInvitationData(ticketId: string | undefined) {
+  if (!ticketId) return null;
 
-  useEffect(() => {
-    async function loadData() {
-      if (!ticketId) {
-        setLoading(false);
-        return;
-      }
+  try {
+    const guestRef = doc(db, "guests", ticketId);
+    const guestSnap = await getDoc(guestRef);
 
-      try {
-        const guestRef = doc(db, "guests", ticketId);
-        const guestSnap = await getDoc(guestRef);
+    if (!guestSnap.exists()) return null;
 
-        if (guestSnap.exists()) {
-          const guest = guestSnap.data() as GuestData;
-          setGuestData({ ...guest, id: guestSnap.id });
+    const rawGuest = guestSnap.data();
+    const guest = sanitizeData(rawGuest) as GuestData;
+    const guestWithId = { ...guest, id: guestSnap.id };
 
-          const eventRef = doc(db, "events", guest.eventId);
-          const eventSnap = await getDoc(eventRef);
-          
-          if (eventSnap.exists()) {
-            setEventData(eventSnap.data() as EventData);
-          }
-        }
-      } catch (error) {
-        console.error("Error cargando invitación:", error);
-      } finally {
-        setLoading(false);
-      }
-    }
+    const eventRef = doc(db, "events", rawGuest.eventId);
+    const eventSnap = await getDoc(eventRef);
+    const event = eventSnap.exists() ? sanitizeData(eventSnap.data()) as EventData : null;
 
-    loadData();
-  }, [ticketId]);
+    return { guestData: guestWithId, eventData: event };
+  } catch (error) {
+    console.error("Error fetching invitation:", error);
+    return null;
+  }
+}
 
-  if (loading) {
+interface PageProps {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}
+
+export default async function Home({ searchParams }: PageProps) {
+  const resolvedParams = await searchParams;
+  const ticketId = typeof resolvedParams.ticket === "string" ? resolvedParams.ticket : undefined;
+  const data = await getInvitationData(ticketId);
+
+  // Manejo de estado vacío elegante
+  if (!data) {
     return (
-      <div className="min-h-screen bg-[#F9F5F0] flex flex-col items-center justify-center">
-        <p className="font-serif text-2xl animate-pulse text-gray-400">Preparando tu invitación...</p>
+      <div className="min-h-screen bg-[#F9F5F0] flex flex-col items-center justify-center text-wedding-dark p-4 text-center">
+        <h1 className="font-serif text-3xl mb-4">Invitación no encontrada</h1>
       </div>
     );
   }
 
+  const { guestData, eventData } = data;
   const eventNames = eventData?.name || "Ceci & Alejandro";
   const eventDate = eventData?.date || "2026-05-09";
 
   return (
-    <main className="min-h-screen relative bg-wedding-light/0">
-      <MusicPlayer />
+    // CAMBIO CLAVE 1: Quitamos 'relative' de main para que 'fixed' funcione globalmente
+    // Usamos min-h-screen para asegurar altura
+    <main className="min-h-screen w-full bg-transparent">
       
-      <div className="fixed top-0 left-0 w-full h-[100svh] z-0 pointer-events-none">
+      {/* --- CAPA 0: FONDO FIJO (HERO) --- */}
+      {/* Al estar fixed y fuera del flujo, siempre se verá detrás si el z-index es bajo */}
+      <div className="fixed top-0 left-0 w-full h-[100svh] z-0">
          <Hero names={eventNames} date={eventDate} />
       </div>
 
+      {/* --- CAPA 10: REVEAL SECRETO --- */}
+      {/* Este componente maneja su propia posición fixed internamente */}
       <ScenicReveal />
 
-      <div className="relative z-20">
-        <div className="h-[100svh] w-full bg-transparent" />
+      {/* --- CAPA 20: CONTENIDO SCROLLABLE --- */}
+      {/* Esta es la capa que se mueve. Debe tener z-index mayor para tapar al Hero */}
+      <div className="relative z-20 w-full">
+        
+        {/* ESPACIADOR TRANSPARENTE: Permite ver el Hero al principio */}
+        <div className="h-[100svh] w-full bg-transparent pointer-events-none" />
 
-        <div className="bg-wedding-light shadow-[0_-10px_30px_rgba(0,0,0,0.1)] relative">
-            <Introduction familyName={guestData?.familyName} />
+        {/* CONTENIDO SÓLIDO: Al subir, tapa el Hero ("Efecto Parallax") */}
+        <div className="bg-wedding-light shadow-[0_-10px_30px_rgba(0,0,0,0.1)]">
+            {/* Introducción y Countdown */}
+            <Introduction  />
             <Countdown targetDate={eventDate} names={eventNames} />
-            <FormalInvitation guestName={guestData?.familyName || "Familia y Amigos"} />
-            <div className="pb-20 bg-wedding-light"></div>
+            <FormalInvitation 
+                guestName={guestData?.familyName || "Amigos"} 
+                type={guestData?.type || 'family'}
+            />
         </div>
 
-        <div className="h-[85vh] w-full bg-transparent pointer-events-none relative" />
+        {/* VENTANA AL REVEAL: Espacio transparente para ver la foto de ScenicReveal */}
+        <div className="h-[85vh] w-full bg-transparent pointer-events-none" />
 
-        <div className="relative bg-white shadow-[0_-25px_60px_rgba(0,0,0,0.2)]">
+        {/* RESTO DE LA INFO */}
+        <div className="bg-white shadow-[0_-25px_60px_rgba(0,0,0,0.2)]">
            <Timeline items={eventData?.timeline} />
            <ParallaxDivider />
            <GalleryMarquee />
@@ -105,27 +117,26 @@ function InvitationContent() {
               wazeUrl={eventData?.wazeUrl}
             />
            
-           <div className="bg-[#F9F5F0] py-16 shadow-inner relative z-10">
+           <div className="bg-[#F9F5F0] py-16 shadow-inner relative">
               <DressCode />
               <div className="my-10" />
               <Gifts gifts={eventData?.gifts} />
            </div>
            
-           <RSVPSection guestData={guestData} eventNames={eventNames} eventDate={eventDate} />
+           <RSVPSection 
+             guestData={guestData} 
+             eventNames={eventNames} 
+             eventDate={eventDate} 
+           />
            
            <footer className="text-center py-12 bg-black text-white/60 text-sm">
              <p className="font-serif text-2xl mb-2 text-white">{eventNames}</p>
            </footer>
         </div>
       </div>
-    </main>
-  );
-}
 
-export default function Home() {
-  return (
-    <Suspense fallback={<div className="min-h-screen bg-[#F9F5F0]" />}>
-      <InvitationContent />
-    </Suspense>
+      {/* PLAYER FLOTANTE: Siempre visible encima de todo */}
+      <MusicPlayer />
+    </main>
   );
 }

@@ -35,6 +35,7 @@ export interface GuestData {
   id: string;
   eventId: string;
   familyName: string;
+  type: 'family' | 'individual';
   contactEmail?: string;
   contactPhone?: string;
   members: GuestMember[];

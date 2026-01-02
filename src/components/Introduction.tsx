@@ -3,15 +3,10 @@
 import { motion } from "framer-motion";
 import { Sparkles } from "lucide-react";
 
-// 1. DEFINIMOS LAS PROPS
-interface IntroductionProps {
-  familyName?: string;
-}
-
 // NUESTRA FIRMA DE SUAVIDAD
 const EASE_LUXURY: [number, number, number, number] = [0.22, 1, 0.36, 1];
 
-export default function Introduction({ familyName }: IntroductionProps) {
+export default function Introduction() {
   return (
     <section className="relative w-full z-20 py-8 px-2 bg-wedding-light flex justify-center items-center overflow-hidden">
       
@@ -37,20 +32,8 @@ export default function Introduction({ familyName }: IntroductionProps) {
           </motion.div>
         </div>
 
-        {/* SALUDO PERSONALIZADO: Aparece solo si existe familyName */}
-        {familyName && (
-          <motion.p 
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            transition={{ delay: 0.5, duration: 1 }}
-            className="font-sans text-xs md:text-sm uppercase tracking-[0.3em] text-wedding-primary mb-6 font-medium"
-          >
-            Querida {familyName}
-          </motion.p>
-        )}
-
         {/* Frase Principal */}
-        <h2 className="font-serif text-2xl md:text-5xl text-wedding-dark leading-tight md:leading-snug mb-10 italic">
+        <h2 className="font-sans text-2xl md:text-5xl text-wedding-dark leading-tight md:leading-snug mb-10 italic">
          &ldquo;El amor no es solo mirarse el uno al otro, es mirar juntos en la misma dirección&rdquo;
         </h2>
 

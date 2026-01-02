@@ -1,17 +1,21 @@
 import type { Metadata } from "next";
-import { Playfair_Display, Lato } from "next/font/google";
+// Importamos Alex Brush y Open Sans con los pesos necesarios
+import { Alex_Brush, Open_Sans } from "next/font/google"; 
 import "./globals.css";
 import { cn } from "@/lib/utils";
 
-const playfair = Playfair_Display({ 
+// Alex Brush generalmente solo tiene peso 400, pero el navegador puede simular negrita
+const alexBrush = Alex_Brush({ 
+  weight: ["400"], 
   subsets: ["latin"], 
-  variable: "--font-serif" 
+  variable: "--font-serif", 
 });
 
-const lato = Lato({ 
-  weight: ["300", "400", "700"], 
+// Para Open Sans traemos 400 (normal), 600 (semi-gordo) y 800 (extra-gordo)
+const openSans = Open_Sans({ 
+  weight: ["400", "600", "800"], 
   subsets: ["latin"], 
-  variable: "--font-sans" 
+  variable: "--font-sans", 
 });
 
 export const metadata: Metadata = {
@@ -27,9 +31,9 @@ export default function RootLayout({
   return (
     <html lang="es">
       <body className={cn(
-        "min-h-screen bg-wedding-light font-sans antialiased text-wedding-dark selection:bg-wedding-secondary selection:text-white `antialiased overflow-x-hidden`",
-        playfair.variable,
-        lato.variable
+        "min-h-screen bg-wedding-light font-sans antialiased text-wedding-dark selection:bg-wedding-secondary selection:text-white overflow-x-hidden",
+        alexBrush.variable,
+        openSans.variable
       )}>
         {children}
       </body>

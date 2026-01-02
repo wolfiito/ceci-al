@@ -3,122 +3,146 @@
 import { motion } from "framer-motion";
 import { Shirt, Gem, Palette } from "lucide-react"; 
 
+const EASE_LUXURY: [number, number, number, number] = [0.22, 1, 0.36, 1];
+
 export default function DressCode() {
   return (
-    <section className="relative py-24 px-6 bg-white overflow-hidden">
+    <section className="relative py-24 md:py-32 px-6 bg-wedding-light overflow-hidden">
       
-      {/* Decoración de fondo */}
-      <div className="absolute top-0 left-0 w-40 h-40 bg-rose-50 rounded-full blur-[80px] opacity-60 pointer-events-none" />
-      <div className="absolute bottom-0 right-0 w-60 h-60 bg-orange-50 rounded-full blur-[100px] opacity-60 pointer-events-none" />
+      {/* 1. FONDO SUTIL: Un toque de "papel" para dar textura */}
+      <div className="absolute inset-0 opacity-[0.03] bg-[url('/noise.png')] pointer-events-none" />
+      
+      {/* Elemento decorativo grande y suave */}
+      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-wedding-secondary/10 rounded-full blur-[120px] pointer-events-none -translate-y-1/2 translate-x-1/2" />
 
-      <div className="max-w-4xl mx-auto text-center relative z-10">
+      <div className="max-w-5xl mx-auto relative z-10">
         
-        {/* 1. CABECERA AMIGABLE */}
+        {/* 2. CABECERA EDITORIAL */}
         <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="mb-14"
+            transition={{ duration: 1, ease: EASE_LUXURY }}
+            className="text-center mb-20"
         >
-            <p className="text-[10px] md:text-xs uppercase tracking-[0.3em] text-rose-950/40 font-bold mb-3">
-                Código de Vestimenta
-            </p>
-            <h2 className="font-serif text-4xl md:text-5xl text-rose-950 mb-4">
+            <span className="font-serif text-5xl md:text-7xl text-wedding-secondary opacity-80 block transform -rotate-2 mb-2">
+                Guía de Estilo
+            </span>
+            <h2 className="font-sans text-5xl md:text-7xl font-extrabold text-wedding-dark uppercase tracking-tight leading-none drop-shadow-sm">
                 Formal Casual
             </h2>
-            <p className="font-sans text-rose-950/60 max-w-lg mx-auto leading-relaxed italic">
-                "Queremos que se sientan libres, cómodos y listos para disfrutar al máximo con nosotros."
+            <div className="h-[2px] w-24 bg-wedding-primary/30 mx-auto my-8" />
+            <p className="font-sans text-lg text-wedding-dark/60 max-w-2xl mx-auto leading-relaxed font-light italic">
+                Queremos que se sientan libres, cómodos y listos para disfrutar al máximo con nosotros.
             </p>
         </motion.div>
 
-        {/* 2. TARJETAS DE COMODIDAD */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 mb-16">
+        {/* 3. COLUMNAS DE ESTILO (ELLAS / ELLOS) */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-20">
             
-            {/* Ellas */}
+            {/* Tarjeta ELLAS */}
             <motion.div 
-                initial={{ opacity: 0, x: -20 }}
+                initial={{ opacity: 0, x: -30 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.8 }}
-                className="flex flex-col items-center p-6"
+                transition={{ duration: 1, ease: EASE_LUXURY }}
+                className="group relative bg-white p-10 border border-wedding-secondary/20 shadow-lg shadow-wedding-dark/5 text-center overflow-hidden"
             >
-                <div className="w-16 h-16 rounded-full bg-[#fff0f3] flex items-center justify-center mb-4 border border-rose-100">
-                    <Gem size={28} strokeWidth={1.5} className="text-rose-400" />
+                {/* Hover Effect de fondo */}
+                <div className="absolute inset-0 bg-wedding-secondary/5 translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-out" />
+                
+                <div className="relative z-10">
+                    <div className="w-16 h-16 mx-auto rounded-full bg-wedding-light border border-wedding-secondary/30 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                        <Gem size={28} strokeWidth={1} className="text-wedding-primary" />
+                    </div>
+                    <h3 className="font-serif text-3xl text-wedding-dark mb-4">Ellas</h3>
+                    <p className="text-base font-sans text-wedding-dark/70 leading-relaxed mb-2">
+                        Vestido largo, midi o traje sastre.
+                    </p>
+                    <span className="inline-block text-[10px] uppercase tracking-[0.2em] font-bold text-wedding-secondary bg-wedding-secondary/10 px-3 py-1 rounded-full">
+                        ¡Tu estilo es lo primero!
+                    </span>
                 </div>
-                <h3 className="font-serif text-xl text-rose-950 mb-2">Ellas</h3>
-                <p className="text-sm font-sans text-rose-950/70 max-w-xs mx-auto leading-relaxed">
-                    Vestido largo, midi o traje sastre. <br/>
-                    <span className="text-xs font-bold opacity-80 mt-1 block">¡Tu estilo es lo primero!</span>
-                </p>
             </motion.div>
 
-            {/* Ellos */}
+            {/* Tarjeta ELLOS */}
             <motion.div 
-                initial={{ opacity: 0, x: 20 }}
+                initial={{ opacity: 0, x: 30 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.8 }}
-                className="flex flex-col items-center p-6"
+                transition={{ duration: 1, ease: EASE_LUXURY }}
+                className="group relative bg-white p-10 border border-wedding-primary/20 shadow-lg shadow-wedding-dark/5 text-center overflow-hidden"
             >
-                <div className="w-16 h-16 rounded-full bg-[#fff0f3] flex items-center justify-center mb-4 border border-rose-100">
-                    <Shirt size={28} strokeWidth={1.5} className="text-rose-400" />
+                {/* Hover Effect de fondo */}
+                <div className="absolute inset-0 bg-wedding-primary/5 translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-out" />
+                
+                <div className="relative z-10">
+                    <div className="w-16 h-16 mx-auto rounded-full bg-wedding-light border border-wedding-primary/30 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                        <Shirt size={28} strokeWidth={1} className="text-wedding-dark" />
+                    </div>
+                    <h3 className="font-serif text-3xl text-wedding-dark mb-4">Ellos</h3>
+                    <p className="text-base font-sans text-wedding-dark/70 leading-relaxed mb-2">
+                        Traje (con o sin corbata) o guayabera.
+                    </p>
+                    <span className="inline-block text-[10px] uppercase tracking-[0.2em] font-bold text-wedding-primary bg-wedding-primary/10 px-3 py-1 rounded-full">
+                        Comodidad y elegancia
+                    </span>
                 </div>
-                <h3 className="font-serif text-xl text-rose-950 mb-2">Ellos</h3>
-                <p className="text-sm font-sans text-rose-950/70 max-w-xs mx-auto leading-relaxed">
-                    Traje (con o sin corbata) o guayabera. <br/>
-                    <span className="text-xs font-bold opacity-80 mt-1 block">Comodidad y elegancia.</span>
-                </p>
             </motion.div>
         </div>
 
-        {/* 3. RESTRICCIÓN DE COLOR (Polite but clear) */}
+        {/* 4. PALETA DE COLORES (SWATCH CARD) */}
         <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="inline-block bg-[#fff0f3] px-8 py-6 rounded-3xl border border-rose-100 shadow-sm"
+            className="relative bg-white border border-wedding-dark/10 p-8 md:p-12 shadow-2xl shadow-wedding-dark/5 max-w-3xl mx-auto"
         >
-            <div className="flex flex-col items-center gap-4">
+            {/* Etiqueta flotante */}
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-wedding-dark text-white px-6 py-2 rounded-full flex items-center gap-2 shadow-lg">
+                <Palette size={14} />
+                <span className="font-sans text-[10px] uppercase tracking-[0.2em] font-bold">Nota de Color</span>
+            </div>
+
+            <div className="text-center mb-8 pt-4">
+                <p className="font-serif text-xl md:text-2xl text-wedding-dark italic">
+                    Reservados para la corte y los novios
+                </p>
+                <p className="text-xs text-wedding-dark/40 uppercase tracking-widest mt-2">
+                    Agradecemos evitar estos tonos
+                </p>
+            </div>
+            
+            {/* GRID DE MUESTRAS */}
+            <div className="flex flex-wrap justify-center gap-6 md:gap-10">
                 
-                <div className="flex items-center gap-2 text-rose-950/60">
-                    <Palette size={18} />
-                    <span className="text-xs uppercase tracking-widest font-bold">Nota de Color</span>
+                {/* Muestra: ROSA */}
+                <div className="flex flex-col items-center gap-3 group">
+                    <div className="w-16 h-16 rounded-full bg-[#D4B9B9] shadow-inner border-4 border-white ring-1 ring-black/5 group-hover:scale-110 transition-transform duration-300" />
+                    <span className="font-sans text-[10px] font-bold uppercase tracking-widest text-wedding-dark/60">Rosa</span>
                 </div>
 
-                <div className="text-center max-w-md">
-                    <p className="text-sm text-rose-950/80 font-serif mb-4 leading-relaxed">
-                        Les pedimos con mucho cariño <span className="font-bold">evitar</span> los siguientes colores, ya que están reservados para la corte y los novios:
-                    </p>
-                    
-                    {/* MUESTRARIO DE COLORES PROHIBIDOS */}
-                    <div className="flex flex-wrap justify-center gap-3">
-                        
-                        {/* Rosa */}
-                        <div className="flex items-center gap-2 px-4 py-2 bg-white rounded-full border border-rose-100/50 shadow-sm">
-                            <div className="w-3 h-3 rounded-full bg-rose-300" />
-                            <span className="text-[10px] uppercase tracking-wider text-rose-950/70 font-bold">Rosa</span>
-                        </div>
+                {/* Muestra: VERDE */}
+                <div className="flex flex-col items-center gap-3 group">
+                    <div className="w-16 h-16 rounded-full bg-[#7A8B77] shadow-inner border-4 border-white ring-1 ring-black/5 group-hover:scale-110 transition-transform duration-300" />
+                    <span className="font-sans text-[10px] font-bold uppercase tracking-widest text-wedding-dark/60">Verde</span>
+                </div>
 
-                        {/* Verde */}
-                        <div className="flex items-center gap-2 px-4 py-2 bg-white rounded-full border border-rose-100/50 shadow-sm">
-                            <div className="w-3 h-3 rounded-full bg-emerald-700" />
-                            <span className="text-[10px] uppercase tracking-wider text-rose-950/70 font-bold">Verde</span>
-                        </div>
+                 {/* Muestra: BEIGE */}
+                 <div className="flex flex-col items-center gap-3 group">
+                    <div className="w-16 h-16 rounded-full bg-[#E8DCC4] shadow-inner border-4 border-white ring-1 ring-black/5 group-hover:scale-110 transition-transform duration-300" />
+                    <span className="font-sans text-[10px] font-bold uppercase tracking-widest text-wedding-dark/60">Beige</span>
+                </div>
 
-                         {/* Beige */}
-                         <div className="flex items-center gap-2 px-4 py-2 bg-white rounded-full border border-rose-100/50 shadow-sm">
-                            <div className="w-3 h-3 rounded-full bg-[#e8e0d5]" />
-                            <span className="text-[10px] uppercase tracking-wider text-rose-950/70 font-bold">Beige</span>
-                        </div>
-
-                        {/* Blanco */}
-                        <div className="flex items-center gap-2 px-4 py-2 bg-white rounded-full border border-rose-100/50 shadow-sm">
-                            <div className="w-3 h-3 rounded-full bg-white border border-gray-200" />
-                            <span className="text-[10px] uppercase tracking-wider text-rose-950/70 font-bold">Blanco</span>
-                        </div>
-
+                {/* Muestra: BLANCO */}
+                <div className="flex flex-col items-center gap-3 group">
+                    <div className="w-16 h-16 rounded-full bg-white shadow-inner border-4 border-white ring-1 ring-black/5 relative overflow-hidden group-hover:scale-110 transition-transform duration-300">
+                        {/* Patrón sutil para que se note que es blanco sobre blanco */}
+                        <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#000_1px,transparent_1px)] [background-size:4px_4px]" />
                     </div>
+                    <span className="font-sans text-[10px] font-bold uppercase tracking-widest text-wedding-dark/60">Blanco</span>
                 </div>
+
             </div>
         </motion.div>
 

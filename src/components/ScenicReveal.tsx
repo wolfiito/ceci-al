@@ -50,7 +50,7 @@ export default function ScenicReveal() {
            transition={{ duration: 5, ease: "linear" }}
         >
             <Image
-                src="/images/walking.jpg"
+                src="/images/walking-1.jpg"
                 alt="Caminar Juntos"
                 fill
                 className="object-cover object-center"
@@ -69,7 +69,7 @@ export default function ScenicReveal() {
                     transition={{ duration: 1, delay: 0.2 }}
                     className="font-serif text-4xl md:text-6xl text-white italic drop-shadow-lg text-center leading-tight"
                  >
-                    "Un nuevo capítulo comienza"
+                    Un nuevo capítulo comienza
                  </motion.p>
             </div>
         </motion.div>

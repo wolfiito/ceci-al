@@ -6,13 +6,13 @@ import Image from "next/image";
 // TUS FOTOS
 // Puedes repetir las mismas o poner nuevas. Lo importante es que haya suficientes para llenar el ancho.
 const PHOTOS = [
-  "/images/hero.jpg",
-  "/images/walking.jpg",
-  "/images/couple-seated.jpg",
-  "/images/dresscode.jpg", // Asegúrate de tener estas rutas o usa las tuyas
-  "/images/hero-2.jpg",
-  "/images/hero.jpg", 
-  "/images/walking.jpg",
+  "/images/hero-1.jpg",
+  "/images/walking-1.jpg",
+  "/images/couple-seated-1.jpg",
+  // "/images/dresscode.jpg", // Asegúrate de tener estas rutas o usa las tuyas
+  // "/images/hero-2.jpg",
+  // "/images/hero.jpg", 
+  // "/images/walking.jpg",
 ];
 
 export default function GalleryMarquee() {
