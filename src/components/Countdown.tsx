@@ -3,28 +3,32 @@
 import { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useCountdown } from "@/hooks/useCountdown";
-import { CalendarDays } from "lucide-react"; // Agregamos MapPin por si queremos usarlo
+import { CalendarDays } from "lucide-react"; 
 import Image from "next/image";
 
-// 1. ACTUALIZAMOS PROPS para recibir ubicación real
 interface CountdownProps {
   targetDate: string; 
   names: string;      
-  locationName?: string; // Opcional, por si no llega
+  locationName?: string; 
 }
+
+// --- PALETA DE COLORES ---
+const DARK_GREEN_BG = "bg-[#1A2621]";       
+const DUSTY_PINK_TEXT = "text-[#DCC5C5]";  
+const ROSE_ACCENT = "border-[#CFA8A8]";    
+const CREAM_TEXT = "text-[#F2F0E9]";       
 
 const EASE_LUXURY: [number, number, number, number] = [0.22, 1, 0.36, 1];
 
-// Caja de tiempo rediseñada
+// Caja de tiempo (Ahora sin bordes ni fondos, solo texto puro)
 const TimeBox = ({ value, label }: { value: number; label: string }) => (
-  <div className="relative group w-full flex flex-col items-center justify-center py-6 sm:py-8">
-    {/* CAMBIO CLAVE: Usamos 'font-sans' (Open Sans) y 'font-extrabold' 
-       para que los números sean legibles, gordos e impactantes.
-    */}
-    <span className="text-4xl sm:text-6xl md:text-8xl font-sans font-extrabold tabular-nums leading-none text-wedding-secondary drop-shadow-md">
+  <div className="flex flex-col items-center justify-center">
+    {/* NÚMEROS LIMPIOS Y GIGANTES */}
+    <span className={`text-5xl sm:text-7xl md:text-9xl font-sans font-bold tabular-nums leading-none ${DUSTY_PINK_TEXT} drop-shadow-xl`}>
       {value.toString().padStart(2, '0')}
     </span>
-    <span className="mt-3 text-[10px] sm:text-xs uppercase tracking-[0.4em] text-wedding-light/80 font-sans font-medium">
+    {/* ETIQUETA PEQUEÑA */}
+    <span className={`mt-2 md:mt-4 text-[10px] sm:text-xs uppercase tracking-[0.4em] ${CREAM_TEXT} font-light opacity-80`}>
       {label}
     </span>
   </div>
@@ -41,76 +45,67 @@ export default function Countdown({ targetDate, names, locationName }: Countdown
     offset: ["start end", "end start"]
   });
   
-  // Parallax suave para la foto de fondo
   const yBg = useTransform(scrollYProgress, [0, 1], ["-10%", "10%"]);
 
   const addToCalendar = () => {
     const title = `Boda ${names}`;
     const details = `¡Nos casamos! Acompáñanos en este día tan especial.`;
-    // Usamos la prop o un fallback
     const loc = locationName || "Ubicación del evento";
-    
     const gDate = targetDate.replace(/-/g, '');
     const start = `${gDate}T200000Z`; 
     const end = `${gDate}T040000Z`;
-    
     const url = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(title)}&details=${encodeURIComponent(details)}&location=${encodeURIComponent(loc)}&dates=${start}/${end}`;
     window.open(url, '_blank');
   };
 
   return (
-    <div ref={containerRef} className="relative z-20 w-full h-screen overflow-hidden flex flex-col justify-end">
+    <div ref={containerRef} className={`relative z-20 w-full min-h-screen overflow-hidden flex flex-col justify-end ${DARK_GREEN_BG}`}>
+      
+      {/* 1. FONDO */}
       <div className="absolute inset-0 w-full h-full z-0">
         <motion.div style={{ y: yBg }} className="absolute inset-0 w-full h-[120%] -top-[10%]">
           <Image
-            src="/images/couple-seated-1.jpg" 
+            src="/images/couple-seated.jpg"
             alt={names}
             fill
-            className="object-cover object-center opacity-60" 
+            className="object-cover object-center opacity-100" 
           />
         </motion.div>
-        {/* Gradiente más cinematográfico */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
+        {/* Filtros para integrar la foto */}
+        <div className="absolute inset-0 bg-[#1A2621]/40 mix-blend-multiply" />
+        <div className="absolute inset-0 bg-gradient-to-top from-[#1A2621] via-transparent to-[#1A2621]/40" />
       </div>
 
+      {/* 2. CONTENIDO */}
       <motion.div 
         initial={{ opacity: 0, y: 60 }}
         whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }} 
-        transition={{ duration: 1.2, ease: EASE_LUXURY }}
-        className="relative z-10 w-full max-w-6xl mx-auto px-4 pb-20 md:pb-32 text-center"
+        viewport={{ once: true, margin: "-100px" }} 
+        transition={{ duration: 2.2, ease: EASE_LUXURY }}
+        className="relative z-10 w-full max-w-7xl mx-auto px-4 pb-4 md:pb-36 text-center"
       >
-        <div className="mb-12 space-y-6">
-            {/* Título en Cursiva (Alex Brush) */}
-            <h2 className="font-serif text-5xl md:text-7xl text-wedding-light drop-shadow-lg">
-                El tiempo vuela...
+        <div className="mb-4 space-y-4">
+            <h2 className={`font-serif text-5xl md:text-7xl ${CREAM_TEXT} drop-shadow-lg italic`}>
+                Solo faltan
             </h2>
-            
-            <div className="flex items-center justify-center gap-4 opacity-80">
-                 <div className="h-[1px] w-12 bg-wedding-secondary/60" />
-                 <p className="text-[10px] md:text-xs uppercase tracking-[0.3em] text-wedding-secondary font-semibold">
-                    Cuenta regresiva
-                 </p>
-                 <div className="h-[1px] w-12 bg-wedding-secondary/60" />
-            </div>
         </div>
 
-        {/* CONTADOR */}
-        <div className="w-full border-y border-white/10 bg-white/5 backdrop-blur-sm rounded-3xl overflow-hidden shadow-2xl">
-            <div className="grid grid-cols-4 divide-x divide-white/10">
-                <TimeBox value={timeLeft.days} label="Días" />
-                <TimeBox value={timeLeft.hours} label="Hrs" />
-                <TimeBox value={timeLeft.minutes} label="Min" />
-                <TimeBox value={timeLeft.seconds} label="Seg" />
-            </div>
+        {/* 3. EL CONTADOR (GRID LIMPIO) */}
+        {/* Sin bordes, sin fondo, sin divisores */}
+        <div className="grid grid-cols-4 gap-2 md:gap-8 items-start justify-center">
+            <TimeBox value={timeLeft.days} label="Días" />
+            <TimeBox value={timeLeft.hours} label="Hrs" />
+            <TimeBox value={timeLeft.minutes} label="Min" />
+            <TimeBox value={timeLeft.seconds} label="Seg" />
         </div>
 
-        <div className="mt-12">
+        {/* 4. BOTÓN */}
+        <div className="mt-10">
             <button 
                 onClick={addToCalendar}
-                className="group relative inline-flex items-center gap-3 px-8 py-4 overflow-hidden rounded-full bg-white/10 border border-white/20 text-white hover:bg-white hover:text-black transition-all duration-500"
+                className={`group relative inline-flex items-center gap-3 px-10 py-4 overflow-hidden rounded-full border ${ROSE_ACCENT} bg-transparent transition-all duration-500 hover:bg-[#CFA8A8]`}
             >
-                <span className="relative flex items-center gap-3">
+                <span className={`relative flex items-center gap-3 transition-colors duration-300 ${DUSTY_PINK_TEXT} group-hover:text-[#1A2621]`}>
                     <CalendarDays size={18} />
                     <span className="font-sans text-xs uppercase tracking-[0.2em] font-bold">
                         Agendar Fecha

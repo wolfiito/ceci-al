@@ -6,7 +6,7 @@ import { GuestData, EventData } from "@/types/wedding";
 import Hero from "@/components/Hero";
 import Introduction from "@/components/Introduction";
 import Countdown from "@/components/Countdown";
-import MusicPlayer from "@/components/MusicPlayer";
+// MusicPlayer se ha movido dentro de ClientWrapper, ya no lo importamos aquí directamente.
 import Timeline from "@/components/Timeline";
 import GalleryMarquee from "@/components/GalleryMarquee";
 import Location from "@/components/Location";
@@ -16,8 +16,9 @@ import RSVPSection from "@/components/RSVPSection";
 import FormalInvitation from "@/components/FormalInvitation";
 import ParallaxDivider from "@/components/ParallaxDivider";
 import ScenicReveal from "@/components/ScenicReveal";
+import EnvelopeOverlay from "@/components/EnvelopeOverlay";
 
-// --- HELPER (Lo mantenemos igual) ---
+// --- HELPER ---
 const sanitizeData = (data: DocumentData) => {
   if (!data) return null;
   return JSON.parse(JSON.stringify(data));
@@ -25,11 +26,9 @@ const sanitizeData = (data: DocumentData) => {
 
 async function getInvitationData(ticketId: string | undefined) {
   if (!ticketId) return null;
-
   try {
     const guestRef = doc(db, "guests", ticketId);
     const guestSnap = await getDoc(guestRef);
-
     if (!guestSnap.exists()) return null;
 
     const rawGuest = guestSnap.data();
@@ -56,7 +55,7 @@ export default async function Home({ searchParams }: PageProps) {
   const ticketId = typeof resolvedParams.ticket === "string" ? resolvedParams.ticket : undefined;
   const data = await getInvitationData(ticketId);
 
-  // Manejo de estado vacío elegante
+  // Manejo de estado vacío
   if (!data) {
     return (
       <div className="min-h-screen bg-[#F9F5F0] flex flex-col items-center justify-center text-wedding-dark p-4 text-center">
@@ -70,73 +69,65 @@ export default async function Home({ searchParams }: PageProps) {
   const eventDate = eventData?.date || "2026-05-09";
 
   return (
-    // CAMBIO CLAVE 1: Quitamos 'relative' de main para que 'fixed' funcione globalmente
-    // Usamos min-h-screen para asegurar altura
-    <main className="min-h-screen w-full bg-transparent">
-      
-      {/* --- CAPA 0: FONDO FIJO (HERO) --- */}
-      {/* Al estar fixed y fuera del flujo, siempre se verá detrás si el z-index es bajo */}
-      <div className="fixed top-0 left-0 w-full h-[100svh] z-0">
-         <Hero names={eventNames} date={eventDate} />
-      </div>
-
-      {/* --- CAPA 10: REVEAL SECRETO --- */}
-      {/* Este componente maneja su propia posición fixed internamente */}
-      <ScenicReveal />
-
-      {/* --- CAPA 20: CONTENIDO SCROLLABLE --- */}
-      {/* Esta es la capa que se mueve. Debe tener z-index mayor para tapar al Hero */}
-      <div className="relative z-20 w-full">
-        
-        {/* ESPACIADOR TRANSPARENTE: Permite ver el Hero al principio */}
-        <div className="h-[100svh] w-full bg-transparent pointer-events-none" />
-
-        {/* CONTENIDO SÓLIDO: Al subir, tapa el Hero ("Efecto Parallax") */}
-        <div className="bg-wedding-light shadow-[0_-10px_30px_rgba(0,0,0,0.1)]">
-            {/* Introducción y Countdown */}
-            <Introduction  />
-            <Countdown targetDate={eventDate} names={eventNames} />
-            <FormalInvitation 
-                guestName={guestData?.familyName || "Amigos"} 
-                type={guestData?.type || 'family'}
-            />
+    // EL WRAPPER CONTROLA EL SCROLL, EL SOBRE Y LA MÚSICA
+      <main className="min-h-screen w-full bg-transparent">
+        <EnvelopeOverlay />
+        {/* --- CAPA 0: FONDO FIJO (HERO) --- */}
+        <div className="fixed top-0 left-0 w-full h-[100svh] z-0">
+           <Hero names={eventNames} date={eventDate} />
         </div>
 
-        {/* VENTANA AL REVEAL: Espacio transparente para ver la foto de ScenicReveal */}
-        <div className="h-[85vh] w-full bg-transparent pointer-events-none" />
+        {/* --- CAPA 10: REVEAL SECRETO --- */}
+        <ScenicReveal />
 
-        {/* RESTO DE LA INFO */}
-        <div className="bg-white shadow-[0_-25px_60px_rgba(0,0,0,0.2)]">
-           <Timeline items={eventData?.timeline} />
-           <ParallaxDivider />
-           <GalleryMarquee />
-           <Location 
-              locationName={eventData?.locationName}
-              address={eventData?.address}
-              googleMapsUrl={eventData?.googleMapsUrl}
-              wazeUrl={eventData?.wazeUrl}
-            />
-           
-           <div className="bg-[#F9F5F0] py-16 shadow-inner relative">
-              <DressCode />
-              <div className="my-10" />
-              <Gifts gifts={eventData?.gifts} />
-           </div>
-           
-           <RSVPSection 
-             guestData={guestData} 
-             eventNames={eventNames} 
-             eventDate={eventDate} 
-           />
-           
-           <footer className="text-center py-12 bg-black text-white/60 text-sm">
-             <p className="font-serif text-2xl mb-2 text-white">{eventNames}</p>
-           </footer>
+        {/* --- CAPA 20: CONTENIDO SCROLLABLE --- */}
+        <div className="relative z-20 w-full">
+          
+          {/* ESPACIADOR TRANSPARENTE: Para ver el Hero al inicio */}
+          <div className="h-[100svh] w-full bg-transparent pointer-events-none" />
+
+          {/* CONTENIDO SÓLIDO */}
+          <div className="bg-wedding-light shadow-[0_-10px_30px_rgba(0,0,0,0.1)]">
+              <Introduction />
+              <Countdown targetDate={eventDate} names={eventNames} />
+              <FormalInvitation 
+                  guestName={guestData?.familyName || "Amigos"} 
+                  type={guestData?.type || 'family'}
+              />
+          </div>
+
+          {/* VENTANA AL REVEAL */}
+          <div className="h-[55vh] w-full bg-transparent pointer-events-none" />
+
+          {/* RESTO DE LA INFO */}
+          <div className="bg-white shadow-[0_-25px_60px_rgba(0,0,0,0.2)]">
+             <Timeline items={eventData?.timeline} />
+             <ParallaxDivider />
+             <GalleryMarquee />
+             <Location 
+                locationName={eventData?.locationName}
+                address={eventData?.address}
+                googleMapsUrl={eventData?.googleMapsUrl}
+                wazeUrl={eventData?.wazeUrl}
+              />
+             
+             <div className="bg-[#F9F5F0] py-16 shadow-inner relative">
+                <DressCode />
+                <div className="my-10" />
+                <Gifts gifts={eventData?.gifts} />
+             </div>
+             
+             <RSVPSection 
+               guestData={guestData} 
+               eventNames={eventNames} 
+               eventDate={eventDate} 
+             />
+             
+             <footer className="text-center py-12 bg-black text-white/60 text-sm">
+               <p className="font-serif text-2xl mb-2 text-white">{eventNames}</p>
+             </footer>
+          </div>
         </div>
-      </div>
-
-      {/* PLAYER FLOTANTE: Siempre visible encima de todo */}
-      <MusicPlayer />
-    </main>
+      </main>
   );
 }

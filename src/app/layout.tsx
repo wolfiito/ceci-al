@@ -1,17 +1,16 @@
 import type { Metadata } from "next";
-// Importamos Alex Brush y Open Sans con los pesos necesarios
 import { Alex_Brush, Open_Sans } from "next/font/google"; 
 import "./globals.css";
 import { cn } from "@/lib/utils";
+// IMPORTAR EL PROVIDER
+import { WeddingProvider } from "@/context/WeddingContext"; 
 
-// Alex Brush generalmente solo tiene peso 400, pero el navegador puede simular negrita
 const alexBrush = Alex_Brush({ 
   weight: ["400"], 
   subsets: ["latin"], 
   variable: "--font-serif", 
 });
 
-// Para Open Sans traemos 400 (normal), 600 (semi-gordo) y 800 (extra-gordo)
 const openSans = Open_Sans({ 
   weight: ["400", "600", "800"], 
   subsets: ["latin"], 
@@ -35,7 +34,10 @@ export default function RootLayout({
         alexBrush.variable,
         openSans.variable
       )}>
-        {children}
+        {/* ENVOLVER LOS CHILDREN CON EL PROVIDER */}
+        <WeddingProvider>
+          {children}
+        </WeddingProvider>
       </body>
     </html>
   );
