@@ -2,50 +2,54 @@
 
 import { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
-import Image from "next/image";
+import { BookHeart } from "lucide-react"; // Un icono sutil para acompañar
 
 export default function ParallaxDivider() {
   const containerRef = useRef(null);
+  
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start end", "end start"],
   });
 
-  // La imagen se moverá más lento que el scroll, creando profundidad
-  const y = useTransform(scrollYProgress, [0, 1], ["-20%", "20%"]);
-  
-  // Texto que aparece suavemente
-  const opacity = useTransform(scrollYProgress, [0.2, 0.5, 0.8], [0, 1, 0]);
+  // Animación suave: El texto flota ligeramente hacia arriba mientras haces scroll
+  const y = useTransform(scrollYProgress, [0, 1], [40, -40]);
+  const opacity = useTransform(scrollYProgress, [0.1, 0.5, 0.9], [0, 1, 0]);
 
   return (
-    <div 
+    <section 
       ref={containerRef} 
-      className="relative w-full h-[40vh] overflow-hidden flex items-center justify-center"
+      className="relative w-full py-32 flex items-center justify-center bg-transparent" // Fondo limpio
     >
-      {/* IMAGEN DE FONDO PARALLAX */}
+      {/* Contenedor "Menos Ancho" (max-w-md) para efecto columna elegante */}
       <motion.div 
-        style={{ y }} 
-        className="absolute inset-0 w-full h-[140%] -top-[20%]"
+        style={{ y, opacity }}
+        className="relative z-10 max-w-sm md:max-w-md px-8 text-center"
       >
-        <Image
-          src="/images/hero-1.jpg" // Usa una foto linda horizontal aquí
-          alt="Divider"
-          fill
-          className="object-cover object-center grayscale brightness-75"
-        />
+        {/* Adorno Superior */}
+        <div className="flex flex-col items-center gap-4 mb-8">
+            <div className="h-12 w-[1px] bg-wedding-secondary/60" />
+            <BookHeart size={20} className="text-wedding-secondary" strokeWidth={1} />
+        </div>
+
+        {/* Versículo Bíblico */}
+        <blockquote className="font-serif text-2xl md:text-3xl text-wedding-dark leading-relaxed italic mb-8">
+          &ldquo;Y sobre todas estas cosas vestíos de amor, que es el vínculo perfecto.&rdquo;
+        </blockquote>
+
+        {/* Cita */}
+        <cite className="not-italic">
+            <p className="font-sans text-xs font-bold tracking-[0.3em] text-wedding-primary uppercase">
+              Colosenses 3:14
+            </p>
+        </cite>
+        
+        {/* Adorno Inferior */}
+        <div className="flex flex-col items-center gap-4 mt-8">
+             <div className="h-12 w-[1px] bg-wedding-secondary/60" />
+        </div>
       </motion.div>
 
-      {/* TEXTO FLOTANTE */}
-      <motion.div 
-        style={{ opacity }}
-        className="relative z-10 text-center text-white px-4"
-      >
-        <p className="font-serif text-3xl md:text-5xl italic drop-shadow-lg">
-          &ldquo;Nuestros mejores momentos&rdquo;
-        </p>
-        <div className="w-12 h-[1px] bg-white/60 mx-auto mt-4" />
-      </motion.div>
-
-    </div>
+    </section>
   );
 }

@@ -1,8 +1,8 @@
-// src/components/Location.tsx
 "use client";
 
 import { motion } from "framer-motion";
-import { MapPin, Navigation, Map as MapIcon, ArrowRight } from "lucide-react";
+import Image from "next/image";
+import { MapPin, Navigation, Map as MapIcon, ExternalLink } from "lucide-react";
 
 interface LocationProps {
   locationName?: string;
@@ -11,98 +11,100 @@ interface LocationProps {
   wazeUrl?: string;
 }
 
-const EASE_LUXURY: [number, number, number, number] = [0.22, 1, 0.36, 1];
-
 export default function Location({ locationName, address, googleMapsUrl, wazeUrl }: LocationProps) {
-  // Si no hay datos, mostramos fallback para que el diseño no se rompa
   const venue = locationName || "Lugar del Evento";
   const venueAddress = address || "Dirección pendiente de confirmar";
 
   return (
-    <section className="relative py-32 px-4 overflow-hidden bg-wedding-dark text-wedding-light">
+    // FORZAMOS 'flex-row' SIEMPRE (incluso en mobile)
+    <section className="relative w-full min-h-[50vh] flex flex-row bg-white overflow-hidden">
       
-      {/* 1. FONDO CON TEXTURA Y GRADIENTE */}
-      <div className="absolute inset-0 opacity-20 bg-[url('/noise.png')] mix-blend-overlay pointer-events-none" />
-      <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/40 pointer-events-none" />
-      
-      {/* Círculo decorativo de fondo */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[140%] h-[140%] border border-white/5 rounded-full pointer-events-none" />
-
-      <div className="max-w-5xl mx-auto relative z-10 text-center">
+      {/* --- COLUMNA IZQUIERDA: IMAGEN (35% - 40% del ancho) --- */}
+      <div className="relative w-[90%] md:w-1/2 h-auto">
+        <Image
+          src="/images/fincaBonanza.jpg" 
+          alt="Venue"
+          fill
+          className="object-cover object-center"
+        />
+        {/* Degradado lateral para suavizar la unión con el blanco */}
+        <div className="absolute inset-0 bg-gradient-to-r from-black/40 to-transparent md:bg-transparent" />
         
+        {/* Texto vertical o pequeño sobre la imagen en mobile */}
+        <div className="absolute bottom-4 left-3 md:bottom-12 md:left-12 text-white z-10">
+             <div className="hidden md:block h-1 w-12 bg-wedding-secondary mb-4 rounded-full" />
+             {/* En mobile ocultamos el nombre grande de la foto para que no se corte, lo mostramos a la derecha */}
+             <h2 className="hidden md:block font-serif text-5xl leading-none">
+                {venue}
+             </h2>
+        </div>
+      </div>
+
+      {/* --- COLUMNA DERECHA: INFO (65% - 60% del ancho) --- */}
+      <div className="relative w-[65%] md:w-1/2 flex flex-col justify-center p-4 md:p-24 bg-white">
+        <h1>Ubicacion</h1>
+        {/* Decoración de fondo */}
+        <div className="absolute top-0 right-0 w-32 md:w-64 h-32 md:h-64 bg-wedding-secondary/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none" />
+
         <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 1.2, ease: EASE_LUXURY }}
-          className="space-y-12"
+            initial={{ opacity: 0, x: 10 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            className="w-full"
         >
-          {/* ICONO FLOTANTE */}
-          <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-white/5 border border-white/10 backdrop-blur-sm mb-6 shadow-2xl">
-            <MapPin className="w-8 h-8 text-wedding-secondary" strokeWidth={1.5} />
-          </div>
-
-          {/* TEXTOS DE ALTO CONTRASTE */}
-          <div className="space-y-4">
-            {/* Cursiva elegante (Firma) */}
-            <h2 className="font-serif text-5xl md:text-7xl text-wedding-secondary opacity-90 transform -rotate-2 origin-center">
-               Nos vemos en
-            </h2>
-            
-            {/* Nombre del lugar: GIGANTE y Sólido (Open Sans ExtraBold) */}
-            <h3 className="font-sans text-4xl md:text-6xl lg:text-7xl font-extrabold uppercase tracking-tight text-white drop-shadow-lg leading-tight max-w-4xl mx-auto">
-              {venue}
-            </h3>
-
-            {/* Dirección: Pequeña y técnica */}
-            <div className="pt-4 flex items-center justify-center gap-2 opacity-70">
-                <div className="h-[1px] w-8 bg-white/40" />
-                <p className="font-sans text-sm md:text-base font-light tracking-wide max-w-md">
-                  {venueAddress}
-                </p>
-                <div className="h-[1px] w-8 bg-white/40" />
+            {/* ICONO */}
+            <div className="inline-flex items-center justify-center w-8 h-8 md:w-16 md:h-16 rounded-full bg-wedding-light text-wedding-secondary mb-3 md:mb-8 border border-wedding-secondary/10">
+                <MapPin className="w-4 h-4 md:w-8 md:h-8" strokeWidth={1.5} />
             </div>
-          </div>
 
-          {/* BOTONES DE ACCIÓN (Estilo Countdown) */}
-          <div className="flex flex-col sm:flex-row justify-center items-center gap-6 pt-10">
-            {/* Botón Google Maps */}
-            {googleMapsUrl && (
-              <a 
-                href={googleMapsUrl} 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="group relative w-full sm:w-auto overflow-hidden rounded-full bg-white text-wedding-dark px-10 py-5 font-bold transition-all hover:scale-105 shadow-[0_0_40px_-10px_rgba(255,255,255,0.3)]"
-              >
-                <span className="relative flex items-center justify-center gap-3">
-                  <MapIcon size={20} />
-                  <span className="font-sans text-xs uppercase tracking-[0.2em]">Ver en Mapa</span>
-                  <ArrowRight size={16} className="-ml-1 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all" />
-                </span>
-              </a>
-            )}
+            {/* Título (visible en mobile aquí) */}
+            <h3 className="font-serif text-xl md:text-4xl text-wedding-dark mb-2 md:mb-6 leading-tight">
+                {venue}
+            </h3>
             
-            {/* Botón Waze (Outline) */}
-            {wazeUrl && (
-              <a 
-                href={wazeUrl} 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="group relative w-full sm:w-auto overflow-hidden rounded-full border border-white/30 px-10 py-5 text-white transition-all hover:border-white"
-              >
-                {/* Fondo hover */}
-                <div className="absolute inset-0 w-full h-full bg-white/10 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
+            {/* Dirección */}
+            <p className="font-sans text-wedding-dark/60 text-[10px] md:text-lg mb-4 md:mb-10 leading-snug">
+                {venueAddress}
+            </p>
+
+            {/* BOTONES COMPACTOS */}
+            <div className="flex flex-col gap-2 md:gap-4 max-w-[200px] md:max-w-none">
                 
-                <span className="relative flex items-center justify-center gap-3">
-                  <Navigation size={20} />
-                  <span className="font-sans text-xs uppercase tracking-[0.2em]">Ir con Waze</span>
-                </span>
-              </a>
-            )}
-          </div>
+                {/* Google Maps */}
+                {googleMapsUrl && (
+                    <a 
+                        href={googleMapsUrl} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="group flex items-center gap-2 md:gap-3 bg-wedding-dark text-white px-3 py-2 md:px-8 md:py-4 rounded-lg md:rounded-xl shadow-md active:scale-95 transition-all"
+                    >
+                        <MapIcon className="w-3 h-3 md:w-[18px] md:h-[18px]" />
+                        <span className="font-sans text-[9px] md:text-xs font-bold uppercase tracking-widest whitespace-nowrap">
+                            Ver Mapa
+                        </span>
+                        <ExternalLink className="w-3 h-3 md:w-4 md:h-4 opacity-50 ml-auto" />
+                    </a>
+                )}
+
+                {/* Waze */}
+                {wazeUrl && (
+                    <a 
+                        href={wazeUrl} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="group flex items-center gap-2 md:gap-3 bg-[#F9F5F0] text-wedding-dark border border-wedding-dark/5 px-3 py-2 md:px-8 md:py-4 rounded-lg md:rounded-xl active:scale-95 transition-all"
+                    >
+                        <Navigation className="w-3 h-3 md:w-[18px] md:h-[18px] text-[#33CCFF]" />
+                        <span className="font-sans text-[9px] md:text-xs font-bold uppercase tracking-widest whitespace-nowrap">
+                            Ir con Waze
+                        </span>
+                    </a>
+                )}
+            </div>
 
         </motion.div>
       </div>
+
     </section>
   );
 }

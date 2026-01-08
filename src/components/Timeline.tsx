@@ -1,129 +1,153 @@
 "use client";
 
-import { useRef } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { useRef, useState, useEffect } from "react";
+import { motion, useScroll, useTransform, useMotionValueEvent } from "framer-motion";
 import { 
   Church, GlassWater, Music, Utensils, PartyPopper, 
   Moon, Camera, MapPin, Heart, Bus, Coffee, Star, Sparkles,
   LucideIcon 
 } from "lucide-react";
+import { TimelineItem as TimelineItemType } from "@/types/wedding";
 
 // 1. INTERFACES
-interface TimelineItemData {
-  id: string;
-  time: string;
-  title: string;
-  description: string;
-  icon: string;
-}
-
 interface TimelineProps {
-  items?: TimelineItemData[];
+  items?: TimelineItemType[];
 }
 
-// Mapeo de iconos
 const ICON_MAP: Record<string, LucideIcon> = {
   Church, GlassWater, Music, Utensils, PartyPopper, 
   Moon, Camera, MapPin, Heart, Bus, Coffee, Star, Sparkles
 };
 
-// Componente Interno Rediseñado
-const TimelineItem = ({ data, index, isLast }: { data: TimelineItemData, index: number, isLast: boolean }) => {
+// 2. COMPONENTE ITEM (SENSOR AJUSTADO: LIGERO ADELANTO)
+const TimelineItem = ({ data, index, isLast }: { data: TimelineItemType, index: number, isLast: boolean }) => {
     const IconComponent = ICON_MAP[data.icon] || Star;
+    const itemRef = useRef<HTMLDivElement>(null);
+    const [isActive, setIsActive] = useState(false);
+
+    const { scrollY } = useScroll();
+
+    const checkVisibility = () => {
+        if (!itemRef.current) return;
+        const rect = itemRef.current.getBoundingClientRect();
+
+        const triggerPoint = window.innerHeight * 0.60;
+
+        const elementCenter = rect.top + (rect.height / 2);
+        
+        const isPastCenter = elementCenter < triggerPoint;
+
+        if (isPastCenter !== isActive) {
+            setIsActive(isPastCenter);
+        }
+    };
+
+    useMotionValueEvent(scrollY, "change", checkVisibility);
+
+    useEffect(() => {
+        checkVisibility();
+        window.addEventListener("resize", checkVisibility);
+        return () => window.removeEventListener("resize", checkVisibility);
+    }, []); 
 
     return (
-        <motion.div 
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-50px" }}
-            transition={{ duration: 0.8, delay: index * 0.1 }}
-            className="relative grid grid-cols-[80px_auto] sm:grid-cols-[160px_auto] gap-6 sm:gap-12 py-8 group"
-        >
-            {/* LÍNEA CONECTORA (Fondo gris tenue) */}
-            {!isLast && (
-                <div className="absolute left-[80px] sm:left-[160px] top-12 bottom-0 w-[1px] -ml-[0.5px] bg-wedding-dark/10 z-0" />
-            )}
+        <div className="relative grid grid-cols-[60px_auto] sm:grid-cols-[120px_auto] gap-4 sm:gap-8 py-10 group">
             
-            {/* COLUMNA IZQUIERDA: HORA */}
-            <div className="text-right flex flex-col items-end pt-2">
-                <span className="font-sans font-extrabold text-2xl sm:text-4xl text-wedding-dark leading-none tracking-tight">
-                    {data.time}
-                </span>
-                <span className="hidden sm:block text-[10px] uppercase tracking-widest text-wedding-primary font-bold mt-1">
-                    Horas
-                </span>
+            {/* LÍNEA BASE (Gris inactiva) */}
+            
+            {/* COLUMNA IZQUIERDA: BOLA E ICONO */}
+            <div className="relative flex justify-center items-start pt-1 z-20">
+                <motion.div 
+                    ref={itemRef} 
+                    animate={{ 
+                        backgroundColor: isActive ? "var(--color-wedding-secondary)" : "#ffffff",
+                        borderColor: "var(--color-wedding-secondary)",
+                        scale: isActive ? 1.15 : 1,
+                    }}
+                    transition={{ duration: 0.3 }}
+                    className="w-16 h-16 sm:w-20 sm:h-20 border-[3px] rounded-full flex items-center justify-center shadow-lg bg-white relative"
+                >
+                    <motion.div
+                        animate={{ color: isActive ? "#ffffff" : "var(--color-wedding-secondary)" }}
+                        transition={{ duration: 0.3 }}
+                    >
+                        <IconComponent className="w-6 h-6 sm:w-10 sm:h-10" strokeWidth={1.5} />
+                    </motion.div>
+                </motion.div>
             </div>
 
-            {/* NODO CENTRAL (ICONO) - Se posiciona absolutamente en el centro del gap */}
-            <div className="absolute left-[80px] sm:left-[160px] top-0 -translate-x-1/2 mt-1 z-10">
-                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-white border border-wedding-secondary/30 rounded-full flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
-                    <IconComponent size={20} className="text-wedding-primary" strokeWidth={1.5} />
+            {/* COLUMNA DERECHA: TEXTO */}
+            <motion.div 
+                className={`flex flex-col justify-start pt-2 sm:pt-4 transition-opacity duration-500 ${isActive ? 'opacity-100' : 'opacity-40'}`}
+            >
+                <div className="flex items-center gap-2 mb-1">
+                    <span className={`font-sans font-bold text-lg sm:text-xl tracking-widest uppercase transition-colors duration-300 ${isActive ? 'text-wedding-primary' : 'text-wedding-dark/40'}`}>
+                        {data.time}
+                    </span>
+                    <span className="text-[10px] sm:text-xs font-bold text-wedding-secondary uppercase tracking-[0.2em]">
+                        Horas
+                    </span>
                 </div>
-            </div>
 
-            {/* COLUMNA DERECHA: CONTENIDO */}
-            <div className="pt-1 pb-8 pl-6 sm:pl-0">
-                <h3 className="font-serif text-3xl sm:text-5xl text-wedding-dark leading-none mb-3 transform -rotate-1 origin-left">
+                <h3 className="font-serif text-3xl sm:text-5xl text-wedding-dark leading-none mb-3">
                     {data.title}
                 </h3>
-                <p className="font-sans text-sm sm:text-base text-wedding-dark/60 leading-relaxed font-medium max-w-md">
+
+                <p className="font-sans text-sm sm:text-base text-wedding-dark/60 leading-relaxed font-medium max-w-lg">
                     {data.description}
                 </p>
-            </div>
+            </motion.div>
 
-        </motion.div>
+        </div>
     );
 };
 
 export default function Timeline({ items = [] }: TimelineProps) {
-  const containerRef = useRef(null);
+  const timelineWrapperRef = useRef(null);
+  
   const { scrollYProgress } = useScroll({
-    target: containerRef,
+    target: timelineWrapperRef,
     offset: ["start center", "end center"],
   });
 
-  // Animación de la línea de progreso (se llena de color)
   const lineHeight = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
 
   if (items.length === 0) return null;
 
   return (
-    <section ref={containerRef} className="relative py-24 md:py-32 px-4 overflow-hidden bg-white">
+    <section className="relative py-24 md:py-40 px-4 overflow-hidden bg-white">
       
-      {/* Elementos decorativos de fondo */}
-      <div className="absolute top-0 right-0 w-64 h-64 bg-wedding-secondary/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none" />
+      {/* Fondos */}
+      <div className="absolute top-0 right-0 w-64 h-64 bg-wedding-secondary/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none" />
       <div className="absolute bottom-0 left-0 w-96 h-96 bg-wedding-primary/5 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2 pointer-events-none" />
 
       <div className="max-w-4xl mx-auto relative z-10">
          
-         {/* CABECERA */}
-         <div className="text-center mb-24">
+         <div className="text-center mb-32">
             <motion.div 
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
             >
-                <p className="font-sans text-xs font-bold tracking-[0.4em] text-wedding-primary uppercase mb-4">
+                <p className="font-sans text-sm font-bold tracking-[0.4em] text-wedding-secondary uppercase mb-6">
                     Cronograma del Evento
                 </p>
-                <h2 className="font-serif text-6xl md:text-8xl text-wedding-dark drop-shadow-sm">
+                <h2 className="font-serif text-7xl md:text-9xl text-wedding-dark drop-shadow-sm">
                     Itinerario
                 </h2>
             </motion.div>
          </div>
 
-         {/* CONTENEDOR DE LA LÍNEA DE TIEMPO */}
-         <div className="relative">
+         <div ref={timelineWrapperRef} className="relative pb-24 pl-4 sm:pl-10"> 
             
-            {/* LÍNEA DE PROGRESO GLOBAL (Color activo que baja) */}
-            {/* Se posiciona igual que la línea de los items para superponerse */}
+            {/* LÍNEA ROSA VIVA */}
             <motion.div 
                 style={{ height: lineHeight }}
-                className="absolute left-[80px] sm:left-[160px] top-12 w-[2px] -ml-[1px] bg-wedding-primary/40 z-0 origin-top"
+                className="absolute left-[46px] sm:left-[60px] top-2 w-[4px] -ml-[1.5px] bg-wedding-secondary z-10 origin-top"
             />
 
             <div className="space-y-0">
-                {items.map((event: TimelineItemData, index: number) => (
+                {items.map((event, index) => (
                     <TimelineItem 
                         key={event.id} 
                         data={event} 
