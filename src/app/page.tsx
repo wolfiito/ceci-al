@@ -6,7 +6,6 @@ import { GuestData, EventData } from "@/types/wedding";
 import Hero from "@/components/Hero";
 import Introduction from "@/components/Introduction";
 import Countdown from "@/components/Countdown";
-// MusicPlayer se ha movido dentro de ClientWrapper, ya no lo importamos aquí directamente.
 import Timeline from "@/components/Timeline";
 import GalleryMarquee from "@/components/GalleryMarquee";
 import Location from "@/components/Location";
@@ -17,6 +16,7 @@ import FormalInvitation from "@/components/FormalInvitation";
 import ParallaxDivider from "@/components/ParallaxDivider";
 import ScenicReveal from "@/components/ScenicReveal";
 import EnvelopeOverlay from "@/components/EnvelopeOverlay";
+import DigitalTicket from "@/components/DigitalTicket"; // ✅ Importado correctamente
 
 // --- HELPER ---
 const sanitizeData = (data: DocumentData) => {
@@ -54,7 +54,7 @@ export default async function Home({ searchParams }: PageProps) {
   const resolvedParams = await searchParams;
   const ticketId = typeof resolvedParams.ticket === "string" ? resolvedParams.ticket : undefined;
   const data = await getInvitationData(ticketId);
-
+  
   // Manejo de estado vacío
   if (!data) {
     return (
@@ -90,10 +90,20 @@ export default async function Home({ searchParams }: PageProps) {
           <div className="bg-wedding-light shadow-[0_-10px_30px_rgba(0,0,0,0.1)]">
               <Introduction />
               <Countdown targetDate={eventDate} names={eventNames} />
+              
               <FormalInvitation 
                   guestName={guestData?.familyName || "Amigos"} 
                   type={guestData?.type || 'family'}
               />
+
+              {/* ✅ AQUÍ AGREGAMOS EL TICKET DIGITAL */}
+              {/* Se mostrará solo si tenemos los datos del invitado */}
+              {guestData && (
+                <div className="pb-10"> {/* Un poco de padding extra */}
+                  <DigitalTicket guest={guestData} />
+                </div>
+              )}
+
           </div>
 
           {/* VENTANA AL REVEAL */}
