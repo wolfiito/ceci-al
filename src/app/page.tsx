@@ -95,6 +95,7 @@ export default async function Home({ searchParams }: PageProps) {
                   guestName={guestData?.familyName || "Amigos"} 
                   type={guestData?.type || 'family'}
               />
+
           </div>
 
           {/* VENTANA AL REVEAL */}
