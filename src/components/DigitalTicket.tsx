@@ -93,11 +93,8 @@ export default function DigitalTicket({ guest }: DigitalTicketProps) {
                 >
                   {/* Nombre */}
                   <div className="flex flex-col pb-1">
-                    <span className="font-serif text-xl text-stone-800 leading-none">
+                    <span className=" text-l text-stone-800 leading-none">
                       {member.name}
-                    </span>
-                    <span className="text-[10px] text-stone-400 uppercase tracking-wider font-medium mt-1">
-                      Invitado
                     </span>
                   </div>
 
