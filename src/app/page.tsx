@@ -95,15 +95,6 @@ export default async function Home({ searchParams }: PageProps) {
                   guestName={guestData?.familyName || "Amigos"} 
                   type={guestData?.type || 'family'}
               />
-
-              {/* ✅ AQUÍ AGREGAMOS EL TICKET DIGITAL */}
-              {/* Se mostrará solo si tenemos los datos del invitado */}
-              {guestData && (
-                <div className="pb-10"> {/* Un poco de padding extra */}
-                  <DigitalTicket guest={guestData} />
-                </div>
-              )}
-
           </div>
 
           {/* VENTANA AL REVEAL */}
