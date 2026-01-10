@@ -67,9 +67,7 @@ export default async function Home({ searchParams }: PageProps) {
 
   return (
     <main className="w-full bg-transparent relative">
-        <EnvelopeOverlay />
-
-        {/* --- CAPA 0: ESQUELETO DEL FONDO (Fijo) --- */}
+        <EnvelopeOverlay /> 
         <GlobalBackground />
 
         {/* --- CAPA 1: CONTENIDO SCROLLABLE --- */}
