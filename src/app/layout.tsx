@@ -29,7 +29,7 @@ export const metadata: Metadata = {
   // Recuerda configurar tu URL final aquí antes de subir a producción
   metadataBase: new URL(
     process.env.NEXT_PUBLIC_SITE_URL 
-    ? `https://${process.env.NEXT_PUBLIC_SITE_URL}` 
+    ? `${process.env.NEXT_PUBLIC_SITE_URL}` 
     : 'https://invi-al.tazcito.com'
   ),
 
