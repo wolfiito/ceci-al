@@ -1,29 +1,25 @@
 "use client";
 
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Music, Pause, Volume2 } from "lucide-react";
+import { Music, Pause, Volume2, VolumeX } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useWedding } from "@/context/WeddingContext"; // Usamos el hook
+import { useWedding } from "@/context/WeddingContext";
 
 export default function MusicPlayer() {
-  const { isPlaying, togglePlay, isEnvelopeOpen } = useWedding(); // Consumimos el estado global
+  const { isPlaying, togglePlay, isEnvelopeOpen } = useWedding();
   const audioRef = useRef<HTMLAudioElement>(null);
+  const [isHovered, setIsHovered] = useState(false);
 
-  // Efecto para manejar Play/Pause basado en el estado global
   useEffect(() => {
     if (!audioRef.current) return;
-
     if (isPlaying) {
-      // Intentamos reproducir. Los navegadores modernos requieren interacción previa,
-      // la cual ocurrirá cuando el usuario haga click en el sobre (openEnvelope).
       audioRef.current.play().catch((e) => console.log("Autoplay prevent:", e));
     } else {
       audioRef.current.pause();
     }
   }, [isPlaying]);
 
-  // Opcional: Solo mostrar el reproductor si el sobre ya se abrió
   if (!isEnvelopeOpen) return null;
 
   return (
@@ -31,35 +27,59 @@ export default function MusicPlayer() {
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="fixed bottom-6 right-6 z-50"
+        transition={{ delay: 1 }} // Aparece un poco después de abrir el sobre
+        className="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-2"
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
       >
-        <audio 
-          ref={audioRef} 
-          src="/sound.mp3" // Asegúrate de que la ruta sea correcta (en public es /sound.mp3)
-          loop 
-        />
+        <audio ref={audioRef} src="/sound.mp3" loop />
+
+        {/* Etiqueta de canción (Solo visible en hover/tap) */}
+        <AnimatePresence>
+            {(isHovered || !isPlaying) && (
+                <motion.div
+                    initial={{ opacity: 0, x: 10, scale: 0.9 }}
+                    animate={{ opacity: 1, x: 0, scale: 1 }}
+                    exit={{ opacity: 0, x: 10, scale: 0.9 }}
+                    className="bg-black/80 backdrop-blur-md text-white text-[10px] uppercase tracking-widest py-1 px-3 rounded-md shadow-lg mb-1 whitespace-nowrap"
+                >
+                    {isPlaying ? "Reproduciendo Música" : "Música Pausada"}
+                </motion.div>
+            )}
+        </AnimatePresence>
 
         <motion.button
           onClick={togglePlay}
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.9 }}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          aria-label={isPlaying ? "Pausar música" : "Reproducir música"}
           className={cn(
-            "w-12 h-12 rounded-full flex items-center justify-center shadow-lg backdrop-blur-sm transition-colors duration-300",
+            "group relative w-12 h-12 rounded-full flex items-center justify-center shadow-2xl transition-all duration-500 overflow-hidden",
             isPlaying 
-              ? "bg-wedding-primary text-white" 
-              : "bg-white/80 text-wedding-dark hover:bg-white"
+              ? "bg-white/90 text-stone-900 border border-white/50" 
+              : "bg-black/40 text-white/80 backdrop-blur-sm border border-white/10 hover:bg-black/60"
           )}
         >
-          {isPlaying ? (
-            <div className="flex gap-0.5 items-end h-4">
-               {/* Pequeña animación de barras de sonido */}
-               <motion.div animate={{ height: [4, 16, 4] }} transition={{ repeat: Infinity, duration: 0.5 }} className="w-1 bg-white rounded-full" />
-               <motion.div animate={{ height: [8, 12, 8] }} transition={{ repeat: Infinity, duration: 0.7 }} className="w-1 bg-white rounded-full" />
-               <motion.div animate={{ height: [4, 14, 4] }} transition={{ repeat: Infinity, duration: 0.6 }} className="w-1 bg-white rounded-full" />
+            {/* Fondo animado sutil cuando suena */}
+            {isPlaying && (
+                <div className="absolute inset-0 bg-wedding-secondary/10 animate-pulse"></div>
+            )}
+
+            <div className="relative z-10">
+                {isPlaying ? (
+                     <div className="flex gap-[3px] items-end h-3">
+                        <motion.div animate={{ height: [4, 12, 4] }} transition={{ repeat: Infinity, duration: 0.8 }} className="w-[2px] bg-stone-800 rounded-full" />
+                        <motion.div animate={{ height: [8, 16, 6] }} transition={{ repeat: Infinity, duration: 0.6 }} className="w-[2px] bg-stone-800 rounded-full" />
+                        <motion.div animate={{ height: [4, 10, 4] }} transition={{ repeat: Infinity, duration: 0.9 }} className="w-[2px] bg-stone-800 rounded-full" />
+                        <motion.div animate={{ height: [2, 14, 6] }} transition={{ repeat: Infinity, duration: 0.7 }} className="w-[2px] bg-stone-800 rounded-full" />
+                     </div>
+                ) : (
+                    <VolumeX size={18} />
+                )}
             </div>
-          ) : (
-            <Volume2 size={20} />
-          )}
+          
+            {/* Ondas expansivas al hacer hover */}
+            <span className="absolute inset-0 rounded-full bg-white opacity-0 group-hover:animate-ping duration-1000"></span>
         </motion.button>
       </motion.div>
     </AnimatePresence>
