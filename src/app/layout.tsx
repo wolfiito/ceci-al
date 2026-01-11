@@ -42,7 +42,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Ceci & Alejandro | ¡Nos Casamos!",
     description: "Acompáñanos a celebrar nuestra unión. Toca para ver la invitación y confirmar tu asistencia.",
-    url: '/',
+    url: 'https://invi-al.tazcito.com',
     siteName: 'Boda Ceci & Alejandro',
     locale: 'es_MX',
     type: 'website',
