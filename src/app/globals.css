@@ -1,54 +1,77 @@
 @import "tailwindcss";
 
-/* CONFIGURACIÓN DEL TEMA (Tailwind v4)
-  Aquí definimos tus variables de diseño centralizadas.
-*/
 @theme {
-  /* 1. PALETA DE COLORES "BOSQUE ROMÁNTICO" */
+  /* PALETA DE COLORES "BOSQUE ROMÁNTICO" */
   --color-wedding-primary: #7A8B77;   /* Verde Palo */
   --color-wedding-secondary: #D4B9B9; /* Rosa Palo */
   --color-wedding-accent: #F5E6E8;    /* Crema Rosado */
   --color-wedding-dark: #2C3E2E;      /* Verde Bosque */
   --color-wedding-light: #F9F9F9;     /* Off-white */
 
-  /* 2. TIPOGRAFÍA 
-     Conectamos las variables de Next.js (Playfair/Lato) con las clases de Tailwind.
-  */
+  /* TIPOGRAFÍA */
   --font-serif: var(--font-serif); 
   --font-sans: var(--font-sans);
 
-  /* 3. ANIMACIONES PERSONALIZADAS */
+  /* ANIMACIONES */
   --animate-shimmer: shimmer 8s linear infinite;
-  --animate-pulse-slow: pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  --animate-float: float 6s ease-in-out infinite;
 
   @keyframes shimmer {
     0% { background-position: 200% center; }
     100% { background-position: -200% center; }
   }
-  
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
 }
 
 /* ESTILOS BASE */
 :root {
-  /* Variables base para componentes genéricos si los usas */
-  --background: #F9F9F9; /* Usamos tu wedding-light por defecto */
-  --foreground: #2C3E2E; /* Usamos tu wedding-dark por defecto */
+  --background: #F9F9F9;
+  --foreground: #2C3E2E;
 }
 
-/* Suavizado de fuentes para que luzcan elegantes (High-End feel)
-*/
+/* MEJORAS DE TIPOGRAFÍA Y SCROLL */
+html {
+  scroll-behavior: smooth;
+  /* Evita el rebote elástico en iOS que a veces rompe los efectos fixed */
+  overscroll-behavior-y: none; 
+}
+
 body {
   background-color: var(--color-wedding-light);
   color: var(--color-wedding-dark);
   font-family: var(--font-sans);
+  
+  /* Rendering de texto Premium (Más nítido) */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  
   @apply bg-wedding-light text-wedding-dark overflow-x-hidden;
   max-width: 100%;
   width: 100%;
   position: relative;
 }
 
-main {
-  @apply w-full max-w-full overflow-x-hidden;
+/* Títulos Serif Elegantes */
+h1, h2, h3, .font-serif {
+  font-family: var(--font-serif);
+  font-weight: 400; /* Alex Brush no necesita bold */
+}
+
+/* Ajustes para párrafos de lectura */
+p {
+  line-height: 1.6; /* Mejor legibilidad */
+}
+
+/* Utilidad para ocultar scrollbar pero permitir scroll */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }

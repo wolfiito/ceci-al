@@ -78,7 +78,7 @@ export default async function Home({ searchParams }: PageProps) {
 
             {/* 2. TARJETA SÓLIDA (Intro + Countdown + Invitación) */}
             {/* Nota: rounded-t crea el efecto de "hoja sobre el fondo" */}
-            <div className="bg-wedding-light shadow-2xl rounded-t-[2.5rem] overflow-hidden -mt-10 pb-16">
+            <div className="bg-wedding-light shadow-2xl overflow-hidden  pb-16">
                 <Introduction />
                 <Countdown targetDate={eventDate} names={eventNames} />
                 <FormalInvitation 

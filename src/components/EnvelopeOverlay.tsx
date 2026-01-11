@@ -2,10 +2,12 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useWedding } from "@/context/WeddingContext";
 
 export default function EnvelopeOverlay() {
   const [isOpen, setIsOpen] = useState(false);
   const [isFlapOpen, setIsFlapOpen] = useState(false); // Estado intermedio para la animación
+  const { togglePlay, setIsEnvelopeOpen } = useWedding();
 
   // Bloqueo de scroll
   useEffect(() => {
@@ -18,7 +20,13 @@ export default function EnvelopeOverlay() {
 
   const handleOpen = () => {
     setIsFlapOpen(true); // 1. Primero abrimos la solapa
-    
+    togglePlay();
+
+    try {
+        if (setIsEnvelopeOpen) setIsEnvelopeOpen(true);
+    } catch (e) {
+        console.log("Contexto sin setIsEnvelopeOpen", e);
+    }
     // 2. Esperamos a que la solapa abra para sacar el sobre completo
     setTimeout(() => {
         setIsOpen(true);

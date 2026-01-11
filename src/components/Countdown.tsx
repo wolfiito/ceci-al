@@ -104,7 +104,7 @@ export default function Countdown({ targetDate, names, locationName }: Countdown
                 src="/images/couple-seated.jpg" 
                 alt="Fondo Pareja"
                 fill
-                priority
+                priority={false}
                 className="w-full h-full object-cover object-center brightness-[0.70]" 
              />
           </motion.div>

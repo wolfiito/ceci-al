@@ -3,6 +3,7 @@ import { Alex_Brush, Open_Sans } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import { WeddingProvider } from "@/context/WeddingContext"; 
+import MusicPlayer from "@/components/MusicPlayer"; //
 
 const alexBrush = Alex_Brush({ 
   weight: ["400"], 
@@ -26,12 +27,7 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  // Recuerda configurar tu URL final aquí antes de subir a producción
-  metadataBase: new URL(
-    process.env.NEXT_PUBLIC_SITE_URL 
-    ? `${process.env.NEXT_PUBLIC_SITE_URL}` 
-    : 'https://invi-al.tazcito.com'
-  ),
+  metadataBase: new URL('https://invi-al.tazcito.com'),
 
   title: {
     default: "Ceci & Alejandro | Nuestra Boda",
@@ -48,21 +44,14 @@ export const metadata: Metadata = {
     type: 'website',
     images: [
       {
-        url: '/images/share.jpg', 
+        url: '/images/share-v2.jpg', 
         width: 1200,
         height: 630,
         alt: 'Ceci & Alejandro',
+        type: 'image/jpeg',
       },
     ],
   },
-  
-  twitter: {
-    card: 'summary_large_image',
-    title: "Ceci & Alejandro | Nuestra Boda",
-    description: "09 . 05 . 2026 - ¡Te esperamos!",
-    images: ['/images/share.jpg'],
-  },
-
   icons: {
     icon: '/favicon.ico', 
   },
@@ -81,6 +70,9 @@ export default function RootLayout({
         openSans.variable
       )}>
         <WeddingProvider>
+          {/* AQUÍ ESTÁ LA CORRECCIÓN: */}
+          <MusicPlayer /> 
+          
           {children}
         </WeddingProvider>
       </body>

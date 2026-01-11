@@ -8,12 +8,12 @@ const EASE_LUXURY: [number, number, number, number] = [0.22, 1, 0.36, 1];
 
 export default function Introduction() {
   return (
-    <section className="relative w-full z-20 py-8 px-2 bg-wedding-light flex justify-center items-center overflow-hidden">
-      
-      {/* 1. TEXTURA DE PAPEL (Noise) */}
-      <div className="absolute inset-0 pointer-events-none opacity-[0.08] mix-blend-multiply bg-[url('/noise.png')] z-0" />
+    <section className="relative w-full z-20 py-4 px-2 bg-wedding-light flex justify-center items-center overflow-hidden">
 
-      <motion.div 
+      {/* 1. TEXTURA DE PAPEL (Noise) */}
+      <div className="absolute inset-0 pointer-events-none opacity-[0.06] mix-blend-multiply bg-[url('/noise.png')] z-0" />
+
+      <motion.div
         initial={{ opacity: 0, y: 40 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: "-100px" }}
@@ -34,16 +34,13 @@ export default function Introduction() {
 
         {/* Frase Principal */}
         <h2 className="font-sans text-2xl md:text-5xl text-wedding-dark leading-tight md:leading-snug mb-10 italic">
-         &ldquo;El amor no es solo mirarse el uno al otro, es mirar juntos en la misma dirección&rdquo;
+         &ldquo;Dios tiene un tiempo perfecto para todo. En Su tiempo nos encontró, en Su amor nos unió y con Su bendición hoy emprendemos este viaje juntos&rdquo;
         </h2>
 
         {/* Autor con estilo minimalista */}
         <div className="flex items-center justify-center gap-6 opacity-80">
-            <div className="h-[1px] w-8 md:w-16 bg-wedding-primary/40"></div>
-            <p className="font-sans text-xs uppercase tracking-[0.1em] text-wedding-primary font-medium">
-                Antoine de Saint-Exupéry
-            </p>
-            <div className="h-[1px] w-8 md:w-16 bg-wedding-primary/40"></div>
+            <div className="h-[3px] w-32 md:w-16 bg-wedding-primary/40"></div>
+            
         </div>
       </motion.div>
     </section>
