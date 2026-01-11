@@ -41,14 +41,14 @@ export const metadata: Metadata = {
   
   openGraph: {
     title: "Ceci & Alejandro | ¡Nos Casamos!",
-    description: ". Toca para ver la invitación y confirmar tu asistencia.",
-    url: 'https://invi-al.tazcito.com',
+    description: "Acompáñanos a celebrar nuestra unión. Toca para ver la invitación y confirmar tu asistencia.",
+    url: '/',
     siteName: 'Boda Ceci & Alejandro',
     locale: 'es_MX',
     type: 'website',
     images: [
       {
-        url: '/images/hero.jpg', 
+        url: '/images/share.jpg', 
         width: 1200,
         height: 630,
         alt: 'Ceci & Alejandro',
@@ -60,11 +60,11 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: "Ceci & Alejandro | Nuestra Boda",
     description: "09 . 05 . 2026 - ¡Te esperamos!",
-    images: ['/images/hero.jpg'],
+    images: ['/images/share.jpg'],
   },
 
   icons: {
-    icon: 'images/hero.jpg', 
+    icon: '/favicon.ico', 
   },
 };
 
