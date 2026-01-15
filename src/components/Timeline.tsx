@@ -8,15 +8,19 @@ import {
   LucideIcon 
 } from "lucide-react";
 import { TimelineItem as TimelineItemType } from "@/types/wedding";
-
+import { IconBrindis } from "@/components/icons/CustomIcons";
 // 1. INTERFACES
 interface TimelineProps {
   items?: TimelineItemType[];
 }
 
-const ICON_MAP: Record<string, LucideIcon> = {
+type IconComponentType = LucideIcon | React.ComponentType<React.SVGProps<SVGSVGElement>>;
+
+const ICON_MAP: Record<string, IconComponentType> = {
   Church, GlassWater, Music, Utensils, PartyPopper, 
-  Moon, Camera, MapPin, Heart, Bus, Coffee, Star, Sparkles
+  Moon, Camera, MapPin, Heart, Bus, Coffee, Star, Sparkles,
+  
+  "IconBrindis": IconBrindis
 };
 
 // 2. COMPONENTE ITEM (DISEÑO ZIG-ZAG TOTAL)
