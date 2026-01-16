@@ -1,5 +1,4 @@
 "use client";
-
 import { useRef, useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { 
@@ -8,11 +7,19 @@ import {
   LucideIcon 
 } from "lucide-react";
 import { TimelineItem as TimelineItemType } from "@/types/wedding";
-import { IconBrindis } from "@/components/icons/CustomIcons";
+import { IconBrindis, IconAnillos, PngIcon, IconComida, IconFotos } from "@/components/icons/CustomIcons";
 // 1. INTERFACES
 interface TimelineProps {
   items?: TimelineItemType[];
 }
+
+const IconRecepcion = ({ size, className }: { size?: number | string, className?: string }) => (
+    <PngIcon 
+        src="@/components/assets/reception.png" 
+        size={size} 
+        className={className} 
+    />
+);
 
 type IconComponentType = LucideIcon | React.ComponentType<React.SVGProps<SVGSVGElement>>;
 
@@ -20,7 +27,11 @@ const ICON_MAP: Record<string, IconComponentType> = {
   Church, GlassWater, Music, Utensils, PartyPopper, 
   Moon, Camera, MapPin, Heart, Bus, Coffee, Star, Sparkles,
   
-  "IconBrindis": IconBrindis
+  "Brindis": IconBrindis,
+  "Fotos": IconFotos,
+  "Comida": IconComida,
+  "Recepcion": IconRecepcion,
+  "Ceremonia": IconAnillos
 };
 
 // 2. COMPONENTE ITEM (DISEÑO ZIG-ZAG TOTAL)
