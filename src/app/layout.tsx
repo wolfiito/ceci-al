@@ -42,6 +42,7 @@ export const metadata: Metadata = {
     template: "%s | Boda C&A"
   },
   description: "Nos casamos y queremos que seas parte de este nuevo capítulo. 09 de Mayo, 2026.",
+
   openGraph: {
     title: "Ceci & Alejandro | ¡Nos Casamos!",
     description: "Acompáñanos a celebrar nuestra unión. Toca para ver la invitación y confirmar tu asistencia.",
@@ -50,7 +51,7 @@ export const metadata: Metadata = {
     locale: 'es_MX',
     type: 'website',
     images: [
-      {
+      { 
         url: '/images/share-v2.jpg', 
         width: 1200,
         height: 630,
