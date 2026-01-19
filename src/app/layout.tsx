@@ -51,8 +51,9 @@ export const metadata: Metadata = {
     locale: 'es_MX',
     type: 'website',
     images: [
-      { 
-        url: '/images/share-v2.jpg', 
+      {
+        // CORRECCIÓN: Había dos URLs aquí. Dejé la v2 que es la más nueva.
+        url: '/images/share-v2.jpg',
         width: 1200,
         height: 630,
         alt: 'Ceci & Alejandro',
@@ -60,8 +61,12 @@ export const metadata: Metadata = {
       },
     ],
   },
+  
+  // He quitado la sección de 'facebook' como pediste. 
+  // Seguirá funcionando la previsualización en WhatsApp/FB sin problemas.
+
   icons: {
-    icon: '/favicon.ico', 
+    icon: '/favicon.ico',
   },
 };
 
@@ -74,12 +79,13 @@ export default function RootLayout({
     <html lang="es" className="scroll-smooth">
       <body className={cn(
         "min-h-screen bg-wedding-light font-sans antialiased text-wedding-dark selection:bg-wedding-secondary selection:text-white overflow-x-hidden",
+        // Inyectamos las 3 variables de fuente CSS
         alexBrush.variable,
         openSans.variable,
-        bodoni.variable 
+        bodoni.variable
       )}>
         <WeddingProvider>
-          <MusicPlayer /> 
+          <MusicPlayer />
           {children}
         </WeddingProvider>
       </body>
