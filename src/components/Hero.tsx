@@ -1,89 +1,108 @@
 "use client";
-import { motion, Variants } from "framer-motion";
 import { ChevronDown } from "lucide-react";
+import { motion, Variants } from "framer-motion";
 
 interface HeroProps {
   names: string;
   date: string;
+  startAnimation?: boolean; // <--- NUEVA PROP
 }
 
-const DUSTY_PINK_TEXT = "text-[#DCC5C5]"; 
-const ROSE_ACCENT = "#CFA8A8";
-const EASE_LUXURY: [number, number, number, number] = [0.22, 1, 0.36, 1];
+const DUSTY_PINK_TEXT = "text-[#DCC5C5]";
 
-export default function Hero({ names, date }: HeroProps) {
+// Le pongo true por defecto para que no se rompa si no se la pasas todavía
+export default function Hero({ names, date, startAnimation = false }: HeroProps) {
   const nameArray = names.split(/&| y /i).map(n => n.trim());
   const name1 = nameArray[0] || "Ceci";
   const name2 = nameArray[1] || "Alejandro";
   const formattedDate = date ? date.split("-").reverse().join(" . ") : "09 . 05 . 2026";
 
-  const floatingVariant: Variants = {
-    float: {
-      y: [0, -10, 0],
-      transition: { duration: 4, repeat: Infinity, ease: "easeInOut" }
+  const blurIn: Variants = {
+    hidden: { filter: "blur(10px)", opacity: 0, scale: 0.95 },
+    visible: { 
+        filter: "blur(0px)", 
+        opacity: 1, 
+        scale: 1,
+        transition: { duration: 1.2, ease: "easeOut" }
     }
   };
 
   return (
-    <div className="relative h-[100svh] w-full overflow-hidden flex flex-col justify-center items-center bg-transparent">
+    <div className="relative h-screen w-full overflow-hidden flex flex-col justify-center items-center bg-transparent">
       
-      {/* TEXTOS */}
-      <div className="relative z-10 w-full text-center flex flex-col items-center justify-center h-full pb-20">
-        <div className="flex flex-col items-center leading-[0.8] md:leading-[0.85] drop-shadow-lg">
+      <div className="relative z-10 w-full text-center flex flex-col items-center h-full">
+        <div className="flex flex-col items-center justify-center p-5">
           
-          {/* --- CORRECCIÓN AQUÍ: Agregamos className="relative" --- */}
-          <motion.div 
-            className="relative" // <--- ESTO SOLUCIONA EL DOBLE TEXTO
-            initial={{ opacity: 0, y: 40 }} 
-            animate={{ opacity: 1, y: 0 }} 
-            transition={{ duration: 1.2, ease: EASE_LUXURY, delay: 0.3 }}
+          {/* NOMBRE 1 */}
+          <motion.h1 
+            initial="hidden"
+            // AQUI ESTA EL CAMBIO: Solo anima a "visible" si startAnimation es true
+            animate={startAnimation ? "visible" : "hidden"} 
+            variants={blurIn}
+            className="relative z-10 font-(family-name:--font-alex) text-8xl text-[#F2F0E9] drop-shadow-sm pointer-events-none mt-14"
           >
-             {/* Capa 1: Mezcla con el fondo */}
-             <motion.h1 variants={floatingVariant} animate="float" className="font-serif text-[20vw] md:text-[9vw] text-white mix-blend-overlay opacity-90">
-                {name1}
-             </motion.h1>
-             {/* Capa 2: Texto sólido encima (Ahora sí se alinea con el de abajo) */}
-             <motion.h1 variants={floatingVariant} animate="float" className="font-serif text-[20vw] md:text-[9vw] text-[#F2F0E9] absolute top-0 left-0 w-full pointer-events-none">
-                {name1}
-             </motion.h1>
+            {name1}
+          </motion.h1>
+
+          {/* BLOQUE CENTRAL */}
+          <motion.div 
+            initial="hidden"
+            animate={startAnimation ? "visible" : "hidden"} 
+            variants={blurIn}
+            transition={{ delay: 0.3 }} 
+            className="relative z-0 flex items-center justify-center gap-4 w-full max-w-[90vw]" 
+            style={{ marginTop: '-35px' }}
+          >
+            <div className={`h-0.5 w-10 md:w-24 bg-[#CFA8A8]`} />
+            <span className={`font-(family-name:--font-bodoni) italic ${DUSTY_PINK_TEXT} text-4xl md:text-[10rem] select-none`}>
+              &
+            </span>
+            <div className={`h-0.5 w-10 md:w-24 bg-[#CFA8A8]`} />
           </motion.div>
 
-          {/* Ampersand */}
-          <motion.div initial={{ opacity: 0, scale: 0 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 1, ease: "backOut", delay: 0.8 }} className={`text-[6vw] md:text-[3vw] font-serif italic ${DUSTY_PINK_TEXT} my-4 md:my-2`}>
-            <span style={{ textShadow: `0 0 20px ${ROSE_ACCENT}80` }}>&</span>
-          </motion.div>
-
-          {/* Nombre 2 (Si quieres el mismo efecto doble, también ponle relative) */}
-          <motion.div 
-            className="relative"
-            initial={{ opacity: 0, y: 40 }} 
-            animate={{ opacity: 1, y: 0 }} 
-            transition={{ duration: 1.2, ease: EASE_LUXURY, delay: 0.5 }}
+          {/* NOMBRE 2 */}
+          <motion.h1 
+            initial="hidden"
+            animate={startAnimation ? "visible" : "hidden"} 
+            variants={blurIn}
+            transition={{ delay: 0.6 }} 
+            className="relative z-10 font-(family-name:--font-alex) text-8xl text-[#F2F0E9] drop-shadow-sm pointer-events-none" 
+            style={{ marginTop: '-35px' }}
           >
-            <motion.h1 variants={floatingVariant} animate="float" transition={{ delay: 0.5 }} className="font-serif text-[20vw] md:text-[9vw] text-[#F2F0E9]">
-                {name2}
-            </motion.h1>
-          </motion.div>
+            {name2}
+          </motion.h1>
+
         </div>
 
-        {/* Fecha */}
-        <motion.div initial={{ opacity: 0, letterSpacing: "0em" }} animate={{ opacity: 1, letterSpacing: "0.4em" }} transition={{ duration: 1.5, delay: 1.2 }} className="mt-12 md:mt-10">
-            <div className="flex items-center gap-4">
-               <div className={`h-[1px] w-8 md:w-16 bg-${ROSE_ACCENT} opacity-60`} />
-               <p className={`text-sm md:text-xl font-sans ${DUSTY_PINK_TEXT} uppercase tracking-[0.4em] font-light`}>{formattedDate}</p>
-               <div className={`h-[1px] w-8 md:w-16 bg-${ROSE_ACCENT} opacity-60`} />
-            </div>
+        {/* FECHA */}
+        <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={startAnimation ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+            transition={{ delay: 1, duration: 1 }}
+            className="md:mt-24 relative z-20"
+        >
+          <span className={`text-3xl md:text-lg font-bold font-(family-name:--font-bodoni) italic ${DUSTY_PINK_TEXT} uppercase`} style={{ marginTop: '-100px' }}>
+            {formattedDate}
+          </span>
         </motion.div>
       </div>
 
-      {/* Scroll Indicator */}
-      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1, delay: 2.5 }} className={`absolute bottom-8 z-10 ${DUSTY_PINK_TEXT} opacity-70`}>
-            <motion.div animate={{ y: [0, 8, 0] }} transition={{ repeat: Infinity, duration: 2.5, ease: "easeInOut" }}>
-                <div className="flex flex-col items-center gap-2">
-                    <span className="text-[10px] uppercase tracking-widest opacity-50">Scroll</span>
-                    <ChevronDown size={24} strokeWidth={1} />
+      {/* SCROLL */}
+      <motion.div 
+        initial={{ opacity: 0 }}
+        animate={startAnimation ? { opacity: 1 } : { opacity: 0 }}
+        transition={{ delay: 1.5 }}
+        className={`absolute bottom-8 z-30 ${DUSTY_PINK_TEXT} opacity-70`}
+      >
+           <motion.div
+             animate={{ y: [0, 6, 0] }} 
+             transition={{ repeat: Infinity, duration: 2.5, ease: "easeInOut" }}
+           >
+                <div className="flex flex-col items-center">
+                    <span className="text-l uppercase tracking-widest opacity-80">Scroll</span>
+                    <ChevronDown size={28} strokeWidth={3} />
                 </div>
-            </motion.div>
+           </motion.div>
       </motion.div>
     </div>
   );

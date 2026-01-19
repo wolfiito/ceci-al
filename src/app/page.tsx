@@ -3,7 +3,7 @@ import { db } from "@/lib/firebase";
 import { GuestData, EventData } from "@/types/wedding";
 
 // Components
-import Hero from "@/components/Hero";
+import HeroController from "@/components/HeroController"; // <--- IMPORTAMOS EL CONTROLADOR
 import Introduction from "@/components/Introduction";
 import Countdown from "@/components/Countdown";
 import Timeline from "@/components/Timeline";
@@ -14,8 +14,7 @@ import Gifts from "@/components/Gifts";
 import RSVPSection from "@/components/RSVPSection";
 import FormalInvitation from "@/components/FormalInvitation";
 import ParallaxDivider from "@/components/ParallaxDivider";
-import EnvelopeOverlay from "@/components/EnvelopeOverlay";
-import GlobalBackground from "@/components/GlobalBackground"; // <--- NUEVO
+import GlobalBackground from "@/components/GlobalBackground";
 
 const sanitizeData = (data: DocumentData) => {
   if (!data) return null;
@@ -67,18 +66,18 @@ export default async function Home({ searchParams }: PageProps) {
 
   return (
     <main className="w-full bg-transparent relative">
-        <EnvelopeOverlay /> 
+        {/* El GlobalBackground se queda aquí, independiente */}
         <GlobalBackground />
 
         {/* --- CAPA 1: CONTENIDO SCROLLABLE --- */}
         <div className="relative z-10">
             
-            {/* 1. HERO TEXT (Transparente para ver el fondo) */}
-            <Hero names={eventNames} date={eventDate} />
+            {/* 1. HERO CONTROLLER (Maneja Sobre + Hero + Animación) */}
+            {/* Sustituimos <EnvelopeOverlay> y <Hero> por esto: */}
+            <HeroController names={eventNames} date={eventDate} />
 
             {/* 2. TARJETA SÓLIDA (Intro + Countdown + Invitación) */}
-            {/* Nota: rounded-t crea el efecto de "hoja sobre el fondo" */}
-            <div className="bg-wedding-light shadow-2xl overflow-hidden  pb-16">
+            <div className="bg-wedding-light shadow-2xl overflow-hidden">
                 <Introduction />
                 <Countdown targetDate={eventDate} names={eventNames} />
                 <FormalInvitation 
@@ -88,7 +87,6 @@ export default async function Home({ searchParams }: PageProps) {
             </div>
 
             {/* 3. VENTANA DE REVEAL (Espacio Transparente) */}
-            {/* Aquí no hay nada, por lo que se ve el GlobalBackground (que ya cambió a Scenic) */}
             <div className="h-[100vh] w-full bg-transparent pointer-events-none" />
 
             {/* 4. TARJETA SÓLIDA 2 (Resto del contenido) */}
@@ -110,13 +108,13 @@ export default async function Home({ searchParams }: PageProps) {
                 </div>
                 
                 <RSVPSection 
-                guestData={guestData} 
-                eventNames={eventNames} 
-                eventDate={eventDate} 
+                  guestData={guestData} 
+                  eventNames={eventNames} 
+                  eventDate={eventDate} 
                 />
                 
                 <footer className="text-center py-12 bg-black text-white/60 text-sm">
-                <p className="font-serif text-2xl mb-2 text-white">{eventNames}</p>
+                  <p className="font-serif text-2xl mb-2 text-white">{eventNames}</p>
                 </footer>
             </div>
         </div>

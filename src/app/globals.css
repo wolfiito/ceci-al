@@ -8,10 +8,6 @@
   --color-wedding-dark: #2C3E2E;      /* Verde Bosque */
   --color-wedding-light: #F9F9F9;     /* Off-white */
 
-  /* TIPOGRAFÍA */
-  --font-serif: var(--font-serif); 
-  --font-sans: var(--font-sans);
-
   /* ANIMACIONES */
   --animate-shimmer: shimmer 8s linear infinite;
   --animate-float: float 6s ease-in-out infinite;
@@ -55,14 +51,6 @@ body {
   width: 100%;
   position: relative;
 }
-
-/* Títulos Serif Elegantes */
-h1, h2, h3, .font-serif {
-  font-family: var(--font-serif);
-  font-weight: 400; /* Alex Brush no necesita bold */
-}
-
-/* Ajustes para párrafos de lectura */
 p {
   line-height: 1.6; /* Mejor legibilidad */
 }

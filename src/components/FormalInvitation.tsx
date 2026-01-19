@@ -8,14 +8,9 @@ interface FormalInvitationProps {
 }
 
 // COLORES
-const CARD_BG = "bg-[#FDFBF7]"; 
-const TEXT_PRIMARY = "text-wedding-dark"; 
-const TEXT_SECONDARY = "text-wedding-primary"; 
-const BORDER_COLOR = "border-wedding-primary/30"; 
-
-// --- CONFIGURACIÓN DE LA ANIMACIÓN ---
-// Usamos un ease "backOut" muy suave o un cubic-bezier para que se sienta "pesado" y elegante
-const EASE_HEAVY: [number, number, number, number] = [0.25, 0.1, 0.25, 1];
+const PAPER_BG = "bg-[#FDFBF7]";   
+const INK_DARK = "text-[#4A3B3B]"; 
+const ACCENT_GOLD = "text-[#CFA8A8]"; 
 
 export default function FormalInvitation({ guestName, type = 'family' }: FormalInvitationProps) {
   
@@ -26,74 +21,77 @@ export default function FormalInvitation({ guestName, type = 'family' }: FormalI
   };
 
   return (
-    // 1. PERSPECTIVA PROFUNDA (Clave para que se note la inclinación)
-    <section className="relative w-full py-32 md:py-48 px-4 flex justify-center items-center perspective-[1500px] overflow-hidden">
+    // 1. FORZAMOS EL COLOR VERDE AQUÍ CON STYLE (Infalible en iPhone)
+    // Agregamos z-20 para asegurar que esté encima de cualquier fondo global
+    <section 
+        className="relative w-full py-24 md:py-32 px-4 flex justify-center items-center overflow-hidden z-20"
+        style={{ backgroundColor: '#2C3E2E' }}
+    >
       
-      {/* Fondo sutil */}
-      <div className="absolute inset-0 opacity-30 bg-[radial-gradient(circle_at_center,rgba(212,175,55,0.15)_0%,transparent_70%)] pointer-events-none" />
-
-      {/* --- LA TARJETA QUE SE LEVANTA (/ -> |) --- */}
+      {/* TARJETA ANIMADA */}
       <motion.div 
-        initial={{ 
-            opacity: 0, 
-            rotateX: 45,   // <--- AQUÍ ESTÁ EL "/" (Inclinación fuerte hacia atrás)
-            y: 100         // Empieza un poco más abajo
-        }} 
-        whileInView={{ 
-            opacity: 1, 
-            rotateX: 0,    // <--- AQUÍ ESTÁ EL "|" (Vertical perfecta)
-            y: 0 
-        }}
-        viewport={{ once: true, margin: "-15%" }} // Se activa cuando entra bien en pantalla
-        transition={{ 
-            duration: 1.5, // Duración larga para que se aprecie el movimiento
-            ease: EASE_HEAVY 
-        }}
-        // "bottom" hace que gire desde abajo, como si se levantara del suelo
-        style={{ transformOrigin: "bottom center", transformStyle: "preserve-3d" }}
-        className={`relative max-w-3xl w-full ${CARD_BG} p-10 md:p-20 text-center rounded-[4px] shadow-[0_25px_50px_-12px_rgba(0,0,0,0.15)] border ${BORDER_COLOR}`}
+        initial={{ opacity: 0, y: 100, rotate: 6 }} 
+        whileInView={{ opacity: 1, y: 0, rotate: 0 }}
+        viewport={{ once: true, amount: 0.3 }} 
+        transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
+        className={`relative max-w-2xl w-full ${PAPER_BG} shadow-2xl rounded-[4px] overflow-hidden`}
       >
-        {/* Textura */}
-        <div className="absolute inset-0 pointer-events-none opacity-[0.05] mix-blend-multiply bg-[url('/noise.png')] z-0 rounded-[4px]" />
+        
+        {/* TEXTURA (Muy sutil) */}
+        <div className="absolute inset-0 pointer-events-none opacity-[0.03] bg-[url('/noise.png')] z-0" />
+        
+        {/* MARCO */}
+        <div className="absolute inset-3 border border-[#DCC5C5] opacity-50 z-0 pointer-events-none" />
+        <div className="absolute inset-4 border border-[#DCC5C5] opacity-30 z-0 pointer-events-none" />
 
-        {/* CONTENIDO INTERNO */}
-        {/* (Sin animaciones complejas dentro, para no distraer del movimiento principal de la tarjeta) */}
-        <div className="relative z-10 flex flex-col items-center">
+        {/* CONTENIDO */}
+        <div className="relative z-10 p-10 md:p-16 flex flex-col items-center text-center">
             
-            {/* Ornamento */}
-            <div className="mb-10 opacity-60">
-                <svg width="100" height="20" viewBox="0 0 100 20" fill="none" className={TEXT_SECONDARY}>
-                    <path d="M0 10H100" stroke="currentColor" strokeWidth="1" />
-                    <circle cx="50" cy="10" r="3" fill="currentColor" />
-                </svg>
+            {/* Encabezado */}
+            <div className="mb-8">
+                <span className={`font-sans text-[10px] md:text-xs ${INK_DARK} uppercase tracking-[0.3em] opacity-60`}>
+                    La Boda de
+                </span>
+                <h3 className={`font-serif text-2xl md:text-3xl ${INK_DARK} mt-2`}>
+                    Ceci & Alejandro
+                </h3>
             </div>
 
-            <h3 className={`font-serif text-xl md:text-3xl ${TEXT_PRIMARY} italic leading-relaxed max-w-xl mb-8`}>
-                "Tenemos el honor de celebrar el pacto de nuestro amor ante Dios..."
-            </h3>
+            {/* Cuerpo */}
+            <div className="w-full py-6 border-t border-b border-[#E8E4D8] mb-8 relative">
+                <div className="absolute top-[-3px] left-1/2 -translate-x-1/2 w-1.5 h-1.5 bg-[#DCC5C5] rounded-full" />
+                <div className="absolute bottom-[-3px] left-1/2 -translate-x-1/2 w-1.5 h-1.5 bg-[#DCC5C5] rounded-full" />
 
-            <div className="py-6 w-full mb-8">
-                {type === 'family' && (
-                <p className={`font-sans text-xs ${TEXT_PRIMARY} uppercase tracking-[0.3em] mb-3 opacity-60`}>
-                    Familia
+                <p className={`font-serif text-lg ${INK_DARK} italic mb-4 opacity-80`}>
+                    Tenemos el honor de invitar a:
                 </p>
-                )}
-                {/* Nombre */}
-                <div className={`font-serif text-5xl md:text-7xl ${TEXT_PRIMARY} leading-none whitespace-nowrap px-2`}>
-                    {guestName}
+
+                {/* NOMBRE */}
+                <div className="py-4">
+                    {type === 'family' && (
+                        <p className={`font-sans text-[10px] ${ACCENT_GOLD} uppercase tracking-[0.4em] mb-2`}>
+                            Familia
+                        </p>
+                    )}
+                    <h2 
+                        className={`font-alex text-5xl md:text-7xl ${INK_DARK} leading-none px-2`}
+                        style={{ fontFamily: 'var(--font-alex)' }}
+                    >
+                        {guestName}
+                    </h2>
                 </div>
-                <div className={`h-[1px] w-32 mx-auto mt-6 ${BORDER_COLOR}`} />
-            </div>
-            
-            <p className={`font-sans text-sm ${TEXT_PRIMARY} uppercase tracking-[0.2em] font-medium mb-12`}>
-                {getInvitationText()}
-            </p>
 
-            <div className="max-w-md mx-auto opacity-80 pt-8 border-t border-wedding-primary/20">
-                <p className={`font-serif text-lg ${TEXT_PRIMARY} italic`}>
-                    "Y si alguno prevaleciere contra uno, dos le resistirán; y cordón de tres dobleces no se rompe pronto."
+                <p className={`font-sans text-[10px] md:text-xs ${INK_DARK} uppercase tracking-[0.2em] mt-4 opacity-70`}>
+                    {getInvitationText()}
                 </p>
-                <p className={`font-sans text-[10px] ${TEXT_SECONDARY} uppercase tracking-widest mt-3 font-bold`}>
+            </div>
+
+            {/* Pie */}
+            <div className="max-w-md mx-auto opacity-70">
+                <p className={`font-serif text-sm md:text-base ${INK_DARK} italic leading-relaxed`}>
+                    "Cordón de tres dobleces no se rompe pronto."
+                </p>
+                <p className={`font-sans text-[9px] ${ACCENT_GOLD} uppercase tracking-widest mt-2`}>
                     Eclesiastés 4:12
                 </p>
             </div>

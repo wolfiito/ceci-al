@@ -7,6 +7,7 @@ import {
   LucideIcon 
 } from "lucide-react";
 import { TimelineItem as TimelineItemType } from "@/types/wedding";
+import imagenReception from "../../components/assets/reception.png"
 import { IconBrindis, IconAnillos, PngIcon, IconComida, IconFotos } from "@/components/icons/CustomIcons";
 // 1. INTERFACES
 interface TimelineProps {
@@ -15,7 +16,7 @@ interface TimelineProps {
 
 const IconRecepcion = ({ size, className }: { size?: number | string, className?: string }) => (
     <PngIcon 
-        src="@/components/assets/reception.png" 
+        src="../../components/assets/reception.png"
         size={size} 
         className={className} 
     />

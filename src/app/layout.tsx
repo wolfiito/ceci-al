@@ -1,15 +1,24 @@
 import type { Metadata, Viewport } from "next"; 
-import { Alex_Brush, Open_Sans } from "next/font/google"; 
+// 1. Importamos Playfair_Display
+import { Alex_Brush, Open_Sans, Bodoni_Moda } from "next/font/google"; 
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import { WeddingProvider } from "@/context/WeddingContext"; 
-import MusicPlayer from "@/components/MusicPlayer"; //
+import MusicPlayer from "@/components/MusicPlayer";
 
+// 2. Configuramos la fuente Cursiva (Para el &)
 const alexBrush = Alex_Brush({ 
   weight: ["400"], 
   subsets: ["latin"], 
-  variable: "--font-serif", 
+  variable: "--font-alex", 
   display: "swap", 
+});
+
+// 3. Configuramos la fuente Serif (Para los Nombres)
+const bodoni = Bodoni_Moda({
+  subsets: ["latin"],
+  variable: "--font-bodoni", // AHORA SÍ: Esta es una serif real
+  display: "swap",
 });
 
 const openSans = Open_Sans({ 
@@ -28,13 +37,11 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://invi-al.tazcito.com'),
-
   title: {
     default: "Ceci & Alejandro | Nuestra Boda",
     template: "%s | Boda C&A"
   },
   description: "Nos casamos y queremos que seas parte de este nuevo capítulo. 09 de Mayo, 2026.",
-  
   openGraph: {
     title: "Ceci & Alejandro | ¡Nos Casamos!",
     description: "Acompáñanos a celebrar nuestra unión. Toca para ver la invitación y confirmar tu asistencia.",
@@ -67,12 +74,11 @@ export default function RootLayout({
       <body className={cn(
         "min-h-screen bg-wedding-light font-sans antialiased text-wedding-dark selection:bg-wedding-secondary selection:text-white overflow-x-hidden",
         alexBrush.variable,
-        openSans.variable
+        openSans.variable,
+        bodoni.variable 
       )}>
         <WeddingProvider>
-          {/* AQUÍ ESTÁ LA CORRECCIÓN: */}
           <MusicPlayer /> 
-          
           {children}
         </WeddingProvider>
       </body>

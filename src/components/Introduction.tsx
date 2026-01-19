@@ -1,47 +1,83 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, Variants } from "framer-motion";
 import { Sparkles } from "lucide-react";
 
-// NUESTRA FIRMA DE SUAVIDAD
-const EASE_LUXURY: [number, number, number, number] = [0.22, 1, 0.36, 1];
+const containerVariants: Variants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.3,
+      delayChildren: 0.2,
+    },
+  },
+};
+
+const itemVariants: Variants = {
+  hidden: { 
+    opacity: 0, 
+    y: 30, 
+    filter: "blur(10px)" 
+  },
+  visible: { 
+    opacity: 1, 
+    y: 0, 
+    filter: "blur(0px)", 
+    transition: { 
+      duration: 1.2, 
+      ease: [0.22, 1, 0.36, 1] 
+    }
+  },
+};
 
 export default function Introduction() {
   return (
-    <section className="relative w-full z-20 py-4 px-2 bg-wedding-light flex justify-center items-center overflow-hidden">
-
-      {/* 1. TEXTURA DE PAPEL (Noise) */}
-      <div className="absolute inset-0 pointer-events-none opacity-[0.06] mix-blend-multiply bg-[url('/noise.png')] z-0" />
-
+    <section 
+        className="relative w-full z-20 py-24 px-6 flex justify-center items-center overflow-hidden"
+        style={{ backgroundColor: '#DCC5C5' }} 
+    >
       <motion.div
-        initial={{ opacity: 0, y: 40 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: "-100px" }}
-        transition={{ duration: 1.2, ease: EASE_LUXURY }}
-        className="max-w-3xl text-center relative z-10"
+        variants={containerVariants}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ 
+            once: true,    
+            amount: 0.2 // Bajé a 0.2 para que en móvil se active apenas asome
+        }} 
+        className="max-w-2xl text-center relative z-10"
       >
-        {/* Icono decorativo */}
-        <div className="flex justify-center mb-8">
-          <motion.div
-            initial={{ scale: 0, rotate: -45 }}
-            whileInView={{ scale: 1, rotate: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 1.2, ease: EASE_LUXURY, delay: 0.2 }}
-          >
-            <Sparkles className="text-wedding-secondary w-8 h-8" strokeWidth={1} />
-          </motion.div>
-        </div>
+        
+        {/* ICONO */}
+        <motion.div variants={itemVariants} className="flex justify-center mb-8">
+            <div className="relative">
+                <div className="absolute inset-0 bg-white/30 blur-xl rounded-full transform scale-150"></div>
+                <Sparkles className="text-white w-10 h-10 relative z-10 opacity-90" strokeWidth={1} />
+            </div>
+        </motion.div>
 
-        {/* Frase Principal */}
-        <h2 className="font-sans text-2xl md:text-5xl text-wedding-dark leading-tight md:leading-snug mb-10 italic">
-         &ldquo;Dios tiene un tiempo perfecto para todo. En Su tiempo nos encontró, en Su amor nos unió y con Su bendición hoy emprendemos este viaje juntos&rdquo;
-        </h2>
+        {/* FRASE */}
+        <motion.blockquote variants={itemVariants} className="mb-10">
+            <p className="font-serif text-2xl md:text-4xl text-[#4A3B3B] leading-relaxed italic drop-shadow-sm">
+                &ldquo;Dios tiene un tiempo perfecto para todo. En Su tiempo nos encontró, en Su amor nos unió y con Su bendición hoy emprendemos este viaje juntos&rdquo;
+            </p>
+        </motion.blockquote>
 
-        {/* Autor con estilo minimalista */}
-        <div className="flex items-center justify-center gap-6 opacity-80">
-            <div className="h-[3px] w-32 md:w-16 bg-wedding-primary/40"></div>
-            
-        </div>
+        {/* ORNAMENTO (SOLUCIÓN SVG) */}
+        {/* Usamos un gráfico vectorial en lugar de divs vacíos */}
+        <motion.div variants={itemVariants} className="flex justify-center items-center opacity-80">
+            <svg width="160" height="10" viewBox="0 0 160 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+                {/* Línea Izquierda */}
+                <line x1="0" y1="5" x2="70" y2="5" stroke="#4A3B3B" strokeWidth="1.5" />
+                
+                {/* Círculo Central */}
+                <circle cx="80" cy="5" r="3" fill="#4A3B3B" />
+                
+                {/* Línea Derecha */}
+                <line x1="90" y1="5" x2="160" y2="5" stroke="#4A3B3B" strokeWidth="1.5" />
+            </svg>
+        </motion.div>
+
       </motion.div>
     </section>
   );

@@ -6,17 +6,18 @@ import Image from "next/image";
 export default function GlobalBackground() {
   const { scrollY } = useScroll();
 
-  // LÓGICA DEL ESQUELETO:
-  // 0px - 800px: Estás viendo el Hero.
-  // 800px - 1000px: Mientras la tarjeta de "Introducción" tapa la pantalla,
-  //                 hacemos el cambio de imagen "detrás de cámaras".
-  // > 1000px: Cuando se abre la siguiente ventana, ya se ve el Scenic.
-  const scenicOpacity = useTransform(scrollY, [700, 1000], [0, 1]);
+  // LÓGICA DE APARICIÓN DEL FONDO
+  const scenicOpacity = useTransform(scrollY, [500, 1200], [0, 1]);
+
+  // LÓGICA PARALLAX DEL TEXTO (Ajustada para el bottom)
+  // Ahora empieza 60px más abajo y sube suavemente hasta su posición final (y:0)
+  // para dar un efecto de "asentarse" en el fondo.
+  const textY = useTransform(scrollY, [800, 1500], [60, 0]);
 
   return (
     <div className="fixed inset-0 w-full h-full -z-50 bg-[#1A2621]">
       
-      {/* --- CAPA 1: HERO (Siempre está abajo) --- */}
+      {/* --- CAPA 1: HERO --- */}
       <div className="absolute inset-0">
          <Image 
             src="/images/hero.jpg" 
@@ -25,13 +26,10 @@ export default function GlobalBackground() {
             className="object-cover object-center" 
             priority 
          />
-         {/* Filtros del Hero */}
-         <div className="absolute inset-0 bg-[#1A2621]/40 mix-blend-multiply" />
-         <div className="absolute top-0 left-0 w-full h-[40vh] bg-gradient-to-b from-[#1A2621] to-transparent opacity-80" />
-         <div className="absolute bottom-0 left-0 w-full h-[50vh] bg-gradient-to-t from-[#1A2621] via-[#1A2621]/50 to-transparent opacity-90" />
+         <div className="absolute inset-0 bg-[#1A2621]/50" />
       </div>
 
-      {/* --- CAPA 2: SCENIC (Aparece encima suavemente) --- */}
+      {/* --- CAPA 2: SCENIC + TEXTO --- */}
       <motion.div 
         style={{ opacity: scenicOpacity }} 
         className="absolute inset-0"
@@ -43,22 +41,35 @@ export default function GlobalBackground() {
             className="object-cover object-center" 
             priority 
          />
-         {/* Filtros del Scenic */}
+         
+         {/* Capas de oscurecimiento */}
          <div className="absolute inset-0 bg-[#1A2621]/40 mix-blend-multiply" />
-         <div className="absolute inset-0 bg-radial-gradient from-transparent via-[#1A2621]/10 to-[#1A2621]/90" />
+         {/* Gradiente inferior más fuerte para que el texto resalte ahí abajo */}
+         <div className="absolute inset-0 bg-gradient-to-t from-[#1A2621] via-transparent to-transparent" />
 
-         {/* TEXTO FIJO DEL SCENIC (Para que no se mueva) */}
-         <div className="absolute inset-0 flex items-end justify-center pb-24 md:pb-32 px-4">
-             <div className="text-center space-y-4">
-                 <h3 className="font-sans text-lg md:text-3xl text-[#DCC5C5] uppercase tracking-[0.3em] font-bold drop-shadow-md">
-                    Un nuevo capítulo comienza
+         {/* --- TEXTO FLOTANTE --- */}
+         <motion.div 
+            style={{ y: textY }}
+            // CAMBIO CLAVE: items-end (abajo) y pb-[10px] (separación exacta)
+            className="absolute inset-0 flex items-end justify-center px-6 z-10 pb-20"
+         >
+             <div className="text-center">
+                 {/* Cita Bíblica (Un poco más pequeña para el bottom) */}
+                 <h3 className="font-(family-name:--font-bodoni) text-4xl md:text-5xl text-[#F2F0E9] italic drop-shadow-xl mb-4">
+                    "Encontré al que ama mi alma"
                  </h3>
-                 <p className="font-serif text-5xl md:text-9xl text-white opacity-95 leading-none drop-shadow-2xl pb-4">
-                    Juntos
-                 </p>
-                 <div className="h-[1.5px] w-32 mx-auto bg-[#DCC5C5] opacity-80 rounded-full" />
+                 
+                 {/* Referencia y adorno */}
+                 <div className="flex flex-col items-center gap-3">
+                     <div className="w-12 h-[1.5px] bg-[#DCC5C5]" />
+                     <p className="font-sans text-sm md:text-xs text-[#DCC5C5] uppercase tracking-[0.4em] font-bold drop-shadow-md">
+                        Cantares 3:4
+                     </p>
+                     <div className="w-12 h-[1.5px] bg-[#DCC5C5]" />
+                 </div>
              </div>
-         </div>
+         </motion.div>
+
       </motion.div>
 
     </div>
