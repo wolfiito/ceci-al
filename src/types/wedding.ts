@@ -42,6 +42,7 @@ export interface GuestData {
   status: 'pending' | 'confirmed' | 'declined';
   hasArrived?: boolean;
   message?: string;
+  isLongDistance?: boolean;
 }
 
 export interface EventData {

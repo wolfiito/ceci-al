@@ -5,7 +5,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import dynamic from "next/dynamic"; 
 import { 
-  MessageCircle, CheckCircle2, Loader2, Heart, Users, UserX, UserCheck, Minus, Plus, Edit2 
+  MessageCircle, CheckCircle2, Loader2, Heart, Users, UserX, UserCheck, Minus, Plus, Edit2,
+  MonitorPlay // <--- IMPORTACIÓN NUEVA
 } from "lucide-react";
 import { doc, updateDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
@@ -23,11 +24,11 @@ const DigitalTicket = dynamic(() => import("@/components/DigitalTicket"), {
 
 interface RSVPSectionProps {
   guestData: GuestData | null;
-  eventNames: string;
-  eventDate: string;
+  eventNames?: string; // Los hice opcionales por si no los pasas
+  eventDate?: string;
 }
 
-// Interfaz para las opciones de confetti (por si faltan @types/canvas-confetti)
+// Interfaz para las opciones de confetti
 interface ConfettiOptions {
   particleCount: number;
   spread: number;
@@ -96,7 +97,6 @@ export default function RSVPSection({ guestData }: RSVPSectionProps) {
   };
 
   const triggerConfetti = async () => {
-    // Importación tipada
     const confettiModule = await import("canvas-confetti");
     const confetti = confettiModule.default;
 
@@ -143,7 +143,6 @@ export default function RSVPSection({ guestData }: RSVPSectionProps) {
 
       const newStatus = ticketCount > 0 ? 'confirmed' : 'declined';
 
-      // CORRECCIÓN: Tipado estricto Promise<void>[] en lugar de any
       const promises: Promise<void>[] = [
         updateDoc(guestRef, {
           status: newStatus,
@@ -161,7 +160,6 @@ export default function RSVPSection({ guestData }: RSVPSectionProps) {
       }
 
     } catch (error: unknown) {
-      // Manejo seguro de errores en bloques catch
       console.error("Error updating RSVP:", error);
     } finally {
       setIsConfirming(false);
@@ -231,10 +229,34 @@ export default function RSVPSection({ guestData }: RSVPSectionProps) {
                       Confirmar
                     </button>
                   </div>
+
+                  {/* --- NUEVO BLOQUE: MENSAJE PARA LOS QUE VIVEN LEJOS --- */}
+                  {/* Solo se muestra si el guestData tiene isLongDistance en true */}
+                  {guestData.isLongDistance && (
+                    <motion.div 
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="mt-6 p-4 bg-[#F2EFE9] border border-[#DCC5C5]/50 rounded-xl shadow-sm flex items-start gap-3"
+                    >
+                        <div className="mt-1 p-2 bg-white rounded-full text-wedding-secondary shrink-0">
+                            <MonitorPlay size={18} />
+                        </div>
+                        <div className="text-left">
+                            <h4 className="font-serif text-sm font-bold text-wedding-dark mb-1">
+                                Sabemos que estás lejos
+                            </h4>
+                            <p className="font-sans text-[11px] md:text-xs text-wedding-dark/70 leading-relaxed">
+                            Sabemos que estás lejos. Intentaremos habilitar una transmisión de la ceremonia para compartir este momento. En caso de no poder hacerlo, únete a nosotros en oración por el inicio de nuestro matrimonio y que honremos y glorifiquemos a Dios siempre.
+                            </p>
+                        </div>
+                    </motion.div>
+                  )}
+                  {/* ----------------------------------------------------- */}
+
                 </motion.div>
               )}
 
-              {/* PASO 2: Selección */}
+              {/* PASO 2: Selección (SIN CAMBIOS) */}
               {step === 2 && !isFinished && (
                 <motion.div 
                     key="step2" 
@@ -278,7 +300,7 @@ export default function RSVPSection({ guestData }: RSVPSectionProps) {
                 </motion.div>
               )}
 
-              {/* PASO 3: Mensaje */}
+              {/* PASO 3: Mensaje (SIN CAMBIOS) */}
               {step === 3 && !isFinished && (
                 <motion.div 
                     key="step3" 
@@ -307,7 +329,7 @@ export default function RSVPSection({ guestData }: RSVPSectionProps) {
                 </motion.div>
               )}
 
-              {/* FINAL: Ticket o Despedida */}
+              {/* FINAL: Ticket o Despedida (SIN CAMBIOS) */}
               {isFinished && (
                 <motion.div 
                     initial={{ opacity: 0, y: 20 }} 
@@ -338,13 +360,13 @@ export default function RSVPSection({ guestData }: RSVPSectionProps) {
                     </div>
                   ) : (
                     <div className="py-4">
-                       <div className="mx-auto w-16 h-16 bg-stone-100 rounded-full flex items-center justify-center mb-3">
-                          <Heart className="text-stone-400 w-8 h-8" />
-                       </div>
-                       <h3 className="font-serif text-xl text-stone-600">Gracias por avisar</h3>
-                       <p className="text-stone-500 mt-2 max-w-xs mx-auto text-sm">
-                         Lamentamos que no puedan acompañarnos, pero agradecemos sus buenos deseos.
-                       </p>
+                        <div className="mx-auto w-16 h-16 bg-stone-100 rounded-full flex items-center justify-center mb-3">
+                           <Heart className="text-stone-400 w-8 h-8" />
+                        </div>
+                        <h3 className="font-serif text-xl text-stone-600">Gracias por avisar</h3>
+                        <p className="text-stone-500 mt-2 max-w-xs mx-auto text-sm">
+                          Lamentamos que no puedan acompañarnos, pero agradecemos sus buenos deseos.
+                        </p>
                     </div>
                   )}
 

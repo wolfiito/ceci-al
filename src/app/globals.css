@@ -27,6 +27,10 @@
 :root {
   --background: #F9F9F9;
   --foreground: #2C3E2E;
+  /* Color para el sobre (un tono crema/papel) */
+  --envelope-color: #f8f5f0; 
+  /* Un color ligeramente más oscuro para la sombra interna del sobre */
+  --envelope-shadow: #ece6dc;
 }
 
 /* MEJORAS DE TIPOGRAFÍA Y SCROLL */

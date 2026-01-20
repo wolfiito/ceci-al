@@ -50,7 +50,7 @@ export default function MusicPlayer() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: 20 }}
                 transition={{ delay: 1, duration: 0.5 }}
-                className="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-2"
+                className="fixed bottom-6 right-6 z-10 flex flex-col items-end gap-2"
                 onMouseEnter={() => setIsHovered(true)}
                 onMouseLeave={() => setIsHovered(false)}
                 onClick={() => setIsHovered(!isHovered)} 
@@ -62,7 +62,7 @@ export default function MusicPlayer() {
                             initial={{ opacity: 0, x: 10, scale: 0.9 }}
                             animate={{ opacity: 1, x: 0, scale: 1 }}
                             exit={{ opacity: 0, x: 10, scale: 0.9 }}
-                           >
+                        >
                             {/* {isPlaying ? "Reproduciendo Música" : "Música Pausada"} */}
                         </motion.div>
                     )}

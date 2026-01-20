@@ -1,118 +1,127 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import Image from "next/image";
+import { cn } from "@/lib/utils";
 import { useWedding } from "@/context/WeddingContext";
 
-// 1. Definimos la interfaz para aceptar la función de aviso
 interface EnvelopeOverlayProps {
   onOpenComplete?: () => void;
 }
 
 export default function EnvelopeOverlay({ onOpenComplete }: EnvelopeOverlayProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const [isFlapOpen, setIsFlapOpen] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
+  
+  // 1. IMPORTAMOS EL CONTEXTO
   const { togglePlay, setIsEnvelopeOpen } = useWedding();
 
-  // Bloqueo de scroll
+  // Color del sobre (Crema suave)
+  const ENVELOPE_COLOR = "#F2EFE9"; 
   useEffect(() => {
-    if (!isOpen) {
+    // 1. Forzar que la página empiece arriba de todo
+    window.scrollTo(0, 0);
+
+    // 2. Evitar que el navegador recuerde la posición anterior al recargar
+    if ('scrollRestoration' in history) {
+      history.scrollRestoration = 'manual';
+    }
+
+    // 3. Bloquear el scroll si el sobre es visible
+    if (isVisible) {
       document.body.style.overflow = "hidden";
+      document.body.style.height = "100vh"; // Evita saltos en móviles
     } else {
-      document.body.style.overflow = "auto";
+      document.body.style.overflow = "unset";
+      document.body.style.height = "auto";
     }
-  }, [isOpen]);
 
+    // Limpieza: Si el componente se desmonta abruptamente, devolvemos el scroll
+    return () => {
+      document.body.style.overflow = "unset";
+      document.body.style.height = "auto";
+    };
+  }, [isVisible]);
+  
   const handleOpen = () => {
-    setIsFlapOpen(true); 
-    togglePlay();
+    setIsOpen(true);
+    togglePlay(); // Prende la música
 
-    try {
-        if (setIsEnvelopeOpen) setIsEnvelopeOpen(true);
-    } catch (e) {
-        console.log("Contexto sin setIsEnvelopeOpen", e);
-    }
+    // 2. AVISAMOS AL CONTEXTO QUE EL SOBRE SE ABRIÓ (Para que salga el botón de música)
+    if (setIsEnvelopeOpen) setIsEnvelopeOpen(true);
 
-    // 2. Esperamos a que la solapa abra para sacar el sobre completo
+    // 3. TIMEOUT PARA ANIMACIONES
     setTimeout(() => {
-        setIsOpen(true);
-        // AQUI ESTÁ LA MAGIA: Avisamos al padre que ya terminamos
-        if (onOpenComplete) onOpenComplete(); 
-    }, 1800); 
+        if (onOpenComplete) onOpenComplete();
+        setIsVisible(false);
+    }, 1500); // 1.5 segundos de animación
   };
 
+  if (!isVisible) return null;
+
   return (
-    <AnimatePresence>
-      {!isOpen && (
-        <motion.div
-          className="fixed inset-0 z-[100] flex items-center justify-center bg-[#151E1A] p-4"
-          exit={{ opacity: 0, transition: { duration: 1, ease: "easeInOut" } }}
-        >
-            {/* ... (Todo el contenido de tu sobre sigue igual aquí abajo) ... */}
-            <div className="relative w-full max-w-[340px] md:max-w-[400px] aspect-[4/3]">
-                
-                {/* 1. INTERIOR DEL SOBRE */}
-                <div className="absolute inset-0 bg-[#F2EFE9] rounded-sm shadow-2xl overflow-hidden border border-stone-300/50">
-                    <div className="absolute inset-0 opacity-10 bg-[url('/noise.png')]"></div>
-                </div>
-
-                {/* 2. LA TARJETA */}
-                <motion.div 
-                    className="absolute left-4 right-4 top-4 bottom-4 bg-white shadow-md flex flex-col items-center justify-center text-center p-4 border border-stone-100 z-10"
-                    initial={{ y: 0 }}
-                    animate={isFlapOpen ? { y: -100 } : { y: 0 }} 
-                    transition={{ delay: 0.4, duration: 0.8, ease: "easeInOut" }}
-                >
-                    <p className="font-serif text-sm text-stone-400 uppercase tracking-[0.2em] mb-2">Boda</p>
-                    <h2 className="font-serif text-3xl text-stone-800 italic">C & A</h2>
-                    <p className="font-sans text-[10px] text-stone-400 mt-2 tracking-widest">09 . 05 . 2026</p>
-                </motion.div>
-
-                {/* 3. BOLSILLO DEL SOBRE */}
-                <div className="absolute inset-0 z-20 pointer-events-none">
-                    <div className="absolute left-0 bottom-0 top-0 w-full bg-[#E6E2D6] shadow-[2px_0_5px_rgba(0,0,0,0.05)]" style={{ clipPath: "polygon(0 0, 0% 100%, 50% 50%)" }} />
-                    <div className="absolute right-0 bottom-0 top-0 w-full bg-[#E6E2D6] shadow-[-2px_0_5px_rgba(0,0,0,0.05)]" style={{ clipPath: "polygon(100% 0, 100% 100%, 50% 50%)" }} />
-                    <div className="absolute left-0 right-0 bottom-0 h-full bg-[#EDE9DE] shadow-[0_-2px_5px_rgba(0,0,0,0.05)]" style={{ clipPath: "polygon(0 100%, 100% 100%, 50% 50%)" }} />
-                </div>
-
-                {/* 4. LA SOLAPA SUPERIOR */}
-                <motion.div
-                    className="absolute top-0 left-0 w-full h-full z-30 origin-top"
-                    initial={{ rotateX: 0 }}
-                    animate={isFlapOpen ? { rotateX: 180, zIndex: 0 } : { rotateX: 0 }}
-                    transition={{ duration: 0.8, ease: "easeInOut" }}
-                    style={{ transformStyle: "preserve-3d" }}
-                >
-                    <div className="absolute inset-0 bg-[#E0DBD0] shadow-lg border-b border-stone-300/30" style={{ clipPath: "polygon(0 0, 100% 0, 50% 50%)", backfaceVisibility: "hidden" }}>
-                         <div className="absolute top-0 left-0 w-full h-20 bg-gradient-to-b from-black/5 to-transparent"></div>
-                    </div>
-                    <div className="absolute inset-0 bg-[#D6D1C4]" style={{ clipPath: "polygon(0 0, 100% 0, 50% 50%)", backfaceVisibility: "hidden", transform: "rotateX(180deg)" }}></div>
-                </motion.div>
-
-                {/* 5. EL SELLO DE CERA */}
-                <motion.button
+    <div className="fixed inset-0 z-50 overflow-hidden flex flex-col h-full w-full touch-none">
+        {/* --- MITAD SUPERIOR (Se va hacia arriba) --- */}
+      <div 
+        className={cn(
+            "relative w-full h-1/2 z-20 shadow-md transition-transform duration-[1500ms] ease-in-out will-change-transform",
+            isOpen ? "-translate-y-full" : "translate-y-0"
+        )}
+        style={{ backgroundColor: ENVELOPE_COLOR }}
+      >
+        {/* LA SOLAPA "V" (Cuelga de la parte superior) */}
+        {/* Usamos top-full para que empiece exactamente donde termina el div de arriba */}
+        <div className="absolute top-full left-0 w-full flex justify-center z-30 drop-shadow-sm">
+            
+            {/* EL TRIÁNGULO (Truco CSS) */}
+            {/* border-l y border-r transparentes crean los lados */}
+            {/* border-t crea el color y la altura */}
+            <div>
+                {/* EL BOTÓN DEL SELLO (Posicionado absoluto respecto al triángulo) */}
+                <button 
                     onClick={handleOpen}
-                    initial={{ scale: 1, opacity: 1 }}
-                    animate={isFlapOpen ? { scale: 1.5, opacity: 0 } : { scale: 1, opacity: 1 }}
-                    whileHover={{ scale: 1.05 }}
-                    transition={{ duration: 0.3 }}
-                    className="absolute top-[40%] left-1/2 -translate-x-1/2 -translate-y-1/2 z-40 w-16 h-16 md:w-20 md:h-20 rounded-full bg-[#8B1E1E] shadow-[0_4px_10px_rgba(0,0,0,0.3)] flex items-center justify-center cursor-pointer group"
+                    className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-[50%] cursor-pointer group outline-none"
+                    aria-label="Abrir invitación"
                 >
-                    <div className="absolute inset-0 rounded-full border-[3px] border-[#6b1414] opacity-80 group-hover:opacity-100 transition-opacity"></div>
-                    <div className="absolute top-2 left-3 w-4 h-4 bg-white/20 rounded-full blur-[2px]"></div>
-                    <span className="font-serif text-white/90 text-xl md:text-2xl font-bold tracking-tighter drop-shadow-md">C&A</span>
-                </motion.button>
-                
-                <motion.p
-                    animate={isFlapOpen ? { opacity: 0 } : { opacity: 1 }}
-                    transition={{ delay: 0.1 }}
-                    className="absolute -bottom-12 w-full text-center text-white/50 text-[10px] uppercase tracking-[0.3em]"
-                >
-                    Toca el sello para abrir
-                </motion.p>
+                    <div className="relative w-38 h-38 md:w-32 md:h-32 transition-transform duration-500 group-hover:scale-105 active:scale-95">
+                        
+                        {/* IMAGEN DEL SELLO */}
+                        <Image 
+                            src="/images/sobre_sello.png" 
+                            alt="Sello C&A"
+                            fill
+                            className="object-contain drop-shadow-xl"
+                            priority
+                        />
+                        
+                    </div>  
+                    
+                    {/* TEXTO DE AYUDA */}
+                    <div className={cn(
+                        "absolute top-24 left-1/2 -translate-x-1/2 w-48 text-center transition-opacity duration-300 pointer-events-none",
+                        isOpen ? "opacity-0" : "opacity-100"
+                    )}>
+                        <p className="text-[#4A3B3B]/60 text-[14px] uppercase tracking-[0.3em] font-sans mt-14 animate-pulse">
+                            Toca para abrir
+                        </p>
+                    </div>
+                </button>
             </div>
-        </motion.div>
-      )}
-    </AnimatePresence>
+        </div>
+      </div>
+
+      {/* --- MITAD INFERIOR (Se va hacia abajo) --- */}
+      <div 
+        className={cn(
+            "relative w-full h-1/2 z-10 transition-transform duration-[1500ms] ease-in-out will-change-transform border-t border-black/5",
+            isOpen ? "translate-y-full" : "translate-y-0"
+        )}
+        style={{ backgroundColor: ENVELOPE_COLOR }}
+      >
+         {/* Sombra interna sutil para dar profundidad */}
+         <div className="absolute top-0 w-full h-12 bg-gradient-to-b from-black/5 to-transparent pointer-events-none"></div>
+      </div>
+
+    </div>
   );
 }

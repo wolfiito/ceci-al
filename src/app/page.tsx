@@ -15,6 +15,7 @@ import RSVPSection from "@/components/RSVPSection";
 import FormalInvitation from "@/components/FormalInvitation";
 import ParallaxDivider from "@/components/ParallaxDivider";
 import GlobalBackground from "@/components/GlobalBackground";
+import EnvelopeOverlay from "@/components/EnvelopeOverlay";
 
 const sanitizeData = (data: DocumentData) => {
   if (!data) return null;
@@ -68,6 +69,7 @@ export default async function Home({ searchParams }: PageProps) {
     <main className="w-full bg-transparent relative">
         {/* El GlobalBackground se queda aquí, independiente */}
         <GlobalBackground />
+        
 
         {/* --- CAPA 1: CONTENIDO SCROLLABLE --- */}
         <div className="relative z-10">
