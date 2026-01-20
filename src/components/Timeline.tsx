@@ -1,218 +1,229 @@
 "use client";
+
 import { useRef, useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { 
-  Church, GlassWater, Music, Utensils, PartyPopper, 
-  Moon, Camera, MapPin, Heart, Bus, Coffee, Star, Sparkles,
-  LucideIcon 
-} from "lucide-react";
+import Image from "next/image";
 import { TimelineItem as TimelineItemType } from "@/types/wedding";
-
-// Importamos nuestros nuevos iconos SVG limpios
-import { IconBrindis, IconAnillos, IconComida, IconFotos, IconRecepcion } from "@/components/icons/CustomIcons";
 
 interface TimelineProps {
   items?: TimelineItemType[];
 }
 
-type IconComponentType = LucideIcon | React.ComponentType<React.SVGProps<SVGSVGElement>>;
-
-const ICON_MAP: Record<string, IconComponentType> = {
-  // Lucide Icons (Backups)
-  Church, GlassWater, Music, Utensils, PartyPopper, 
-  Moon, Camera, MapPin, Heart, Bus, Coffee, Star, Sparkles,
-  
-  // Custom Icons (Tus SVGs complejos)
-  "Brindis": IconBrindis,
-  "Fotos": IconFotos,
-  "Comida": IconComida,
-  "Recepcion": IconRecepcion, // Ahora usa el SVG nuevo, no el PNG
-  "Ceremonia": IconAnillos
+const IMAGE_MAP: Record<string, { inactive: string; active: string }> = {
+  Recepcion: { inactive: "/images/recepcion_2.png", active: "/images/recepcion_1.png" },
+  Ceremonia: { inactive: "/images/ceremonia_2.png", active: "/images/ceremonia_1.png" },
+  Fotos: { inactive: "/images/fotos_2.png", active: "/images/fotos_1.png" },
+  Comida: { inactive: "/images/Banquete_2.png", active: "/images/Banquete_1.png" },
+  Brindis: { inactive: "/images/Fiesta_2.png", active: "/images/Fiesta_1.png" },
 };
 
-// ... (El resto de tu componente TimelineItem y Timeline queda igual que antes)
-// Solo asegúrate de borrar la definición de "PngIcon" y "const IconRecepcion = ..." antigua que tenías arriba.
-
-const TimelineItem = ({ 
-    data, 
-    isActive, 
-    isEven 
-}: { 
-    data: TimelineItemType, 
-    isActive: boolean, 
-    isEven: boolean 
+const TimelineItem = ({
+  data,
+  isActive,
+  isEven,
+}: {
+  data: TimelineItemType;
+  isActive: boolean;
+  isEven: boolean;
 }) => {
-    const IconComponent = ICON_MAP[data.icon] || Star;
+  const images = IMAGE_MAP[data.icon] || IMAGE_MAP.Recepcion;
 
-    return (
-        <div className={`
-            relative z-10 w-full mb-12 md:mb-24
-            flex justify-between items-center
-            ${isEven ? 'flex-row-reverse' : 'flex-row'}
-        `}>
-            {/* 1. ESPACIO VACÍO */}
-            <div className="block w-[40%] sm:w-[42%]" />
+  return (
+    <div
+      className={`
+        relative z-10 w-full mb-16 md:mb-32
+        flex justify-between items-center
+        ${isEven ? "flex-row-reverse" : "flex-row"}
+      `}
+    >
+      {/* Espacio */}
+      <div className="block w-[35%] sm:w-[38%]" />
 
-            {/* 2. ICONO CENTRAL */}
-            <div className="relative z-20 w-[30%] sm:w-[16%] flex justify-center items-center">
-                <motion.div 
-                    animate={{ 
-                        backgroundColor: isActive ? "var(--color-wedding-secondary)" : "#ffffff",
-                        borderColor: "var(--color-wedding-secondary)",
-                        scale: isActive ? 1.45 : 1,
-                    }}
-                    transition={{ duration: 0.4, type: "spring" }}
-                    className="
-                        w-12 h-12 sm:w-20 sm:h-20 
-                        border-[2px] sm:border-[3px] rounded-full flex items-center justify-center 
-                        shadow-lg bg-white
-                    "
-                >
-                    <motion.div
-                        animate={{ color: isActive ? "#ffffff" : "var(--color-wedding-secondary)" }}
-                        transition={{ duration: 0.3 }}
-                    >
-                        <IconComponent className="w-5 h-5 sm:w-10 sm:h-10" strokeWidth={1.5} />
-                    </motion.div>
-                </motion.div>
-            </div>
-
-            {/* 3. CONTENIDO DE TEXTO */}
-            <motion.div 
-                className={`
-                    w-[40%] sm:w-[42%]
-                    ${isEven ? 'text-right' : 'text-left'}
-                `}
-                animate={{ 
-                    opacity: isActive ? 1 : 0.3, 
-                    x: isActive ? 0 : (isEven ? -20 : 20) 
-                }}
-                transition={{ duration: 0.5, ease: "easeOut" }}
+      {/* Círculo */}
+      <div className="relative z-20 w-[30%] sm:w-[24%] flex justify-center items-center">
+        <motion.div
+          animate={{
+            backgroundColor: isActive ? "#DB8C8A" : "#FFF5E1",
+            borderColor: isActive ? "#DB8C8A" : "#FFF5E1",
+            scale: isActive ? 1.15 : 1,
+            boxShadow: isActive
+              ? "0px 10px 25px rgba(219,140,138,0.5)"
+              : "0px 4px 10px rgba(0,0,0,0.05)",
+          }}
+          transition={{ duration: 0.5, ease: "easeInOut" }}
+          className="
+            w-24 h-24 sm:w-32 sm:h-32
+            border-[3px] sm:border-[4px]
+            rounded-full flex items-center justify-center
+            overflow-hidden relative flex-shrink-0
+          "
+        >
+          {/* Inactivo */}
+          <div className="absolute inset-0 p-3 sm:p-4">
+            <motion.div
+              animate={{ opacity: isActive ? 0 : 1 }}
+              transition={{ duration: 0.4 }}
+              className="relative w-full h-full"
             >
-                <div className={`flex items-center gap-1 sm:gap-2 mb-1 sm:mb-2 ${isEven ? 'justify-end' : 'justify-start'}`}>
-                    <span className={`font-sans font-bold text-sm sm:text-xl tracking-widest uppercase transition-colors duration-300 ${isActive ? 'text-wedding-primary' : 'text-wedding-dark/40'}`}>
-                        {data.time}
-                    </span>
-                    <span className="hidden sm:inline text-[10px] sm:text-xs font-bold text-wedding-secondary uppercase tracking-[0.2em]">
-                        Horas
-                    </span>
-                </div>
-
-                <h3 className="font-serif text-lg sm:text-5xl text-wedding-dark leading-tight mb-2 sm:mb-4 break-words">
-                    {data.title}
-                </h3>
-
-                <p className="font-sans text-xs sm:text-base text-wedding-dark/60 leading-relaxed font-medium">
-                    {data.description}
-                </p>
+              <Image
+                src={images.inactive}
+                alt={data.title}
+                fill
+                className="object-contain"
+              />
             </motion.div>
-        </div>
-    );
+          </div>
+
+          {/* Activo */}
+          <div className="absolute inset-0 p-3 sm:p-4">
+            <motion.div
+              animate={{ opacity: isActive ? 1 : 0, scale: isActive ? 1 : 0.85 }}
+              transition={{ duration: 0.4 }}
+              className="relative w-full h-full"
+            >
+              <Image
+                src={images.active}
+                alt={`${data.title} active`}
+                fill
+                className="object-contain drop-shadow-md"
+              />
+            </motion.div>
+          </div>
+        </motion.div>
+      </div>
+
+      {/* Texto */}
+      <motion.div
+        className={`w-[35%] sm:w-[38%] ${isEven ? "text-right" : "text-left"}`}
+        animate={{
+          opacity: isActive ? 1 : 0.3,
+          x: isActive ? 0 : isEven ? -20 : 20,
+          filter: isActive ? "blur(0px)" : "blur(1px)",
+        }}
+        transition={{ duration: 0.6 }}
+      >
+        <span
+          className={`block font-bold tracking-widest uppercase mb-1 text-sm ${
+            isActive ? "text-[#DB8C8A]" : "text-stone-300"
+          }`}
+        >
+          {data.time}
+        </span>
+
+        <h3
+          className={`font-serif text-lg sm:text-3xl mb-2 ${
+            isActive ? "text-stone-800" : "text-stone-300"
+          }`}
+        >
+          {data.title}
+        </h3>
+
+        <p className="text-sm text-stone-500 leading-relaxed">
+          {data.description}
+        </p>
+      </motion.div>
+    </div>
+  );
 };
 
 export default function Timeline({ items = [] }: TimelineProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const itemsRef = useRef<(HTMLDivElement | null)[]>([]);
-  const [lineHeight, setLineHeight] = useState(0);
+
+  const [lineStart, setLineStart] = useState(0);
   const [totalHeight, setTotalHeight] = useState(0);
+  const [lineHeight, setLineHeight] = useState(0);
   const [activeStep, setActiveStep] = useState(-1);
 
+  /* MEDICIONES */
   useEffect(() => {
-    const calculateTotalHeight = () => {
-        if (!itemsRef.current.length || items.length === 0) return;
-        const lastItem = itemsRef.current[items.length - 1];
-        if (lastItem) {
-            const height = lastItem.offsetTop + (lastItem.offsetHeight / 2);
-            setTotalHeight(height);
-        }
+    const calculate = () => {
+      if (!containerRef.current || !items.length) return;
+
+      const first = itemsRef.current[0];
+      const last = itemsRef.current[items.length - 1];
+      if (!first || !last) return;
+
+      const start = first.offsetTop + first.offsetHeight / 2;
+      const end = last.offsetTop + last.offsetHeight / 2;
+
+      setLineStart(start);
+      setTotalHeight(end - start);
     };
-    calculateTotalHeight();
-    window.addEventListener('resize', calculateTotalHeight);
-    const timer = setTimeout(calculateTotalHeight, 100);
-    return () => {
-        window.removeEventListener('resize', calculateTotalHeight);
-        clearTimeout(timer);
-    };
+
+    calculate();
+    window.addEventListener("resize", calculate);
+    return () => window.removeEventListener("resize", calculate);
   }, [items]);
 
+  /* SCROLL */
   useEffect(() => {
-    const handleScroll = () => {
+    const onScroll = () => {
       if (!containerRef.current) return;
-      const container = containerRef.current;
-      const rect = container.getBoundingClientRect();
-      const windowHeight = window.innerHeight;
-      const offset = windowHeight / 2;
-      const relativeScroll = -rect.top + offset;
-      const limit = totalHeight > 0 ? totalHeight : rect.height;
-      const currentHeight = Math.max(0, Math.min(limit, relativeScroll));
-      
-      setLineHeight(currentHeight);
 
-      let lastActiveIndex = -1;
-      itemsRef.current.forEach((item, index) => {
-        if (item) {
-           const triggerPoint = item.offsetTop + (item.offsetHeight * 0.1); 
-           if (currentHeight > triggerPoint) {
-             lastActiveIndex = index;
-           }
-        }
+      const rect = containerRef.current.getBoundingClientRect();
+      const trigger = window.innerHeight * 0.5;
+
+      const raw = -rect.top + trigger - lineStart;
+      const height = Math.max(0, Math.min(totalHeight, raw));
+
+      setLineHeight(height);
+
+      let active = -1;
+      itemsRef.current.forEach((item, i) => {
+        if (!item) return;
+        const center = item.offsetTop + item.offsetHeight / 2;
+        if (height + lineStart >= center) active = i;
       });
-      setActiveStep(lastActiveIndex);
+
+      setActiveStep(active);
     };
 
-    window.addEventListener('scroll', handleScroll);
-    handleScroll();
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [items.length, totalHeight]);
+    window.addEventListener("scroll", onScroll);
+    onScroll();
+    return () => window.removeEventListener("scroll", onScroll);
+  }, [lineStart, totalHeight]);
 
-  if (items.length === 0) return null;
+  if (!items.length) return null;
 
   return (
-    <section className="relative py-12 md:py-24 px-2 sm:px-4 overflow-hidden bg-white">
-      <div className="absolute top-0 right-0 w-64 h-64 bg-wedding-secondary/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none" />
-      <div className="absolute bottom-0 left-0 w-96 h-96 bg-wedding-primary/5 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2 pointer-events-none" />
+    <section className="relative py-16 md:py-32 bg-white overflow-hidden">
+      {/* TÍTULO */}
+      <div className="text-center mb-20 md:mb-32">
+        <span className="uppercase tracking-[0.3em] text-xs md:text-sm text-[#DB8C8A] font-bold block mb-3">
+          Agenda del Día
+        </span>
+        <h2 className="font-serif text-5xl sm:text-8xl text-stone-800">
+          Itinerario
+        </h2>
+      </div>
 
-      <div className="max-w-7xl mx-auto relative z-10">
-         <div className="text-center mb-10 sm:mb-16">
-            <motion.div 
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-            >
-                <h2 className="font-serif text-5xl sm:text-9xl text-wedding-dark drop-shadow-sm">
-                    Itinerario
-                </h2>
-            </motion.div>
-         </div>
+      <div className="max-w-5xl mx-auto px-4 relative" ref={containerRef}>
+        {/* Línea base */}
+        <div
+          style={{ top: lineStart, height: totalHeight }}
+          className="absolute left-1/2 w-[4px] -ml-[2px] bg-[#EFE5D5]"
+        />
 
-         <div ref={containerRef} className="relative"> 
-            <div 
-                style={{ height: `${lineHeight}px` }}
-                className="absolute top-0 w-[4px] -ml-[2px] bg-wedding-secondary z-0 rounded-b-full transition-[height] duration-75 ease-linear shadow-[0_0_15px_rgba(215,86,114,0.4)] left-1/2 transform"
-            />
-            <div 
-                style={{ height: totalHeight > 0 ? `${totalHeight}px` : '100%' }}
-                className="absolute top-0 w-[4px] -ml-[2px] bg-wedding-dark/5 z-0 left-1/2 transform" 
-            />
+        {/* Línea progreso */}
+        <div
+          style={{ top: lineStart, height: lineHeight }}
+          className="absolute left-1/2 w-[4px] -ml-[2px] bg-[#DB8C8A] rounded-b-full shadow-lg"
+        />
 
-            <div className="space-y-0">
-                {items.map((event, index) => {
-                    const isEven = index % 2 === 0;
-                    return (
-                        <div 
-                            key={event.id}
-                            ref={el => { itemsRef.current[index] = el }}
-                        >
-                            <TimelineItem 
-                                data={event} 
-                                isActive={index <= activeStep}
-                                isEven={isEven} 
-                            />
-                        </div>
-                    );
-                })}
+        <div className="relative z-10">
+          {items.map((item, i) => (
+            <div key={item.id} ref={(el) => {
+                itemsRef.current[i] = el;    
+            }}>
+              <TimelineItem
+                data={item}
+                isEven={i % 2 === 0}
+                isActive={i <= activeStep}
+              />
             </div>
-         </div>
+          ))}
+        </div>
       </div>
     </section>
   );

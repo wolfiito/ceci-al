@@ -94,7 +94,7 @@ export default async function Home({ searchParams }: PageProps) {
             {/* 4. TARJETA SÓLIDA 2 (Resto del contenido) */}
             <div className="bg-white shadow-[0_-25px_60px_rgba(0,0,0,0.2)] rounded-t-[2.5rem] -mt-20 relative">
                 <Timeline items={eventData?.timeline} />
-                <ParallaxDivider />
+                {/* <ParallaxDivider /> */}
                 <GalleryMarquee />
                 <Location 
                     locationName={eventData?.locationName}
