@@ -50,7 +50,7 @@ export default function MusicPlayer() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: 20 }}
                 transition={{ delay: 1, duration: 0.5 }}
-                className="fixed bottom-6 right-6 z-10 flex flex-col items-end gap-2"
+                className="fixed bottom-6 right-6 z-49 flex flex-col items-end gap-2"
                 onMouseEnter={() => setIsHovered(true)}
                 onMouseLeave={() => setIsHovered(false)}
                 onClick={() => setIsHovered(!isHovered)} 
@@ -87,7 +87,7 @@ export default function MusicPlayer() {
                         <div className="absolute inset-0 bg-wedding-secondary/20 animate-pulse"></div>
                     )}
 
-                    <div className="relative z-10 flex items-center justify-center">
+                    <div className="relative z-49 flex items-center justify-center">
                         {isPlaying ? (
                              /* BARRAS DE ECUALIZADOR */
                              <div className="flex gap-[3px] items-end h-3">
