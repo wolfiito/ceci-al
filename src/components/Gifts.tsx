@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { motion, Transition } from "framer-motion"; 
+import { motion, Transition, Variants } from "framer-motion"; 
 import { Copy, Check, CreditCard, Gift, ExternalLink, Sparkles } from "lucide-react";
 
 interface GiftsProps {
@@ -12,15 +12,10 @@ interface GiftsProps {
   };
 }
 
-// --- ICONOS EXACTOS (TUS SVGs) ---
+// --- ICONOS ---
 
 const IconAmazon = ({ className }: { className?: string }) => (
-  <svg 
-    viewBox="0 0 400 400" 
-    fill="currentColor" 
-    className={className} 
-    xmlns="http://www.w3.org/2000/svg"
-  >
+  <svg viewBox="0 0 400 400" fill="currentColor" className={className} xmlns="http://www.w3.org/2000/svg">
     <g transform="translate(0.000000,394.000000) scale(0.100000,-0.100000)" stroke="none">
       <path d="M1687 3738 c-372 -38 -651 -210 -791 -489 -48 -95 -83 -221 -72 -262 11 -43 50 -55 262 -77 110 -11 215 -22 234 -25 55 -9 83 19 116 118 24 71 35 90 88 143 81 81 146 107 271 108 188 1 302 -78 334 -232 6 -29 11 -109 11 -177 l0 -124 -32 -5 c-18 -3 -85 -10 -148 -16 -308 -30 -559 -80 -703 -140 -300 -125 -492 -394 -513 -720 -21 -321 113 -594 347 -709 112 -55 182 -72 320 -78 307 -15 517 63 744 275 37 34 70 62 74 62 3 0 35 -40 69 -89 72 -102 169 -203 217 -226 40 -19 70 -10 124 38 21 17 102 88 182 156 79 68 152 133 162 144 29 33 16 77 -51 169 -59 81 -104 163 -125 223 -7 19 -13 270 -17 675 -6 622 -7 648 -28 725 -36 130 -76 199 -172 296 -72 73 -101 94 -181 133 -199 97 -447 133 -722 104z m453 -1558 c0 -281 -41 -412 -171 -543 -91 -91 -138 -112 -254 -112 -106 0 -151 19 -209 86 -60 71 -80 136 -81 264 0 141 23 207 101 293 104 115 287 176 547 181 l67 1 0 -170z" />
       <path d="M3161 1025 c-88 -16 -224 -81 -229 -109 -4 -17 2 -18 100 -10 176 15 300 12 331 -9 24 -16 27 -23 27 -75 0 -69 -14 -122 -69 -266 -22 -60 -41 -113 -41 -118 0 -4 9 -8 19 -8 31 0 118 105 161 194 49 101 70 178 77 282 5 78 5 82 -18 97 -56 36 -223 46 -358 22z" />
@@ -30,12 +25,7 @@ const IconAmazon = ({ className }: { className?: string }) => (
 );
 
 const IconLiverpool = ({ className }: { className?: string }) => (
-  <svg 
-    viewBox="0 0 400 400" 
-    fill="currentColor" 
-    className={className} 
-    xmlns="http://www.w3.org/2000/svg"
-  >
+  <svg viewBox="0 0 400 400" fill="currentColor" className={className} xmlns="http://www.w3.org/2000/svg">
     <g>
         <path d="M48.34,54.19h24.21v247.34s0,17.85,15.94,17.85h130v26.83H77.11s-28.82-.06-28.82-31.96l.05-260.06Z" />
         <path d="M81.75,54.19h24.14v212.16s-1.69,16.49,14,16.45c77.66-.13,98.48,0,98.48,0v26.49h-122.46s-14.29-1.09-14.16-15.72c.08-10.41,0-239.37,0-239.37h0Z" />
@@ -49,7 +39,38 @@ const IconLiverpool = ({ className }: { className?: string }) => (
   </svg>
 );
 
+// --- ANIMACIONES PERSONALIZADAS ---
 const EASE_LUXURY: [number, number, number, number] = [0.22, 1, 0.36, 1];
+
+// Entrar desde la Izquierda (Para Liverpool)
+const slideFromLeft: Variants = {
+    hidden: { opacity: 0, x: -100 },
+    visible: { 
+        opacity: 1, 
+        x: 0, 
+        transition: { duration: 1, ease: EASE_LUXURY } 
+    }
+};
+
+// Entrar desde la Derecha (Para Amazon)
+const slideFromRight: Variants = {
+    hidden: { opacity: 0, x: 100 },
+    visible: { 
+        opacity: 1, 
+        x: 0, 
+        transition: { duration: 1, ease: EASE_LUXURY } 
+    }
+};
+
+// Entrar desde Abajo (Para Banco)
+const slideFromBottom: Variants = {
+    hidden: { opacity: 0, y: 100 },
+    visible: { 
+        opacity: 1, 
+        y: 0, 
+        transition: { duration: 1, ease: EASE_LUXURY, delay: 0.2 } // Un poco de delay para que entre después
+    }
+};
 
 const cardTransition: Transition = { 
     type: "spring", 
@@ -93,22 +114,25 @@ export default function Gifts({ gifts }: GiftsProps) {
           <motion.div
              initial={{ opacity: 0, y: 20 }}
              whileInView={{ opacity: 1, y: 0 }}
-             viewport={{ once: true }}
+             viewport={{ once: false, amount: 0.5 }} // once: false para repetir al scrollear
              transition={{ duration: 1, ease: EASE_LUXURY }}
           >
-             <p className="font-bodoni text-4xl md:text-4xl text-wedding-secondary transform -rotate-2">
+             <h2 className="font-sans text-5xl md:text-7xl font-extrabold text-wedding-dark uppercase tracking-tight mb-2">
+               Detalles
+             </h2>
+             <p className="font-serif text-3xl md:text-4xl text-wedding-secondary transform -rotate-2">
                Mesa de Regalos
              </p>
           </motion.div>
 
           <motion.p 
-            className="font-sans text-xl md:text-base text-wedding-dark/60 "
+            className="font-sans text-sm md:text-base text-wedding-dark/60 leading-relaxed px-4"
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
+            viewport={{ once: false }}
             transition={{ delay: 0.3 }}
           >
-            Contar con su presencia y cariño es nuestro mayor regalo. 
+            Contar con su presencia y cariño en este día tan especial es nuestro mayor regalo. 
             Si desean tener un detalle adicional con nosotros y bendecirnos en esta nueva etapa, 
             aquí encontrarán algunas formas de hacerlo:
           </motion.p>
@@ -117,76 +141,89 @@ export default function Gifts({ gifts }: GiftsProps) {
         <div className="w-full flex flex-col gap-12 items-center">
 
             {/* -----------------------------------------------------------
-                1. TIENDAS (LADO A LADO - LIMPIO SIN CARDS)
+                1. TIENDAS (ANIMACIÓN: ENTRAN DE LOS LADOS)
                ----------------------------------------------------------- */}
-            <div className="flex flex-row justify-center gap-12 md:gap-24 w-full">
+            <div className="flex flex-row justify-center gap-12 md:gap-24 w-full overflow-visible">
                 
-                {/* LIVERPOOL */}
+                {/* LIVERPOOL - ENTRA DESDE IZQUIERDA */}
                 {liverpoolRegistry && (
-                    <a 
+                    <motion.a 
                         href={liverpoolRegistry.url}
                         target="_blank"
                         rel="noreferrer"
                         className="group flex flex-col items-center gap-4"
+                        variants={slideFromLeft}
+                        initial="hidden"
+                        whileInView="visible"
+                        viewport={{ once: false, margin: "-50px" }} // Repite animación
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
                     >
-                        {/* Icono Grande (Sin fondo, solo el SVG) */}
-                        <div className="relative w-24 h-24 flex items-center justify-center transition-transform duration-300 group-hover:scale-110">
-                             {/* Efecto de luz rosa detrás al hacer hover */}
-                             <div className="absolute inset-0 bg-pink-100 rounded-full blur-2xl opacity-0 group-hover:opacity-50 transition-opacity" />
-                             
+                        {/* Icono Grande */}
+                        <div className="relative w-24 h-24 flex items-center justify-center">
+                             <div className="absolute inset-0 bg-pink-100 rounded-full blur-2xl opacity-0 group-hover:opacity-50 transition-opacity duration-500" />
                              <IconLiverpool className="w-full h-full text-[#E91E63]" />
                         </div>
                         
                         {/* Botón Píldora */}
-                        <div className="px-5 py-2 bg-white border border-stone-200 rounded-full shadow-sm flex items-center gap-2 group-hover:border-[#E91E63] group-hover:text-[#E91E63] transition-all">
+                        <div className="px-5 py-2 bg-white border border-stone-200 rounded-full shadow-sm flex items-center gap-2 group-hover:border-[#E91E63] group-hover:text-[#E91E63] transition-all duration-300">
                             <span className="text-[10px] font-bold uppercase tracking-widest text-stone-600 group-hover:text-[#E91E63]">
                                 Ver Mesa
                             </span>
                             <ExternalLink size={12} className="text-stone-400 group-hover:text-[#E91E63]" />
                         </div>
-                    </a>
+                    </motion.a>
                 )}
 
-                {/* AMAZON */}
+                {/* AMAZON - ENTRA DESDE DERECHA */}
                 {amazonRegistry && (
-                    <a 
+                    <motion.a 
                         href={amazonRegistry.url}
                         target="_blank"
                         rel="noreferrer"
                         className="group flex flex-col items-center gap-4"
+                        variants={slideFromRight}
+                        initial="hidden"
+                        whileInView="visible"
+                        viewport={{ once: false, margin: "-50px" }} // Repite animación
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
                     >
                         {/* Icono Grande */}
-                        <div className="relative w-24 h-24 flex items-center justify-center transition-transform duration-300 group-hover:scale-110">
-                             {/* Efecto de luz gris detrás */}
-                             <div className="absolute inset-0 bg-gray-100 rounded-full blur-2xl opacity-0 group-hover:opacity-50 transition-opacity" />
-                             
+                        <div className="relative w-24 h-24 flex items-center justify-center">
+                             <div className="absolute inset-0 bg-gray-100 rounded-full blur-2xl opacity-0 group-hover:opacity-50 transition-opacity duration-500" />
                              <IconAmazon className="w-full h-full text-[#232F3E]" />
                         </div>
 
                         {/* Botón Píldora */}
-                        <div className="px-5 py-2 bg-white border border-stone-200 rounded-full shadow-sm flex items-center gap-2 group-hover:border-[#232F3E] group-hover:text-[#232F3E] transition-all">
+                        <div className="px-5 py-2 bg-white border border-stone-200 rounded-full shadow-sm flex items-center gap-2 group-hover:border-[#232F3E] group-hover:text-[#232F3E] transition-all duration-300">
                             <span className="text-[10px] font-bold uppercase tracking-widest text-stone-600 group-hover:text-[#232F3E]">
                                 Ver Mesa
                             </span>
                             <ExternalLink size={12} className="text-stone-400 group-hover:text-[#232F3E]" />
                         </div>
-                    </a>
+                    </motion.a>
                 )}
             </div>
 
             {/* -----------------------------------------------------------
-                2. BANCO (TARJETA REDUCIDA Y CENTRADA)
+                2. BANCO (ANIMACIÓN: ENTRA DESDE ABAJO)
                ----------------------------------------------------------- */}
             {bankAccount && (
-                <div className="w-full flex flex-col items-center mt-6">
+                <motion.div 
+                    className="w-full flex flex-col items-center mt-6"
+                    variants={slideFromBottom}
+                    initial="hidden"
+                    whileInView="visible"
+                    viewport={{ once: false, margin: "-50px" }} // Repite animación
+                >
                      <div className="mb-4 flex items-center justify-center gap-2 text-wedding-primary/80">
                         <Sparkles size={16} />
                         <span className="text-xs font-bold uppercase tracking-widest">Transferencia Bancaria</span>
                     </div>
 
-                    {/* TAMAÑO REDUCIDO: max-w-[320px] */}
                     <div 
-                        className="relative w-full max-w-[280px] aspect-[1.586/1] group cursor-pointer" 
+                        className="relative w-full max-w-[320px] aspect-[1.586/1] group cursor-pointer" 
                         style={{ perspective: "1200px" }}
                         onClick={() => setFlipBank(!flipBank)}
                     >
@@ -246,16 +283,22 @@ export default function Gifts({ gifts }: GiftsProps) {
                             </div>
                         </motion.div>
                     </div>
-                    <p className="mt-4 text-[11px] text-center text-wedding-dark/60 font-sans uppercase tracking-widest animate-pulse">
+                    <p className="mt-4 text-[9px] text-center text-wedding-dark/40 font-sans uppercase tracking-widest animate-pulse">
                         Toca para ver cuenta
                     </p>
-                </div>
+                </motion.div>
             )}
         </div>
 
         {/* --- OTRAS TIENDAS --- */}
         {otherRegistries.length > 0 && (
-            <div className="w-full max-w-sm mx-auto space-y-3 mt-12 text-center">
+            <motion.div 
+                className="w-full max-w-sm mx-auto space-y-3 mt-12 text-center"
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                viewport={{ once: false }}
+                transition={{ delay: 0.4 }}
+            >
                 <div className="w-full h-[1px] bg-wedding-dark/10 my-4" />
                 <p className="text-[10px] font-bold uppercase tracking-widest text-wedding-dark/40 mb-2">
                     Otras Opciones
@@ -277,7 +320,7 @@ export default function Gifts({ gifts }: GiftsProps) {
                         <ExternalLink size={12} className="text-stone-400" />
                     </a>
                 ))}
-            </div>
+            </motion.div>
         )}
 
       </div>
