@@ -13,7 +13,6 @@ import { db } from "@/lib/firebase";
 import { GuestData, GuestMember } from "@/types/wedding";
 import { TicketReveal } from "@/components/TicketReveal";
 
-// Carga perezosa del Ticket
 const DigitalTicket = dynamic(() => import("@/components/DigitalTicket"), {
   loading: () => (
     <div className="h-64 w-full flex items-center justify-center">
@@ -24,11 +23,9 @@ const DigitalTicket = dynamic(() => import("@/components/DigitalTicket"), {
 
 interface RSVPSectionProps {
   guestData: GuestData | null;
-  eventNames?: string; // Los hice opcionales por si no los pasas
+  eventNames?: string; 
   eventDate?: string;
 }
-
-// Interfaz para las opciones de confetti
 interface ConfettiOptions {
   particleCount: number;
   spread: number;
@@ -195,7 +192,6 @@ export default function RSVPSection({ guestData }: RSVPSectionProps) {
           <div className="p-4 md:p-8">
             <AnimatePresence mode="wait">
               
-              {/* PASO 1: Cantidad */}
               {step === 1 && !isFinished && (
                 <motion.div 
                     key="step1" 
@@ -230,8 +226,6 @@ export default function RSVPSection({ guestData }: RSVPSectionProps) {
                     </button>
                   </div>
 
-                  {/* --- NUEVO BLOQUE: MENSAJE PARA LOS QUE VIVEN LEJOS --- */}
-                  {/* Solo se muestra si el guestData tiene isLongDistance en true */}
                   {guestData.isLongDistance && (
                     <motion.div 
                         initial={{ opacity: 0, y: 10 }}
@@ -246,7 +240,7 @@ export default function RSVPSection({ guestData }: RSVPSectionProps) {
                                 Sabemos que estás lejos
                             </h4>
                             <p className="font-sans text-[11px] md:text-xs text-wedding-dark/70 leading-relaxed">
-                            Sabemos que estás lejos. Intentaremos habilitar una transmisión de la ceremonia para compartir este momento. En caso de no poder hacerlo, únete a nosotros en oración por el inicio de nuestro matrimonio y que honremos y glorifiquemos a Dios siempre.
+                              Intentaremos habilitar una transmisión de la ceremonia para compartir este momento. En caso de no poder hacerlo, únete a nosotros en oración por el inicio de nuestro matrimonio y que honremos y glorifiquemos a Dios siempre.
                             </p>
                         </div>
                     </motion.div>
