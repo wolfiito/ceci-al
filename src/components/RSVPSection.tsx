@@ -241,7 +241,7 @@ export default function RSVPSection({ guestData }: RSVPSectionProps) {
                 <p className="text-[10px] md:text-xs uppercase tracking-[0.3em] opacity-70 mb-2">RSVP</p>
                 <h2 className="font-serif text-2xl md:text-3xl font-medium tracking-wide">Confirmación</h2>
                 <div className="w-16 h-[1px] bg-[#DCC5C5] mx-auto my-4 opacity-50"></div>
-                <p className="font-serif text-lg italic text-[#DCC5C5]">Familia {guestData.familyName}</p>
+                <p className="font-serif text-lg italic text-[#DCC5C5]">{guestData.familyName}</p>
               </div>
           )}
 

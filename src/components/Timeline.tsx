@@ -1,7 +1,7 @@
 "use client";
 
-import { useRef, useState, useEffect } from "react";
-import { motion } from "framer-motion";
+import { useRef } from "react";
+import { motion, useScroll, useTransform, Variants } from "framer-motion";
 import Image from "next/image";
 import { TimelineItem as TimelineItemType } from "@/types/wedding";
 
@@ -17,211 +17,144 @@ const IMAGE_MAP: Record<string, { inactive: string; active: string }> = {
   Brindis: { inactive: "/images/Fiesta_2.png", active: "/images/Fiesta_1.png" },
 };
 
+// Variantes para animar el texto y el círculo
+const itemVariants: Variants = {
+  hidden: { 
+    opacity: 0.3, 
+    filter: "blur(2px)",
+    scale: 0.95,
+    x: 0 // Posición neutral
+  },
+  visible: { 
+    opacity: 1, 
+    filter: "blur(0px)",
+    scale: 1,
+    transition: { duration: 0.6, ease: "easeOut" }
+  }
+};
+
 const TimelineItem = ({
   data,
-  isActive,
   isEven,
 }: {
   data: TimelineItemType;
-  isActive: boolean;
   isEven: boolean;
 }) => {
   const images = IMAGE_MAP[data.icon] || IMAGE_MAP.Recepcion;
 
   return (
-    <div
+    <motion.div
+      // AQUI ESTA LA MAGIA: Detecta cuando el elemento está al 50% de la pantalla
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: false, amount: 0.5, margin: "-10% 0px -10% 0px" }}
       className={`
-        relative z-10 w-full mb-16 md:mb-32
+        relative z-10 w-full mb-24 md:mb-40
         flex justify-between items-center
         ${isEven ? "flex-row-reverse" : "flex-row"}
       `}
     >
-      {/* Espacio */}
-      <div className="block w-[35%] sm:w-[38%]" />
+      {/* Espacio vacío para equilibrar */}
+      <div className="w-[35%] sm:w-[38%]" />
 
-      {/* Círculo */}
-      <div className="relative z-20 w-[30%] sm:w-[24%] flex justify-center items-center">
-        <motion.div
-          animate={{
-            backgroundColor: isActive ? "#DB8C8A" : "#FFF5E1",
-            borderColor: isActive ? "#DB8C8A" : "#FFF5E1",
-            scale: isActive ? 1.15 : 1,
-            boxShadow: isActive
-              ? "0px 10px 25px rgba(219,140,138,0.5)"
-              : "0px 4px 10px rgba(0,0,0,0.05)",
-          }}
-          transition={{ duration: 0.5, ease: "easeInOut" }}
-          className="
-            w-24 h-24 sm:w-32 sm:h-32
-            border-[3px] sm:border-[4px]
-            rounded-full flex items-center justify-center
-            overflow-hidden relative flex-shrink-0
-          "
+      {/* Círculo Central */}
+      <motion.div 
+        variants={{
+          hidden: { backgroundColor: "#FFF5E1", borderColor: "#FFF5E1", scale: 1, boxShadow: "0px 4px 10px rgba(0,0,0,0.05)" },
+          visible: { backgroundColor: "#DB8C8A", borderColor: "#DB8C8A", scale: 1.15, boxShadow: "0px 10px 25px rgba(219,140,138,0.5)" }
+        }}
+        className="
+          relative z-20 w-24 h-24 sm:w-32 sm:h-32
+          border-[3px] sm:border-[4px] rounded-full 
+          flex items-center justify-center
+          overflow-hidden flex-shrink-0 transition-colors duration-500
+        "
+      >
+        {/* Imagen Inactiva (Se desvanece al activarse) */}
+        <motion.div 
+          variants={{ hidden: { opacity: 1 }, visible: { opacity: 0 } }}
+          className="absolute inset-0 p-3 sm:p-4"
         >
-          {/* Inactivo */}
-          <div className="absolute inset-0 p-3 sm:p-4">
-            <motion.div
-              animate={{ opacity: isActive ? 0 : 1 }}
-              transition={{ duration: 0.4 }}
-              className="relative w-full h-full"
-            >
-              <Image
-                src={images.inactive}
-                alt={data.title}
-                fill
-                className="object-contain"
-              />
-            </motion.div>
-          </div>
-
-          {/* Activo */}
-          <div className="absolute inset-0 p-3 sm:p-4">
-            <motion.div
-              animate={{ opacity: isActive ? 1 : 0, scale: isActive ? 1 : 0.85 }}
-              transition={{ duration: 0.4 }}
-              className="relative w-full h-full"
-            >
-              <Image
-                src={images.active}
-                alt={`${data.title} active`}
-                fill
-                className="object-contain drop-shadow-md"
-              />
-            </motion.div>
-          </div>
+          <Image src={images.inactive} alt={data.title} fill className="object-contain" />
         </motion.div>
-      </div>
+
+        {/* Imagen Activa (Aparece al activarse) */}
+        <motion.div 
+          variants={{ hidden: { opacity: 0, scale: 0.8 }, visible: { opacity: 1, scale: 1 } }}
+          className="absolute inset-0 p-3 sm:p-4"
+        >
+          <Image src={images.active} alt={data.title} fill className="object-contain drop-shadow-md" />
+        </motion.div>
+      </motion.div>
 
       {/* Texto */}
       <motion.div
+        variants={itemVariants}
         className={`w-[35%] sm:w-[38%] ${isEven ? "text-right" : "text-left"}`}
-        animate={{
-          opacity: isActive ? 1 : 0.3,
-          x: isActive ? 0 : isEven ? -20 : 20,
-          filter: isActive ? "blur(0px)" : "blur(1px)",
-        }}
-        transition={{ duration: 0.6 }}
       >
-        <span
-          className={`block font-bold tracking-widest uppercase mb-1 text-sm ${
-            isActive ? "text-[#DB8C8A]" : "text-stone-300"
-          }`}
+        <motion.span 
+          variants={{ hidden: { color: "#d6d3d1" }, visible: { color: "#DB8C8A" } }}
+          className="block font-bold tracking-widest uppercase mb-1 text-xs md:text-sm"
         >
           {data.time}
-        </span>
+        </motion.span>
 
-        <h3
-          className={`font-serif text-lg sm:text-3xl mb-2 ${
-            isActive ? "text-stone-800" : "text-stone-300"
-          }`}
+        <motion.h3 
+          variants={{ hidden: { color: "#d6d3d1" }, visible: { color: "#292524" } }}
+          className="font-serif text-lg sm:text-3xl mb-2"
         >
           {data.title}
-        </h3>
+        </motion.h3>
 
-        <p className="text-sm text-stone-500 leading-relaxed">
+        <p className="text-xs sm:text-sm text-stone-500 leading-relaxed font-light">
           {data.description}
         </p>
       </motion.div>
-    </div>
+    </motion.div>
   );
 };
 
 export default function Timeline({ items = [] }: TimelineProps) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const itemsRef = useRef<(HTMLDivElement | null)[]>([]);
 
-  const [lineStart, setLineStart] = useState(0);
-  const [totalHeight, setTotalHeight] = useState(0);
-  const [lineHeight, setLineHeight] = useState(0);
-  const [activeStep, setActiveStep] = useState(-1);
+  // Hook de Scroll para la línea conectora (Reemplaza cálculos manuales)
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start center", "end center"] // La línea se llena mientras escroleas el contenedor
+  });
 
-  /* MEDICIONES */
-  useEffect(() => {
-    const calculate = () => {
-      if (!containerRef.current || !items.length) return;
-
-      const first = itemsRef.current[0];
-      const last = itemsRef.current[items.length - 1];
-      if (!first || !last) return;
-
-      const start = first.offsetTop + first.offsetHeight / 2;
-      const end = last.offsetTop + last.offsetHeight / 2;
-
-      setLineStart(start);
-      setTotalHeight(end - start);
-    };
-
-    calculate();
-    window.addEventListener("resize", calculate);
-    return () => window.removeEventListener("resize", calculate);
-  }, [items]);
-
-  /* SCROLL */
-  useEffect(() => {
-    const onScroll = () => {
-      if (!containerRef.current) return;
-
-      const rect = containerRef.current.getBoundingClientRect();
-      const trigger = window.innerHeight * 0.5;
-
-      const raw = -rect.top + trigger - lineStart;
-      const height = Math.max(0, Math.min(totalHeight, raw));
-
-      setLineHeight(height);
-
-      let active = -1;
-      itemsRef.current.forEach((item, i) => {
-        if (!item) return;
-        const center = item.offsetTop + item.offsetHeight / 2;
-        if (height + lineStart >= center) active = i;
-      });
-
-      setActiveStep(active);
-    };
-
-    window.addEventListener("scroll", onScroll);
-    onScroll();
-    return () => window.removeEventListener("scroll", onScroll);
-  }, [lineStart, totalHeight]);
+  const scaleY = useTransform(scrollYProgress, [0, 1], [0, 1]);
 
   if (!items.length) return null;
 
   return (
-    <section className="relative py-16 md:py-32 bg-white overflow-hidden">
-      {/* TÍTULO */}
-      <div className="text-center mb-20 md:mb-32">
-        <span className="uppercase tracking-[0.3em] text-xs md:text-sm text-[#DB8C8A] font-bold block mb-3">
+    <section className="relative py-20 md:py-32 bg-white overflow-hidden">
+      <div className="text-center mb-24">
+        <span className="uppercase tracking-[0.3em] text-xs text-[#DB8C8A] font-bold block mb-3">
           Agenda del Día
         </span>
-        <h2 className="font-serif text-5xl sm:text-8xl text-stone-800">
+        <h2 className="font-serif text-5xl sm:text-7xl text-stone-800">
           Itinerario
         </h2>
       </div>
 
       <div className="max-w-5xl mx-auto px-4 relative" ref={containerRef}>
-        {/* Línea base */}
-        <div
-          style={{ top: lineStart, height: totalHeight }}
-          className="absolute left-1/2 w-[4px] -ml-[2px] bg-[#EFE5D5]"
+        {/* Línea Base (Gris clara) */}
+        <div className="absolute left-1/2 top-0 bottom-0 w-[2px] -ml-[1px] bg-[#F5EFE6]" />
+
+        {/* Línea de Progreso (Rosa) - Se llena automáticamente */}
+        <motion.div
+          style={{ scaleY, originY: 0 }}
+          className="absolute left-1/2 top-0 bottom-0 w-[2px] -ml-[1px] bg-[#DB8C8A]"
         />
 
-        {/* Línea progreso */}
-        <div
-          style={{ top: lineStart, height: lineHeight }}
-          className="absolute left-1/2 w-[4px] -ml-[2px] bg-[#DB8C8A] rounded-b-full shadow-lg"
-        />
-
-        <div className="relative z-10">
+        <div className="relative z-10 space-y-10">
           {items.map((item, i) => (
-            <div key={item.id} ref={(el) => {
-                itemsRef.current[i] = el;    
-            }}>
-              <TimelineItem
-                data={item}
-                isEven={i % 2 === 0}
-                isActive={i <= activeStep}
-              />
-            </div>
+            <TimelineItem
+              key={item.id || i}
+              data={item}
+              isEven={i % 2 === 0}
+            />
           ))}
         </div>
       </div>

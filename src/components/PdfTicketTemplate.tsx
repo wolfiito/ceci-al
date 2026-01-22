@@ -50,7 +50,7 @@ export default function PdfTicketTemplate({ guest, tableNames }: PdfTicketTempla
 
         {/* Nombre Familia Grande */}
         <h2 className="font-serif text-4xl text-[#1c1917] mb-8 leading-tight">
-          Familia {guest.familyName}
+          {guest.familyName}
         </h2>
 
         {/* Tabla de Invitados Estilizada */}

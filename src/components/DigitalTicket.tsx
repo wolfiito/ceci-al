@@ -65,7 +65,7 @@ export default function DigitalTicket({ guest, mode = "view" }: DigitalTicketPro
             <div className="text-center mb-5 border-b border-dashed border-[#d6d3d1] pb-3">
                 <p className="text-[9px] uppercase tracking-widest text-[#a8a29e] mb-1">Invitación para</p>
                 <h3 className="font-serif text-2xl text-[#292524] leading-none pb-1">
-                    Familia {guest.familyName}
+                  {guest.familyName}
                 </h3>
                 <p className="text-[10px] text-[#a8a29e] font-light italic">
                     {totalPases} {totalPases === 1 ? "lugar confirmado" : "lugares confirmados"}
@@ -96,7 +96,7 @@ export default function DigitalTicket({ guest, mode = "view" }: DigitalTicketPro
                                         <Loader2 className="w-3 h-3 animate-spin text-[#d6d3d1]" />
                                     ) : (
                                         <span className="inline-flex items-center px-2 py-1 rounded-md bg-[#fafaf9] border border-[#f5f5f4] text-[10px] font-bold text-[#78716c] uppercase tracking-wider whitespace-nowrap">
-                                            MESA {tableName || "TBA"}
+                                          {tableName || "TBA"}
                                         </span>
                                     )}
                                 </div>
