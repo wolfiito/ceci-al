@@ -1,22 +1,30 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import dynamic from "next/dynamic"; 
 import { 
   MessageCircle, CheckCircle2, Loader2, Heart, Users, UserX, Minus, Plus, Edit2,
-  MonitorPlay 
+  MonitorPlay, Download 
 } from "lucide-react";
-import { doc, updateDoc } from "firebase/firestore";
+import { doc, updateDoc, getDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { GuestData, GuestMember } from "@/types/wedding";
 import { TicketReveal } from "@/components/TicketReveal";
 
+// --- IMPORTACIONES PARA PDF ---
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
+
+// Importamos el componente de diseño "Editorial" para el PDF
+import PdfTicketTemplate from "@/components/PdfTicketTemplate";
+
+// Carga diferida del ticket visual en pantalla
 const DigitalTicket = dynamic(() => import("@/components/DigitalTicket"), {
   loading: () => (
-    <div className="h-40 w-full flex items-center justify-center bg-stone-50 rounded-xl">
-      <Loader2 className="animate-spin text-stone-300 w-6 h-6"/>
+    <div className="h-40 w-full flex items-center justify-center bg-[#fafaf9] rounded-xl">
+      <Loader2 className="animate-spin text-[#d6d3d1] w-6 h-6"/>
     </div>
   )
 });
@@ -26,27 +34,26 @@ interface RSVPSectionProps {
   eventNames?: string; 
   eventDate?: string;
 }
-interface ConfettiOptions {
-    particleCount: number;
-    spread: number;
-    startVelocity: number;
-    ticks: number;
-    zIndex: number;
-    origin: { x: number; y: number };
-    colors: string[];
-}
 
 export default function RSVPSection({ guestData }: RSVPSectionProps) {
+  // --- ESTADOS DEL FLUJO ---
   const [step, setStep] = useState(1);
   const [isConfirming, setIsConfirming] = useState(false);
   const [isFinished, setIsFinished] = useState(guestData?.status === 'confirmed' || guestData?.status === 'declined');
   
+  // --- ESTADOS DE DATOS ---
   const [ticketCount, setTicketCount] = useState(guestData?.members.length || 0);
   const [attendance, setAttendance] = useState<Record<string, boolean>>({});
   const [loveMessage, setLoveMessage] = useState("");
+  
+  // --- ESTADOS PARA PDF ---
+  const [isDownloading, setIsDownloading] = useState(false);
+  const ticketRef = useRef<HTMLDivElement>(null); // Referencia al ticket oculto
+  const [pdfTableNames, setPdfTableNames] = useState<Record<string, string>>({}); // Nombres de mesas para el PDF
 
   const maxTickets = guestData?.members.length || 0;
 
+  // 1. Inicializar asistencia basada en datos guardados
   useEffect(() => {
     if (guestData?.members) {
       const initial = guestData.members.reduce<Record<string, boolean>>((acc, m) => ({ 
@@ -61,12 +68,40 @@ export default function RSVPSection({ guestData }: RSVPSectionProps) {
     }
   }, [guestData]);
 
+  // 2. Cargar nombres de mesas cuando se confirma (para el PDF)
+  useEffect(() => {
+    if (isFinished && guestData?.members) {
+        const loadTables = async () => {
+            const confirmedMembers = guestData.members.filter(m => 
+                // Si acabamos de confirmar, usamos el estado local 'attendance', si ya venía confirmado usamos 'm.isConfirmed'
+                attendance[m.name] ?? m.isConfirmed
+            );
+            
+            const uniqueIds = Array.from(new Set(confirmedMembers.map(m => m.tableId).filter(Boolean) as string[]));
+            
+            if (uniqueIds.length === 0) return;
+
+            const names: Record<string, string> = {};
+            await Promise.all(uniqueIds.map(async (id) => {
+                try {
+                    const snap = await getDoc(doc(db, "tables", id));
+                    names[id] = snap.exists() ? snap.data().name : "Asignada";
+                } catch { 
+                    names[id] = "TBA"; 
+                }
+            }));
+            setPdfTableNames(names);
+        };
+        loadTables();
+    }
+  }, [isFinished, guestData, attendance]);
+
+  // --- LÓGICA DE INTERACCIÓN ---
+
   const handleConfirmClick = () => {
-    if (ticketCount === 0) {
-      handleNoAsistireClick();
-    } else if (ticketCount < maxTickets) {
-      setStep(2);
-    } else {
+    if (ticketCount === 0) { handleNoAsistireClick(); } 
+    else if (ticketCount < maxTickets) { setStep(2); } 
+    else {
       if (guestData?.members) {
         const allAttending = guestData.members.reduce<Record<string, boolean>>((acc, m) => ({ ...acc, [m.name]: true }), {});
         setAttendance(allAttending);
@@ -100,7 +135,6 @@ export default function RSVPSection({ guestData }: RSVPSectionProps) {
     const animationEnd = Date.now() + duration;
     const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 50 };
     const randomInRange = (min: number, max: number) => Math.random() * (max - min) + min;
-
     const interval: ReturnType<typeof setInterval> = setInterval(function() {
       const timeLeft = animationEnd - Date.now();
       if (timeLeft <= 0) return clearInterval(interval);
@@ -136,18 +170,72 @@ export default function RSVPSection({ guestData }: RSVPSectionProps) {
     }
   };
 
+  // --- GENERACIÓN DE PDF ---
+  const handleDownloadPDF = async () => {
+    if (!ticketRef.current) return;
+    setIsDownloading(true);
+
+    try {
+        const canvas = await html2canvas(ticketRef.current, {
+            scale: 2, 
+            backgroundColor: "#F9F7F2", // Coincide con el fondo del template de lujo
+            useCORS: true,
+            ignoreElements: (element) => element.tagName === 'STYLE' && element.innerHTML.includes('lab(')
+        });
+
+        const imgData = canvas.toDataURL("image/png");
+        
+        // El PDF tendrá el tamaño exacto de la imagen generada
+        const pdf = new jsPDF({ 
+            orientation: "p", 
+            unit: "px", 
+            format: [canvas.width / 2, canvas.height / 2] // Ajuste por scale:2
+        });
+
+        pdf.addImage(imgData, "PNG", 0, 0, canvas.width / 2, canvas.height / 2);
+        pdf.save(`Pase_Boda_${guestData?.familyName.replace(/\s+/g, '_')}.pdf`);
+
+    } catch (error) {
+        console.error("Error PDF", error);
+        alert("No se pudo generar el PDF. Por favor toma una captura de pantalla.");
+    } finally {
+        setIsDownloading(false);
+    }
+  };
+
   if (!guestData) return null;
+
+  // Preparamos los datos actualizados para pasar a los componentes visuales
+  const updatedGuestData = {
+    ...guestData,
+    members: guestData.members.map(m => ({
+        ...m,
+        isConfirmed: attendance[m.name] ?? m.isConfirmed
+    }))
+  };
 
   return (
     <section className="relative py-16 flex items-center justify-center overflow-hidden" id="rsvp">
+      
+      {/* Fondo */}
       <div className="absolute inset-0 z-0">
         <Image src="/images/ticket-bg.jpg" alt="Background" fill sizes="100vw" className="object-cover blur-md brightness-[0.4]" priority={false} />
-        {/* ELIMINÉ EL DIV DE RUIDO AQUÍ TAMBIÉN */}
+      </div>
+
+      {/* --- ÁREA OCULTA: TEMPLATE DE LUJO PARA PDF --- */}
+      <div style={{ position: "absolute", top: "-9999px", left: "-9999px" }}>
+        <div ref={ticketRef}>
+            <PdfTicketTemplate 
+                guest={updatedGuestData} 
+                tableNames={pdfTableNames} 
+            />
+        </div>
       </div>
 
       <div className={`relative z-10 w-full mx-4 transition-all duration-500 ${isFinished ? 'max-w-md' : 'max-w-lg'}`}>
         <motion.div layout className="bg-[#FDFBF7] rounded-[2rem] shadow-2xl overflow-hidden border border-white/20 ring-1 ring-black/5">
           
+          {/* HEADER: Se oculta si ya terminamos para ahorrar espacio */}
           {!isFinished && (
               <div className="bg-[#2C3E2E] p-8 text-center text-[#F2F0E9] relative overflow-hidden">
                 <p className="text-[10px] md:text-xs uppercase tracking-[0.3em] opacity-70 mb-2">RSVP</p>
@@ -160,8 +248,8 @@ export default function RSVPSection({ guestData }: RSVPSectionProps) {
           <div className={`${isFinished ? 'p-0' : 'p-6 md:p-10'}`}>
             <AnimatePresence mode="wait">
               {!isFinished && (
-                  /* --- PASOS 1, 2 y 3 (Idénticos, comprimidos para el ejemplo) --- */
                   <>
+                     {/* PASO 1: Cantidad */}
                      {step === 1 && (
                         <motion.div key="step1" initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}} className="space-y-8">
                             <div className="text-center space-y-2">
@@ -185,8 +273,10 @@ export default function RSVPSection({ guestData }: RSVPSectionProps) {
                                 </div>
                             )}
                         </motion.div>
-                    )}
-                    {step === 2 && (
+                     )}
+                     
+                     {/* PASO 2: Selección */}
+                     {step === 2 && (
                         <motion.div key="step2" initial={{opacity:0,x:20}} animate={{opacity:1,x:0}} exit={{opacity:0,x:-20}} className="space-y-6">
                              <div className="text-center space-y-2"><h3 className="font-serif text-2xl text-stone-800">Selecciona a los asistentes</h3><p className="text-sm text-stone-500">Confirma <strong className="text-stone-700">{ticketCount}</strong> personas</p></div>
                              <div className="space-y-3 py-2">{guestData.members.map(m=>(<button key={m.name} onClick={()=>toggleMember(m.name)} className={`w-full p-4 rounded-xl border flex items-center justify-between transition-all duration-300 ${attendance[m.name]?"border-[#2C3E2E]/20 bg-white shadow-md scale-[1.01]":"border-stone-100 bg-stone-50 opacity-60 grayscale"}`}><span className={`text-base font-serif ${attendance[m.name]?"text-stone-800":"text-stone-400"}`}>{m.name}</span><div className={`w-6 h-6 rounded-full flex items-center justify-center transition-all duration-300 ${attendance[m.name]?"bg-[#2C3E2E] text-[#F2F0E9]":"bg-stone-200 text-white"}`}>{attendance[m.name]?<CheckCircle2 className="w-4 h-4"/>:<div className="w-2 h-2 bg-white rounded-full"/>}</div></button>))}</div>
@@ -194,6 +284,8 @@ export default function RSVPSection({ guestData }: RSVPSectionProps) {
                              <button onClick={()=>setStep(1)} className="w-full text-center text-xs text-stone-400 hover:text-stone-600 font-bold uppercase tracking-wider">Volver</button>
                         </motion.div>
                      )}
+
+                     {/* PASO 3: Mensaje */}
                      {step === 3 && (
                         <motion.div key="step3" initial={{opacity:0}} animate={{opacity:1}} className="space-y-6">
                             <div className="text-center space-y-2"><Heart className="mx-auto text-[#DCC5C5] w-10 h-10 mb-2"/><h3 className="font-serif text-2xl text-stone-800">Unas palabras</h3></div>
@@ -204,7 +296,7 @@ export default function RSVPSection({ guestData }: RSVPSectionProps) {
                   </>
               )}
 
-              {/* --- ESTADO FINAL COMPACTO --- */}
+              {/* --- ESTADO FINAL: TICKET Y DESCARGA --- */}
               {isFinished && (
                 <motion.div 
                     initial={{ opacity: 0, scale: 0.9 }} 
@@ -214,6 +306,7 @@ export default function RSVPSection({ guestData }: RSVPSectionProps) {
                   
                   {ticketCount > 0 ? (
                     <div className="bg-[#EAE7DF]">
+                        {/* Header Compacto Éxito */}
                         <div className="bg-green-600 p-3 text-center flex items-center justify-center gap-2 shadow-sm relative z-10">
                             <CheckCircle2 size={16} className="text-white" />
                             <p className="text-white text-xs font-bold uppercase tracking-widest">
@@ -224,37 +317,49 @@ export default function RSVPSection({ guestData }: RSVPSectionProps) {
                         <div className="p-4">
                             <TicketReveal>
                                 <div className="shadow-2xl rounded-xl overflow-hidden">
-                                    <DigitalTicket guest={{
-                                        ...guestData,
-                                        members: guestData.members.map(m => ({
-                                            ...m,
-                                            isConfirmed: attendance[m.name] ?? m.isConfirmed
-                                        }))
-                                    }} />
+                                    {/* Ticket VISIBLE (Diseño web compacto) */}
+                                    <DigitalTicket guest={updatedGuestData} />
                                 </div>
                             </TicketReveal>
                             
-                            <p className="text-center text-[10px] text-stone-400 mt-3 font-sans uppercase tracking-widest opacity-60">
-                                Captura de pantalla para guardar
-                            </p>
+                            {/* BOTÓN DE DESCARGA PDF */}
+                            <div className="mt-6 flex justify-center">
+                                <button
+                                    onClick={handleDownloadPDF}
+                                    disabled={isDownloading}
+                                    className="flex items-center gap-2 bg-[#2C3E2E] text-[#F2F0E9] px-6 py-3 rounded-full text-xs font-bold uppercase tracking-widest shadow-lg hover:bg-black transition-all active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed"
+                                >
+                                    {isDownloading ? (
+                                        <>
+                                            <Loader2 size={16} className="animate-spin" />
+                                            Generando...
+                                        </>
+                                    ) : (
+                                        <>
+                                            <Download size={16} />
+                                            Guardar Pase PDF
+                                        </>
+                                    )}
+                                </button>
+                            </div>
                         </div>
                     </div>
                   ) : (
                     <div className="py-12 px-6 text-center">
-                        <div className="mx-auto w-16 h-16 bg-stone-100 rounded-full flex items-center justify-center mb-4">
-                           <Heart className="text-stone-400 w-8 h-8" strokeWidth={1} />
+                        <div className="mx-auto w-16 h-16 bg-[#f5f5f4] rounded-full flex items-center justify-center mb-4">
+                           <Heart className="text-[#a8a29e] w-8 h-8" strokeWidth={1} />
                         </div>
-                        <h3 className="font-serif text-xl text-stone-700 mb-2">Gracias por avisar</h3>
-                        <p className="text-stone-500 max-w-xs mx-auto text-sm font-light leading-relaxed">
+                        <h3 className="font-serif text-xl text-[#44403c] mb-2">Gracias por avisar</h3>
+                        <p className="text-[#78716c] max-w-xs mx-auto text-sm font-light leading-relaxed">
                           Lamentamos que no puedan acompañarnos.
                         </p>
                     </div>
                   )}
 
-                  <div className="bg-[#FDFBF7] p-2 text-center border-t border-stone-100">
+                  <div className="bg-[#FDFBF7] p-2 text-center border-t border-[#e7e5e4]">
                     <button 
                       onClick={handleEdit}
-                      className="text-stone-400 hover:text-stone-600 text-[10px] font-bold uppercase tracking-widest flex items-center justify-center gap-1 mx-auto transition-colors"
+                      className="text-[#a8a29e] hover:text-[#57534e] text-[10px] font-bold uppercase tracking-widest flex items-center justify-center gap-1 mx-auto transition-colors"
                     >
                       <Edit2 size={10} />
                       Modificar
