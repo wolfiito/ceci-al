@@ -269,7 +269,9 @@ export default function RSVPSection({ guestData }: RSVPSectionProps) {
                              {guestData.isLongDistance && (
                                 <div className="mt-6 p-5 bg-[#F9F5F0] border border-[#E8E4D8] rounded-xl flex items-start gap-4">
                                     <div className="p-2 bg-white rounded-full text-[#DCC5C5] shadow-sm shrink-0"><MonitorPlay size={20} /></div>
-                                    <div><h4 className="font-serif text-base text-stone-800 mb-1">A la distancia</h4><p className="font-sans text-xs text-stone-500 leading-relaxed text-justify">Intentaremos habilitar una transmisión de la ceremonia.</p></div>
+                                    <div><h4 className="font-serif text-base text-stone-800 mb-1">Entendemos que la distancia lo hace difícil</h4><p className="font-sans text-xs text-stone-500 leading-relaxed text-justify">
+                                    Intentaremos habilitar una transmisión de la ceremonia para compartir este momento. En caso de no poder hacerlo, únete a nosotros en oración por el inicio de nuestro matrimonio.
+                                      </p></div>
                                 </div>
                             )}
                         </motion.div>
