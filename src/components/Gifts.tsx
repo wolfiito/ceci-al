@@ -42,7 +42,6 @@ const IconLiverpool = ({ className }: { className?: string }) => (
 // --- ANIMACIONES PERSONALIZADAS ---
 const EASE_LUXURY: [number, number, number, number] = [0.22, 1, 0.36, 1];
 
-// Entrar desde la Izquierda (Para Liverpool)
 const slideFromLeft: Variants = {
     hidden: { opacity: 0, x: -100 },
     visible: { 
@@ -52,7 +51,6 @@ const slideFromLeft: Variants = {
     }
 };
 
-// Entrar desde la Derecha (Para Amazon)
 const slideFromRight: Variants = {
     hidden: { opacity: 0, x: 100 },
     visible: { 
@@ -62,7 +60,6 @@ const slideFromRight: Variants = {
     }
 };
 
-// Entrar desde Abajo (Para Banco)
 const slideFromBottom: Variants = {
     hidden: { opacity: 0, y: 100 },
     visible: { 
