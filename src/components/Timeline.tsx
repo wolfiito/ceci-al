@@ -44,10 +44,9 @@ const TimelineItem = ({
 
   return (
     <motion.div
-      // AQUI ESTA LA MAGIA: Detecta cuando el elemento está al 50% de la pantalla
       initial="hidden"
       whileInView="visible"
-      viewport={{ once: false, amount: 0.5, margin: "-10% 0px -10% 0px" }}
+      viewport={{ once: true, amount: 0.5, margin: "-10% 0px -10% 0px" }}
       className={`
         relative z-10 w-full mb-24 md:mb-40
         flex justify-between items-center
