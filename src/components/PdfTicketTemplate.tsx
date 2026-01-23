@@ -11,9 +11,13 @@ interface PdfTicketTemplateProps {
 export default function PdfTicketTemplate({ guest, tableNames }: PdfTicketTemplateProps) {
   const confirmedMembers = guest.members.filter((m) => m.isConfirmed);
 
+  // LOGICA DE NOMBRE (Igual que en DigitalTicket y RSVPSection)
+  const displayTitle = guest.type === 'individual' 
+      ? guest.familyName 
+      : `Familia ${guest.familyName}`;
+
   return (
-    // CONTENEDOR FIJO: Ancho definido para alta resolución (600px ancho es buen estándar para PDF)
-    // Usamos colores HEX seguros para evitar errores.
+    // CONTENEDOR FIJO: Ancho definido para alta resolución
     <div 
       className="w-[600px] bg-[#F9F7F2] text-[#292524] relative overflow-hidden flex flex-col"
       style={{ minHeight: "900px" }} // Altura fija para formato vertical
@@ -48,9 +52,9 @@ export default function PdfTicketTemplate({ guest, tableNames }: PdfTicketTempla
           Pase de acceso para
         </p>
 
-        {/* Nombre Familia Grande */}
+        {/* NOMBRE AJUSTADO AQUÍ */}
         <h2 className="font-serif text-4xl text-[#1c1917] mb-8 leading-tight">
-          {guest.familyName}
+          {displayTitle}
         </h2>
 
         {/* Tabla de Invitados Estilizada */}
@@ -78,7 +82,7 @@ export default function PdfTicketTemplate({ guest, tableNames }: PdfTicketTempla
             </div>
             <div className="text-center">
                 <p className="text-[10px] uppercase tracking-widest text-[#a8a29e] mb-1">Código</p>
-                <p className="font-serif text-2xl text-[#292524]">Formal - Forrmal Casual</p>
+                <p className="font-serif text-2xl text-[#292524]">Formal / Riguroso</p>
             </div>
         </div>
 
@@ -98,7 +102,7 @@ export default function PdfTicketTemplate({ guest, tableNames }: PdfTicketTempla
         </p>
       </div>
 
-      {/* Textura de fondo sutil (opcional, usando CSS gradients para seguridad) */}
+      {/* Textura de fondo sutil */}
       <div className="absolute inset-0 bg-gradient-to-tr from-[#f5f5f4] via-white to-[#f5f5f4] opacity-50 -z-10" />
     </div>
   );

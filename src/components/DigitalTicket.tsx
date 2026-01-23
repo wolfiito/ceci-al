@@ -8,7 +8,7 @@ import { db } from "@/lib/firebase";
 
 interface DigitalTicketProps {
   guest: GuestData;
-  mode?: "view" | "pdf"; // <--- Nueva prop para controlar el estilo
+  mode?: "view" | "pdf"; 
 }
 
 export default function DigitalTicket({ guest, mode = "view" }: DigitalTicketProps) {
@@ -16,6 +16,11 @@ export default function DigitalTicket({ guest, mode = "view" }: DigitalTicketPro
   const totalPases = confirmedMembers.length;
   const [tableNames, setTableNames] = useState<Record<string, string>>({});
   const [isLoadingTables, setIsLoadingTables] = useState(true);
+  
+  // LOGICA DE NOMBRE (Igual que en RSVPSection)
+  const displayTitle = guest.type === 'individual' 
+      ? guest.familyName 
+      : `Familia ${guest.familyName}`;
 
   useEffect(() => {
     const fetchTableNames = async () => {
@@ -60,12 +65,12 @@ export default function DigitalTicket({ guest, mode = "view" }: DigitalTicketPro
 
         {/* CUERPO DEL TICKET */}
         <div className="p-5 bg-white relative">
-            
-            {/* Título Familia */}
+        
+            {/* Título (NOMBRE AJUSTADO AQUÍ) */}
             <div className="text-center mb-5 border-b border-dashed border-[#d6d3d1] pb-3">
                 <p className="text-[9px] uppercase tracking-widest text-[#a8a29e] mb-1">Invitación para</p>
                 <h3 className="font-serif text-2xl text-[#292524] leading-none pb-1">
-                  {guest.familyName}
+                  {displayTitle}
                 </h3>
                 <p className="text-[10px] text-[#a8a29e] font-light italic">
                     {totalPases} {totalPases === 1 ? "lugar confirmado" : "lugares confirmados"}
@@ -83,7 +88,7 @@ export default function DigitalTicket({ guest, mode = "view" }: DigitalTicketPro
                                 key={`${member.name}-${index}`} 
                                 className={`flex ${mode === 'pdf' ? 'items-start' : 'items-center'} justify-between py-2 border-b border-transparent`}
                             >
-                                {/* NOMBRE: Lógica condicional para PDF */}
+                                {/* NOMBRE */}
                                 <span className={`
                                     font-serif text-base text-[#44403c] pr-2
                                     ${mode === 'pdf' ? 'text-wrap break-words leading-tight' : 'truncate'}
@@ -124,7 +129,7 @@ export default function DigitalTicket({ guest, mode = "view" }: DigitalTicketPro
                 </div>
             </div>
             
-            {/* CÓDIGO DE BARRAS LIMPIO */}
+            {/* CÓDIGO DE BARRAS DECORATIVO */}
             <div className="mt-4 h-6 w-full opacity-10 bg-[repeating-linear-gradient(90deg,#000,#000_1px,transparent_1px,transparent_4px)]" />
         </div>
     </div>
