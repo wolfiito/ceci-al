@@ -208,9 +208,8 @@ export default function RSVPSection({ guestData }: RSVPSectionProps) {
           
           {/* HEADER HEADER MÁS COMPACTO (p-6 en vez de p-8) */}
           {!isFinished && (
-              <div className="bg-[#2C3E2E] p-2 text-center text-[#F2F0E9] relative overflow-hidden">
-                <h2 className="font-serif text-lg italic text-[#DCC5C5]">{displayTitle}</h2>
-                <div className="w-16 h-[1px] bg-[#DCC5C5] mx-auto my-3 opacity-50"></div>
+              <div className="bg-[#2C3E2E] text-center text-[#F2F0E9] relative overflow-hidden">
+                <h2 className="font text-xl italic text-[#DCC5C5]">{displayTitle}</h2>
               </div>
           )}
 
@@ -243,7 +242,10 @@ export default function RSVPSection({ guestData }: RSVPSectionProps) {
                              {guestData.isLongDistance && (
                                 <div className="mt-4 p-4 bg-[#F9F5F0] border border-[#E8E4D8] rounded-xl flex items-start gap-3">
                                     <div className="text-[#DCC5C5] shrink-0 mt-0.5"><MonitorPlay size={18} /></div>
-                                    <div><h4 className="font-serif text-sm text-stone-800 mb-1">A la distancia</h4><p className="font-sans text-[11px] text-stone-500 leading-relaxed text-justify">Intentaremos habilitar una transmisión de la ceremonia.</p></div>
+                                    <div><h4 className="font-serif text-base text-stone-800 mb-1">Entendemos que la distancia lo hace difícil</h4><p className="font-sans text-xs text-stone-500 leading-relaxed text-justify">
+                                      Intentaremos habilitar una transmisión de la ceremonia para compartir este momento. En caso de no poder hacerlo, únete a nosotros en oración por el inicio de nuestro matrimonio.
+                                    </p>
+                                    </div>
                                 </div>
                             )}
                         </motion.div>
