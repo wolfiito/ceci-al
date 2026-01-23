@@ -208,12 +208,9 @@ export default function RSVPSection({ guestData }: RSVPSectionProps) {
           
           {/* HEADER HEADER MÁS COMPACTO (p-6 en vez de p-8) */}
           {!isFinished && (
-              <div className="bg-[#2C3E2E] p-6 text-center text-[#F2F0E9] relative overflow-hidden">
-                <p className="text-[10px] md:text-xs uppercase tracking-[0.3em] opacity-70 mb-2">RSVP</p>
-                <h2 className="font-serif text-2xl md:text-3xl font-medium tracking-wide">Confirmación</h2>
+              <div className="bg-[#2C3E2E] p-2 text-center text-[#F2F0E9] relative overflow-hidden">
+                <h2 className="font-serif text-lg italic text-[#DCC5C5]">{displayTitle}</h2>
                 <div className="w-16 h-[1px] bg-[#DCC5C5] mx-auto my-3 opacity-50"></div>
-                {/* AQUÍ ESTÁ EL CAMBIO DE NOMBRE */}
-                <p className="font-serif text-lg italic text-[#DCC5C5]">{displayTitle}</p>
               </div>
           )}
 
