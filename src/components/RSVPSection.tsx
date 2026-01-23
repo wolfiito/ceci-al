@@ -113,9 +113,40 @@ export default function RSVPSection({ guestData }: RSVPSectionProps) {
     setAttendance(prev => ({ ...prev, [name]: !prev[name] }));
   };
 
-  const handleEdit = () => {
-    setIsFinished(false); 
-    setStep(1);           
+  const handleEdit = async () => {
+    // 1. Reseteamos estados visuales inmediatamente para que la UI responda rápido
+    setIsFinished(false);
+    setStep(1);
+    
+    // 2. Reseteamos la selección local (todos desmarcados)
+    // Si prefieres que se mantengan los que ya estaban, borra esta línea.
+    // Pero como pediste "isConfirmed a false", esto los limpia:
+    const resetAttendance = guestData?.members.reduce((acc, m) => ({ ...acc, [m.name]: false }), {}) || {};
+    setAttendance(resetAttendance);
+    setTicketCount(0); // Opcional: resetear contador a 0 o mantenerlo
+
+    // 3. Actualizamos Firebase para "invalidar" el pase anterior
+    if (guestData?.id && guestData.members) {
+        try {
+            const guestRef = doc(db, "guests", guestData.id);
+            
+            // Ponemos a todos los miembros en false
+            const resetMembers = guestData.members.map(m => ({
+                ...m,
+                isConfirmed: false
+            }));
+
+            await updateDoc(guestRef, {
+                status: 'pending',     // Regresa a estado pendiente
+                members: resetMembers, // Guarda los miembros desmarcados
+                // message: ''         // ¿Quieres borrar el mensaje también? Si no, quita esta línea.
+            });
+            
+            console.log("Confirmación reseteada a pending");
+        } catch (error) {
+            console.error("Error al resetear status:", error);
+        }
+    }
   };
 
   const triggerConfetti = async () => {
@@ -208,7 +239,7 @@ export default function RSVPSection({ guestData }: RSVPSectionProps) {
           
           {/* HEADER HEADER MÁS COMPACTO (p-6 en vez de p-8) */}
           {!isFinished && (
-              <div className="bg-[#2C3E2E] text-center text-[#F2F0E9] relative overflow-hidden">
+              <div className="bg-[#2C3E2E] py-4 text-center text-[#F2F0E9] relative overflow-hidden">
                 <h2 className="font text-xl italic text-[#DCC5C5]">{displayTitle}</h2>
               </div>
           )}
