@@ -15,6 +15,7 @@ import { TicketReveal } from "@/components/TicketReveal";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 import PdfTicketTemplate from "@/components/PdfTicketTemplate";
+import Interactive from "@/components/ui/Interactive";
 
 const DigitalTicket = dynamic(() => import("@/components/DigitalTicket"), {
   loading: () => (
@@ -260,14 +261,22 @@ export default function RSVPSection({ guestData }: RSVPSectionProps) {
                             
                             {/* Control de número */}
                             <div className="flex items-center justify-center gap-6">
+                              <Interactive className="rounded-full">
                                 <button onClick={() => setTicketCount(Math.max(1, ticketCount - 1))} className="w-10 h-10 rounded-full border border-stone-200 flex items-center justify-center text-stone-600 hover:bg-stone-100 transition-all active:scale-90"><Minus className="w-4 h-4" /></button>
+                              </Interactive>
                                 <span className="text-5xl font-serif text-[#2C3E2E] tabular-nums w-16 text-center">{ticketCount}</span>
+                              <Interactive className="rounded-full">
                                 <button onClick={() => setTicketCount(Math.min(maxTickets, ticketCount + 1))} className="w-10 h-10 rounded-full border border-stone-200 flex items-center justify-center text-stone-600 hover:bg-stone-100 transition-all active:scale-90"><Plus className="w-4 h-4" /></button>
+                              </Interactive>
                             </div>
 
                             <div className="space-y-3 pt-2">
+                              <Interactive className="w-full">
                                 <button onClick={handleConfirmClick} className="w-full bg-[#2C3E2E] text-[#F2F0E9] py-3.5 text-xs uppercase tracking-widest font-bold rounded-xl shadow-lg hover:bg-[#1a251b] transition-all">Confirmar Asistencia</button>
+                              </Interactive>
+                              <Interactive className="w-full"> 
                                 <button onClick={handleNoAsistireClick} className="w-full py-2 text-[10px] uppercase tracking-widest font-bold text-stone-400 hover:text-stone-600 transition-colors">Lamentablemente no podremos asistir</button>
+                              </Interactive>
                             </div>
 
                              {guestData.isLongDistance && (
