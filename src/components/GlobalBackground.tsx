@@ -6,18 +6,12 @@ import Image from "next/image";
 export default function GlobalBackground() {
   const { scrollY } = useScroll();
 
-  // LÓGICA DE APARICIÓN DEL FONDO
   const scenicOpacity = useTransform(scrollY, [500, 1200], [0, 1]);
-
-  // LÓGICA PARALLAX DEL TEXTO (Ajustada para el bottom)
-  // Ahora empieza 60px más abajo y sube suavemente hasta su posición final (y:0)
-  // para dar un efecto de "asentarse" en el fondo.
   const textY = useTransform(scrollY, [800, 1500], [60, 0]);
 
   return (
-    <div className="fixed inset-0 w-full h-full -z-50 bg-[#1A2621]">
+    <div className="fixed inset-0 w-full h-full z-0 bg-[#1A2621]">
       
-      {/* --- CAPA 1: HERO --- */}
       <div className="absolute inset-0">
          <Image 
             src="/images/hero.jpg" 
@@ -26,7 +20,19 @@ export default function GlobalBackground() {
             className="object-cover object-center" 
             priority 
          />
-         <div className="absolute inset-0 bg-[#1A2621]/50" />
+         <div
+            className="absolute inset-0"style={{
+               background:
+                  "linear-gradient(to bottom, rgba(26,38,33,.85), rgba(26,38,33,0.10) 45%, rgba(26,38,33,0))"
+               }}
+         />
+         <div
+            className="absolute inset-0"style={{
+               background:
+                  "linear-gradient(to top, rgba(26,38,33,1), rgba(26,38,33,0.10) 25%, rgba(26,38,33,0))"
+               }}
+         />
+
       </div>
 
       {/* --- CAPA 2: SCENIC + TEXTO --- */}

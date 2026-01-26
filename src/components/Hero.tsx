@@ -5,12 +5,11 @@ import { motion, Variants } from "framer-motion";
 interface HeroProps {
   names: string;
   date: string;
-  startAnimation?: boolean; // <--- NUEVA PROP
+  startAnimation?: boolean; 
 }
 
-const DUSTY_PINK_TEXT = "text-[#DCC5C5]";
+const DUSTY_PINK_TEXT = "text-[#DB8C8A]";
 
-// Le pongo true por defecto para que no se rompa si no se la pasas todavía
 export default function Hero({ names, date, startAnimation = false }: HeroProps) {
   const nameArray = names.split(/&| y /i).map(n => n.trim());
   const name1 = nameArray[0] || "Ceci";
@@ -18,28 +17,24 @@ export default function Hero({ names, date, startAnimation = false }: HeroProps)
   const formattedDate = date ? date.split("-").reverse().join(" . ") : "09 . 05 . 2026";
 
   const blurIn: Variants = {
-    hidden: { filter: "blur(10px)", opacity: 0, scale: 0.95 },
+    hidden: { filter: "blur(20px)", opacity: 0, scale: 0.95 },
     visible: { 
         filter: "blur(0px)", 
         opacity: 1, 
         scale: 1,
-        transition: { duration: 1.2, ease: "easeOut" }
+        transition: { duration: 1.4, ease: "easeOut" }
     }
   };
 
   return (
     <div className="relative h-screen w-full overflow-hidden flex flex-col justify-center items-center bg-transparent">
-      
       <div className="relative z-10 w-full text-center flex flex-col items-center h-full">
         <div className="flex flex-col items-center justify-center p-5">
-          
-          {/* NOMBRE 1 */}
           <motion.h1 
             initial="hidden"
-            // AQUI ESTA EL CAMBIO: Solo anima a "visible" si startAnimation es true
             animate={startAnimation ? "visible" : "hidden"} 
             variants={blurIn}
-            className="relative z-10 font-(family-name:--font-alex) text-8xl text-[#F2F0E9] drop-shadow-sm pointer-events-none mt-14"
+            className="relative z-10 font-(family-name:--font-alex) text-8xl text-[#F2F0E9] drop-shadow-sm pointer-events-none mt-6"
           >
             {name1}
           </motion.h1>
@@ -53,28 +48,26 @@ export default function Hero({ names, date, startAnimation = false }: HeroProps)
             className="relative z-0 flex items-center justify-center gap-4 w-full max-w-[90vw]" 
             style={{ marginTop: '-35px' }}
           >
-            <div className={`h-0.5 w-10 md:w-24 bg-[#CFA8A8]`} />
+            <div className={`h-0.5 w-10 md:w-24 bg-[#DB8C8A]`} />
             <span className={`font-(family-name:--font-bodoni) italic ${DUSTY_PINK_TEXT} text-4xl md:text-[10rem] select-none`}>
               &
             </span>
-            <div className={`h-0.5 w-10 md:w-24 bg-[#CFA8A8]`} />
+            <div className={`h-0.5 w-10 md:w-24 bg-[#DB8C8A]`} />
           </motion.div>
 
-          {/* NOMBRE 2 */}
           <motion.h1 
             initial="hidden"
             animate={startAnimation ? "visible" : "hidden"} 
             variants={blurIn}
             transition={{ delay: 0.6 }} 
             className="relative z-10 font-(family-name:--font-alex) text-8xl text-[#F2F0E9] drop-shadow-sm pointer-events-none" 
-            style={{ marginTop: '-35px' }}
+            style={{ marginTop: '-40px' }}
           >
             {name2}
           </motion.h1>
 
         </div>
 
-        {/* FECHA */}
         <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={startAnimation ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
@@ -87,7 +80,6 @@ export default function Hero({ names, date, startAnimation = false }: HeroProps)
         </motion.div>
       </div>
 
-      {/* SCROLL */}
       <motion.div 
         initial={{ opacity: 0 }}
         animate={startAnimation ? { opacity: 1 } : { opacity: 0 }}
@@ -99,8 +91,8 @@ export default function Hero({ names, date, startAnimation = false }: HeroProps)
              transition={{ repeat: Infinity, duration: 2.5, ease: "easeInOut" }}
            >
                 <div className="flex flex-col items-center">
-                    <span className="text-l uppercase tracking-widest opacity-80">Scroll</span>
-                    <ChevronDown size={28} strokeWidth={3} />
+                    <span className="text-xl uppercase tracking-widest opacity-80">Scroll</span>
+                    <ChevronDown size={38} strokeWidth={3} />
                 </div>
            </motion.div>
       </motion.div>
