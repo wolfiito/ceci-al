@@ -18,15 +18,15 @@ export default function FormalInvitation({ guestName, type = 'family' }: FormalI
 
       {/* Partículas de color ambiental (Rosa y Verde difuminados) */}
       <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
-         <div className="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] bg-[#D4A5A5]/10 rounded-full blur-3xl"></div>
-         <div className="absolute bottom-[-10%] right-[-10%] w-[500px] h-[500px] bg-[#3A4A3B]/5 rounded-full blur-3xl"></div>
+         <div className="absolute top-[-10%] left-[-10%] w-125 h-125 bg-[#D4A5A5]/10 rounded-full blur-3xl"></div>
+         <div className="absolute bottom-[-10%] right-[-10%] w-125 h-125 bg-[#3A4A3B]/5 rounded-full blur-3xl"></div>
       </div>
 
       <motion.div 
         initial={{ opacity: 0, scale: 0.95 }}
         whileInView={{ opacity: 1, scale: 1 }}
         transition={{ duration: 1, ease: "easeOut" }}
-        className="relative z-10 w-full max-w-[550px]"
+        className="relative z-10 w-full max-w-137.5"
       >
         {/* === TARJETA PRINCIPAL === */}
         <div className="relative bg-white shadow-xl shadow-[#3A4A3B]/5 p-2">
@@ -53,14 +53,14 @@ export default function FormalInvitation({ guestName, type = 'family' }: FormalI
 
               {/* INTRODUCCIÓN - Bodoni (Verde Olivo Oscuro) */}
               <h3 
-                className="text-[#3A4A3B] text-lg md:text-xl leading-relaxed max-w-[340px] mb-8 font-medium italic"
+                className="text-[#3A4A3B] text-lg md:text-xl leading-relaxed max-w-85 mb-8 font-medium italic"
                 style={{ fontFamily: 'var(--font-bodoni)' }}
               >
-                "Bajo la bendición de Dios y honrando el amor de quienes nos acompañan."
+                Con la bendición de Dios y honrando el amor de quienes nos acompañan.
               </h3>
 
               <p 
-                className="text-[#7A8B77] text-[10px] md:text-xs uppercase tracking-[0.25em] mb-4"
+                className="text-wedding-primary text-[10px] md:text-xs uppercase tracking-[0.25em] mb-4"
                 style={{ fontFamily: 'var(--font-bodoni)' }}
               >
                 Tenemos el honor de invitar a
@@ -79,7 +79,7 @@ export default function FormalInvitation({ guestName, type = 'family' }: FormalI
               {/* NOMBRE DEL INVITADO - Alex Brush */}
               <div className="relative mb-8 w-full">
                 <h1 
-                  className="text-5xl md:text-7xl text-[#2C3E2E] leading-none drop-shadow-sm"
+                  className="text-5xl md:text-7xl text-wedding-dark leading-none drop-shadow-sm"
                   style={{ fontFamily: 'var(--font-alex)' }}
                 >
                   {guestName}
@@ -87,7 +87,7 @@ export default function FormalInvitation({ guestName, type = 'family' }: FormalI
               </div>
 
               {/* Separador Floral Sutil (Rosa Palo) */}
-              <div className="mb-8 text-[#D4A5A5] w-full max-w-[120px] opacity-70">
+              <div className="mb-8 text-[#D4A5A5] w-full max-w-30 opacity-70">
                  <FloralDivider />
               </div>
 
@@ -97,7 +97,13 @@ export default function FormalInvitation({ guestName, type = 'family' }: FormalI
                     className="text-[#59665A] text-sm md:text-base italic leading-relaxed font-light"
                     style={{ fontFamily: 'var(--font-bodoni)' }}
                   >
-                    "El amor es paciente, es bondadoso... no es egoísta."
+                    "El amor es paciente, es bondadoso..."
+                  </p>
+                  <p 
+                    className="text-[#59665A] text-sm md:text-base italic leading-relaxed font-light"
+                    style={{ fontFamily: 'var(--font-bodoni)' }}
+                  >
+                    "no es egoísta."
                   </p>
                   
                   <p 
