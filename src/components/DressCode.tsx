@@ -161,6 +161,7 @@ export default function DressCode() {
                 <span> 
                     ✨ Calzado Cómodo 
                 </span>
+                <br />
                 <span>
                     (Tenis permitidos) ✨
                 </span>
