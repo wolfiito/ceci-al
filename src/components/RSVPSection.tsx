@@ -215,7 +215,7 @@ export default function RSVPSection({ guestData }: RSVPSectionProps) {
                             <div>
                                 <h4 className="font-serif text-base text-stone-800 mb-1">Desde la distancia</h4>
                                 <p className="font-sans text-xs text-stone-500 leading-relaxed text-justify">
-                                    Intentaremos habilitar una transmisión de la ceremonia. Únete a nosotros en oración.
+                                    Intentaremos habilitar una transmisión de la ceremonia. Pero si no se puede, te pedimos te unas a nosotros en oración para que nuestro matrimonio de gloria a Dios.
                                 </p>
                             </div>
                         </div>
