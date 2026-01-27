@@ -22,7 +22,7 @@ export default function Hero({ names, date, startAnimation = false }: HeroProps)
         filter: "blur(0px)", 
         opacity: 1, 
         scale: 1,
-        transition: { duration: 1.4, ease: "easeOut" }
+        transition: { duration: 1.2, ease: "easeOut" }
     }
   };
 
@@ -59,7 +59,7 @@ export default function Hero({ names, date, startAnimation = false }: HeroProps)
             initial="hidden"
             animate={startAnimation ? "visible" : "hidden"} 
             variants={blurIn}
-            transition={{ delay: 0.6 }} 
+            transition={{ delay: 0.4}} 
             className="relative z-10 font-(family-name:--font-alex) text-8xl text-[#F2F0E9] drop-shadow-sm pointer-events-none" 
             style={{ marginTop: '-40px' }}
           >

@@ -26,7 +26,7 @@ const itemVariants: Variants = {
     y: 0, 
     filter: "blur(0px)",
     transition: { 
-      duration: 1.5, 
+      duration: 1.2, 
       ease: "easeOut" 
     }
   },
