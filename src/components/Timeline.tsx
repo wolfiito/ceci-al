@@ -10,7 +10,7 @@ interface TimelineProps {
 }
 const DUSTY_PINK_TEXT = "text-[#DB8C8A]";
 const IMAGE_MAP: Record<string, { inactive: string; active: string }> = {
-  Recepcion: { inactive: "/images/recepcion_2.png", active: "/images/recepcion_1.png" },
+  Recepcion: { inactive: "/images/recepcion.png", active: "/images/recepcion.png" },
   Ceremonia: { inactive: "/images/ceremonia_2.png", active: "/images/ceremonia_1.png" },
   Fotos: { inactive: "/images/fotos_2.png", active: "/images/fotos_1.png" },
   Comida: { inactive: "/images/Banquete_2.png", active: "/images/Banquete_1.png" },
