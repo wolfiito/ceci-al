@@ -67,47 +67,21 @@ export default async function Home({ searchParams }: PageProps) {
 
   return (
     <main className="w-full bg-transparent relative">
-        {/* El GlobalBackground se queda aquí, independiente */}
         <GlobalBackground />
-        
-
-        {/* --- CAPA 1: CONTENIDO SCROLLABLE --- */}
         <div className="relative z-10">
-            
-            {/* 1. HERO CONTROLLER (Maneja Sobre + Hero + Animación) */}
-            {/* Sustituimos <EnvelopeOverlay> y <Hero> por esto: */}
-            <HeroController names={eventNames} date={eventDate} />
-
-            {/* 2. TARJETA SÓLIDA (Intro + Countdown + Invitación) */}
-            <div className="bg-wedding-light shadow-2xl overflow-hidden">
-                <Introduction />
-                <Countdown targetDate={eventDate} names={eventNames} />
-                <FormalInvitation 
-                    guestName={guestData?.familyName || "Amigos"} 
-                    type={guestData?.type || 'family'}
-                />
-            </div>
-
-            {/* 3. VENTANA DE REVEAL (Espacio Transparente) */}
-            <div className="h-[100vh] w-full bg-transparent pointer-events-none" />
-
-            {/* 4. TARJETA SÓLIDA 2 (Resto del contenido) */}
-            <div className="bg-white shadow-[0_-25px_60px_rgba(0,0,0,0.2)] rounded-t-[2.5rem] -mt-20 relative">
+          <HeroController names={eventNames} date={eventDate} />
+          <Introduction />
+          <Countdown targetDate={eventDate} names={eventNames} />
+          <FormalInvitation guestName={guestData?.familyName || "Amigos"} type={guestData?.type || 'family'}/>
+          <div className="h-screen w-full bg-transparent pointer-events-none" />
+            <div className="shadow-[0_-25px_60px_rgba(0,0,0,0.2)] rounded-t-[2.5rem] -mt-20 relative">
                 <Timeline items={eventData?.timeline} />
-                {/* <ParallaxDivider /> */}
-                <GalleryMarquee />
-                <Location 
-                    locationName={eventData?.locationName}
-                    address={eventData?.address}
-                    googleMapsUrl={eventData?.googleMapsUrl}
-                    wazeUrl={eventData?.wazeUrl}
-                />
-                
-                <div className="bg-[#F9F5F0] py-16 shadow-inner relative">
-                    <DressCode />
-                    <div className="my-10" />
-                    <Gifts gifts={eventData?.gifts} />
+                <div className="bg-white">
+                  <GalleryMarquee />
                 </div>
+                <Location locationName={eventData?.locationName} address={eventData?.address} googleMapsUrl={eventData?.googleMapsUrl} wazeUrl={eventData?.wazeUrl}/>
+                <DressCode />
+                <Gifts gifts={eventData?.gifts} />
                 
                 <RSVPSection 
                   guestData={guestData} 
@@ -115,8 +89,8 @@ export default async function Home({ searchParams }: PageProps) {
                   eventDate={eventDate} 
                 />
                 
-                <footer className="text-center py-12 bg-black text-white/60 text-sm">
-                  <p className="font-serif text-2xl mb-2 text-white">{eventNames}</p>
+                <footer className="text-center py-8 bg-black text-white/60 text-l">
+                  <p className="font-(family-name:--font-bodoni)">Con amor {eventNames} </p>
                 </footer>
             </div>
         </div>

@@ -11,58 +11,52 @@ interface FormalInvitationProps {
 export default function FormalInvitation({ guestName, type = 'family' }: FormalInvitationProps) {
   
   return (
-    <section className="relative w-full bg-[#050505] min-h-screen py-12 px-4 flex justify-center items-center overflow-hidden">
+    // FONDO: Color sólido limpio (#F9F5F0), sin texturas.
+    <section className="relative w-full bg-[#F9F5F0] min-h-[80vh] py-24 px-4 flex justify-center items-center overflow-hidden">
       
-      {/* === AMBIENTE (Fondo) === */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_#1a1500_0%,_#000000_100%)]" />
-      
-      {/* Partículas flotantes */}
+      {/* Partículas: Se mantienen sutiles en los colores del tema */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-         <FloatingParticle className="top-1/4 left-1/4" delay={0} />
-         <FloatingParticle className="bottom-1/4 right-1/3" delay={1} />
-         <FloatingParticle className="top-1/2 left-1/2" delay={3} />
+         <FloatingParticle className="top-1/4 left-1/4 bg-[#DB8C8A]" delay={0} />
+         <FloatingParticle className="bottom-1/4 right-1/3 bg-[#7A8B77]" delay={1} />
+         <FloatingParticle className="top-1/2 left-1/2 bg-[#DB8C8A]" delay={3} />
       </div>
 
       <motion.div 
         initial={{ opacity: 0, scale: 0.95 }}
         whileInView={{ opacity: 1, scale: 1 }}
         transition={{ duration: 1, ease: "easeOut" }}
-        className="relative max-w-[480px] w-full mx-auto"
+        className="relative max-w-[520px] w-full mx-auto"
       >
         
         {/* ======================================================= */}
-        {/* === SOLUCIÓN DEFINITIVA: CAPA DE ESQUINAS CON CSS PURO === */}
+        {/* === ESQUINAS BARROCAS (Verde Bosque #2C3E2E) === */}
         <div className="absolute inset-0 z-30 pointer-events-none">
             
-            {/* 1. Arriba Izquierda (Normal) */}
-            {/* ----|  */}
-            <div className="absolute top-0 left-0 w-20 h-20 text-[#D4AF37]">
+            {/* 1. Arriba Izquierda */}
+            <div className="absolute top-0 left-0 w-20 h-20 text-[#2C3E2E] opacity-80">
                 <BaroqueCorner />
             </div>
 
-            {/* 2. Arriba Derecha (Rotar 90 grados) */}
-            {/* |----  */}
+            {/* 2. Arriba Derecha */}
             <div 
-                className="absolute top-0 right-0 w-20 h-20 text-[#D4AF37]"
-                style={{ transform: 'rotate(90deg)' }} // FORZAMOS ROTACIÓN
+                className="absolute top-0 right-0 w-20 h-20 text-[#2C3E2E] opacity-80"
+                style={{ transform: 'rotate(90deg)' }} 
             >
                 <BaroqueCorner />
             </div>
 
-            {/* 3. Abajo Derecha (Rotar 180 grados) */}
-            {/* |____  */}
+            {/* 3. Abajo Derecha */}
             <div 
-                className="absolute bottom-0 right-0 w-20 h-20 text-[#D4AF37]"
-                style={{ transform: 'rotate(180deg)' }} // FORZAMOS ROTACIÓN
+                className="absolute bottom-0 right-0 w-20 h-20 text-[#2C3E2E] opacity-80"
+                style={{ transform: 'rotate(180deg)' }} 
             >
                 <BaroqueCorner />
             </div>
 
-            {/* 4. Abajo Izquierda (Rotar 270 grados - que es lo mismo que -90) */}
-            {/* ____|  */}
+            {/* 4. Abajo Izquierda */}
             <div 
-                className="absolute bottom-0 left-0 w-20 h-20 text-[#D4AF37]"
-                style={{ transform: 'rotate(270deg)' }} // FORZAMOS ROTACIÓN
+                className="absolute bottom-0 left-0 w-20 h-20 text-[#2C3E2E] opacity-80"
+                style={{ transform: 'rotate(270deg)' }} 
             >
                 <BaroqueCorner />
             </div>
@@ -71,60 +65,64 @@ export default function FormalInvitation({ guestName, type = 'family' }: FormalI
         {/* ======================================================= */}
 
 
-        {/* === ESTRUCTURA Y CONTENIDO === */}
-        <div className="relative border-[1px] border-[#D4AF37]/30 p-1 my-3 mx-3">
+        {/* === TARJETA CENTRAL === */}
+        {/* Fondo blanco semitransparente para resaltar sobre el crema */}
+        <div className="relative border-[1px] border-[#2C3E2E]/20 p-2 my-4 mx-4 shadow-xl bg-white/60 backdrop-blur-sm">
             
-            <div className="absolute inset-[4px] border-[1px] border-[#D4AF37]/20 pointer-events-none" />
+            {/* Marco interior fino */}
+            <div className="absolute inset-[6px] border-[1px] border-[#2C3E2E]/10 pointer-events-none" />
 
-            <div className="relative z-10 flex flex-col items-center text-center py-16 px-6 md:px-10 bg-[#0a0a0a]/90 backdrop-blur-[2px]">
+            <div className="relative z-10 flex flex-col items-center text-center py-16 px-6 md:px-10">
                 
                 {/* ANILLOS */}
-                <div className="relative w-24 h-24 mb-6">
+                <div className="relative w-24 h-24 mb-8">
                     <Image 
                         src="/images/iconos_anillos.png" 
                         alt="Anillos" 
                         fill 
-                        className="object-contain opacity-100 drop-shadow-[0_0_8px_rgba(212,175,55,0.4)]"
+                        className="object-contain opacity-90 drop-shadow-sm"
                     />
                 </div>
 
-                <h3 className="font-serif text-l text-[#E5E5E5] italic leading-relaxed max-w-[280px] mb-8 font-light tracking-wide">
+                {/* TEXTO INTRO: Verde Bosque */}
+                <h3 className="font-serif text-xl md:text-2xl text-[#2C3E2E] italic leading-relaxed max-w-[320px] mb-8 font-medium">
                     "Bajo la bendición de Dios y honrando el amor de quienes nos acompañan."
                 </h3>
 
-                
-
-                <p className="font-serif text-xs text-[#9CA3AF] uppercase tracking-[0.3em] mb-2">
+                <p className="font-serif text-[10px] md:text-xs text-[#7A8B77] uppercase tracking-[0.3em] mb-4">
                     Tenemos el honor de invitar a
                 </p>
 
                 {/* NOMBRE DEL INVITADO */}
-                <div className="my-6 w-full relative">
-                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-3/4 h-16 bg-[#D4AF37]/10 blur-xl rounded-full -z-10"></div>
+                <div className="my-4 w-full relative">
+                    {/* Brillo cálido muy sutil detrás del nombre */}
+                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-3/4 h-20 bg-[#DB8C8A]/10 blur-2xl rounded-full -z-10"></div>
                     
                     {type === 'family' && (
-                        <span className="block font-sans text-[9px] text-[#D4AF37] uppercase tracking-[0.4em] font-bold mb-3">
+                        <span className="block font-sans text-[10px] text-[#DB8C8A] uppercase tracking-[0.4em] font-bold mb-2">
                             Familia
                         </span>
                     )}
+                    
                     <span 
-                        className="font-alex text-5xl md:text-7xl text-[#F4EBD0] block leading-none drop-shadow-lg" 
+                        className="font-alex text-5xl md:text-7xl text-[#2C3E2E] block leading-none drop-shadow-sm" 
                         style={{ fontFamily: 'var(--font-alex), cursive' }}
                     >
                         {guestName}
                     </span>
                 </div>
 
-                {/* Adorno Inferior Sutil */}
-                <div className="mb-6 opacity-60">
+                {/* Adorno Inferior (Rosa Palo) */}
+                <div className="mb-8 mt-2 opacity-80 text-[#DB8C8A]">
                      <SimpleFlourish />
                 </div>
 
-                <div className="max-w-xs mx-auto mt-2">
-                    <p className="font-serif text-sm text-[#D1D5DB] italic leading-relaxed font-light">
+                {/* VERSÍCULO */}
+                <div className="max-w-xs mx-auto">
+                    <p className="font-serif text-sm text-[#57534e] italic leading-relaxed font-light">
                         "El amor es paciente, es bondadoso... no es egoísta."
                     </p>
-                    <p className="font-sans text-[10px] text-[#D4AF37] uppercase tracking-[0.25em] mt-4 font-bold border-t border-[#D4AF37]/30 pt-4 inline-block">
+                    <p className="font-sans text-[10px] text-[#2C3E2E] uppercase tracking-[0.25em] mt-4 font-bold border-t border-[#2C3E2E]/20 pt-4 inline-block">
                         1 Corintios 13:4-5
                     </p>
                 </div>
@@ -136,48 +134,44 @@ export default function FormalInvitation({ guestName, type = 'family' }: FormalI
   );
 }
 
-// === COMPONENTES SVG (Sin cambios aquí, el SVG base está bien) ===
+// === COMPONENTES SVG ===
 
-// 1. ESQUINA BARROCA
 function BaroqueCorner({ className }: { className?: string }) {
-    // Este SVG está dibujado para ser la esquina Superior-Izquierda por defecto
     return (
         <svg viewBox="0 0 100 100" fill="none" className={className} xmlns="http://www.w3.org/2000/svg">
             <path d="M2 98V30C2 15 15 2 30 2H98" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-            <path d="M15 98V35C15 25 25 15 35 15H100" stroke="currentColor" strokeWidth="0.8" strokeLinecap="round" opacity="0.7"/>
+            <path d="M15 98V35C15 25 25 15 35 15H100" stroke="currentColor" strokeWidth="0.8" strokeLinecap="round" opacity="0.6"/>
             <circle cx="2" cy="2" r="2" fill="currentColor" />
             <circle cx="30" cy="2" r="1.5" fill="currentColor" />
             <circle cx="2" cy="30" r="1.5" fill="currentColor" />
-            <path d="M2 30 Q 15 30 25 20 Q 30 15 30 2" stroke="currentColor" strokeWidth="0.5" opacity="0.5" />
+            <path d="M2 30 Q 15 30 25 20 Q 30 15 30 2" stroke="currentColor" strokeWidth="0.5" opacity="0.4" />
         </svg>
     );
 }
 
-// 2. Adorno pequeño inferior
 function SimpleFlourish() {
     return (
-         <svg width="40" height="10" viewBox="0 0 40 10" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M0 5C10 5 15 10 20 10C25 10 30 5 40 5" stroke="#D4AF37" strokeWidth="1" opacity="0.6" />
+         <svg width="60" height="15" viewBox="0 0 40 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M0 5C10 5 15 10 20 10C25 10 30 5 40 5" stroke="currentColor" strokeWidth="1" opacity="0.8" />
         </svg>
     )
 }
 
-// 3. Partícula
 function FloatingParticle({ className, delay }: { className?: string, delay: number }) {
     return (
         <motion.div
             animate={{ 
-                y: [0, -20, 0], 
-                opacity: [0, 0.6, 0],
+                y: [0, -30, 0], 
+                opacity: [0, 0.4, 0],
                 scale: [0.5, 1, 0.5] 
             }}
             transition={{ 
-                duration: 5, 
+                duration: 6, 
                 repeat: Infinity, 
                 delay: delay,
                 ease: "easeInOut" 
             }}
-            className={`absolute w-1 h-1 bg-[#D4AF37] rounded-full blur-[1px] ${className}`}
+            className={`absolute w-1.5 h-1.5 rounded-full blur-[1px] ${className}`}
         />
     );
 }

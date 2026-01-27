@@ -23,13 +23,13 @@ export default function GlobalBackground() {
          <div
             className="absolute inset-0"style={{
                background:
-                  "linear-gradient(to bottom, rgba(26,38,33,.85), rgba(26,38,33,0.10) 45%, rgba(26,38,33,0))"
+                  "linear-gradient(to bottom, rgba(26,38,33,.85), rgba(26,38,33,0.10) 55%, rgba(26,38,33,0))"
                }}
          />
          <div
             className="absolute inset-0"style={{
                background:
-                  "linear-gradient(to top, rgba(26,38,33,1), rgba(26,38,33,0.10) 25%, rgba(26,38,33,0))"
+                  "linear-gradient(to top, rgba(26,38,33,1), rgba(26,38,33,0.10) 30%, rgba(26,38,33,0))"
                }}
          />
 
@@ -59,24 +59,11 @@ export default function GlobalBackground() {
             // CAMBIO CLAVE: items-end (abajo) y pb-[10px] (separación exacta)
             className="absolute inset-0 flex items-end justify-center px-6 z-10 pb-20"
          >
-             <div className="text-center">
-                 {/* Cita Bíblica (Un poco más pequeña para el bottom) */}
-                 <h3 className="font-(family-name:--font-bodoni) text-4xl md:text-5xl text-[#F2F0E9] italic drop-shadow-xl mb-4">
-                    "Encontré al que ama mi alma"
-                 </h3>
-                 
-                 {/* Referencia y adorno */}
-                 <div className="flex flex-col items-center gap-3">
-                     <div className="w-12 h-[1.5px] bg-[#DCC5C5]" />
-                     <p className="font-sans text-sm md:text-xs text-[#DCC5C5] uppercase tracking-[0.4em] font-bold drop-shadow-md">
-                        Cantares 3:4
-                     </p>
-                     <div className="w-12 h-[1.5px] bg-[#DCC5C5]" />
-                 </div>
-             </div>
          </motion.div>
 
       </motion.div>
+
+      
 
     </div>
   );

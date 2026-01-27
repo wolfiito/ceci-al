@@ -13,6 +13,7 @@ import {
 } from "framer-motion";
 import { X } from "lucide-react";
 import Image from "next/image";
+import { backgroundClip } from "html2canvas/dist/types/css/property-descriptors/background-clip";
 
 // --- FUNCIÓN UTILITARIA ---
 const wrap = (min: number, max: number, v: number) => {
@@ -133,61 +134,32 @@ export default function GalleryMarquee() {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
   return (
-    // CAMBIO 1: Quitamos el bg-color fijo y dejamos solo relative y overflow-hidden
-    <section className="relative py-24 overflow-hidden min-h-[800px] flex flex-col justify-center">
-        
-      {/* CAMBIO 2: FONDO DE IMAGEN */}
-      <div className="absolute inset-0 -z-10">
-         {/* La imagen de fondo (reemplaza '/images/fondo-galeria.jpg' por tu imagen real) */}
-         {/* Puede ser una textura de papel, flores borrosas o un paisaje */}
-         <Image 
-            src="/images/ticket-bg.jpg" // Usé la misma del ticket porque sé que la tienes, cámbiala si gustas
-            alt="Fondo Galería"
-            fill
-            className="object-cover"
-            priority={false}
-         />
-         
-         {/* CAMBIO 3: CAPAS DE MEZCLA (OVERLAYS) */}
-         {/* Esta capa blanca semi-transparente asegura que las fotos resalten sobre el fondo */}
-         <div className="absolute inset-0 bg-[#F9F5F0]/90 backdrop-blur-[2px]"></div>
-         
-         {/* Gradiente sutil para dar profundidad arriba y abajo */}
-         <div className="absolute inset-0 bg-gradient-to-b from-[#F9F5F0] via-transparent to-[#F9F5F0]"></div>
-      </div>
-
-      {/* CONTENIDO (z-10 para estar encima del fondo) */}
+    <section className="relative overflow-hidden py-10 min-h-100 flex flex-col justify-center">
       <div className="relative z-10">
-          <div className="container mx-auto px-4 mb-16 text-center">
-              <motion.p 
-                initial={{ opacity: 0, y: 10 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                className="text-xs uppercase tracking-[0.3em] text-stone-500 mb-4 font-bold"
-              >
-                  Galería de Recuerdos
-              </motion.p>
-              <motion.h2 
+          <motion.h2 
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 }}
-                className="font-serif text-4xl md:text-5xl text-stone-800 italic drop-shadow-sm"
+                className="font-(family-name:--font-bodoni) w-100 text-3xl md:text-5xl text-stone-100 italic drop-shadow-l" style={{ marginTop: '-40px' }}
               >
+                <div className="container mx-auto px-4 py-10 mb-20 text-center bg-[#DB8C8A]" style={{marginTop: '-5px'}}>
                   Momentos Inolvidables
+                </div>
+
               </motion.h2>
-          </div>
 
           {/* --- SLIDERS DE VELOCIDAD --- */}
-          <div className="relative flex flex-col gap-6 w-full transform -rotate-2 scale-105 origin-center"> 
+          <div className="relative flex flex-col gap-6 w-full transform scale-100 origin-center"> 
             
             {/* Fila 1 */}
-            <ParallaxSlider images={ROW_1} baseVelocity={-0.3} onImageClick={setSelectedImage} />
+            <ParallaxSlider images={ROW_1} baseVelocity={-0.5} onImageClick={setSelectedImage} />
             
             {/* Fila 2 */}
-            <ParallaxSlider images={ROW_2} baseVelocity={0.3} onImageClick={setSelectedImage} />
+            <ParallaxSlider images={ROW_2} baseVelocity={0.4} onImageClick={setSelectedImage} />
 
             {/* Gradientes laterales actualizados para coincidir con la transparencia */}
-            <div className="absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-[#F9F5F0] to-transparent z-10 pointer-events-none" />
-            <div className="absolute inset-y-0 right-0 w-24 bg-gradient-to-l from-[#F9F5F0] to-transparent z-10 pointer-events-none" />
+            <div className="absolute inset-y-0 left-0 w-24 bg-linear-to-r from-[#726f6b] to-transparent z-10 pointer-events-none" />
+            <div className="absolute inset-y-0 right-0 w-24 bg-linear-to-l from-[#726f6b] to-transparent z-10 pointer-events-none" />
           </div>
       </div>
 
@@ -224,8 +196,7 @@ export default function GalleryMarquee() {
             </motion.div>
           </motion.div>
         )}
-      </AnimatePresence>
-
+      </AnimatePresence>    
     </section>
   );
 }

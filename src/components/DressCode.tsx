@@ -51,10 +51,7 @@ export default function DressCode() {
   const containerRef = useRef(null);
 
   return (
-    <section 
-      ref={containerRef} 
-      className="relative md:py-24 px-4 bg-[#F9F5F0] overflow-hidden"
-    >
+    <section ref={containerRef} className="relative py-20 md:py-24 px-4 bg-[#F9F5F0] overflow-hidden">
       
       {/* Fondo Decorativo Sutil */}
       <div className="absolute inset-0 pointer-events-none">

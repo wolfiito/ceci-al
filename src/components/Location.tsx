@@ -107,7 +107,7 @@ export default function Location({
   };
 
   return (
-    <section className="w-full min-h-[60vh] bg-[#fcfaf7] px-2 md:px-8 flex flex-col items-center justify-center">
+    <section className="bg-[#DB8C8A] py-16 w-full min-h-[60vh] px-2 md:px-8 flex flex-col items-center justify-center">
       
       {/* Título de la Sección */}
       <motion.div 
@@ -117,7 +117,7 @@ export default function Location({
         transition={{ duration: 0.8, ease: "easeOut" }}
         className="text-center mb-10"
       >
-        <h2 className="text-6xl md:text-5xl font-serif text-stone-800">
+        <h2 className="font-(family-name:--font-bodoni)  text-5xl md:text-5xl text-stone-50">
           Ubicación
         </h2>
         <motion.div 
@@ -135,7 +135,7 @@ export default function Location({
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ margin: "-50px" }} 
         transition={{ duration: 0.7, ease: "easeOut" }}
-        className="w-full max-w-5xl bg-white rounded-3xl shadow-2xl overflow-hidden border border-stone-100 flex flex-row"
+        className="w-full max-w-5xl rounded-3xl shadow-2xl overflow-hidden border border-stone-100 flex flex-row"
       >
         
         {/* COLUMNA IZQUIERDA: INFORMACIÓN (Con animación escalonada) */}
@@ -152,7 +152,7 @@ export default function Location({
           <div className="mb-2 md:mb-8 relative z-10 w-full">
             <motion.h3 
               variants={itemVariants}
-              className="text-4xl md:text-4xl font-serif text-stone-800 mb-2 md:mb-4 leading-tight break-words"
+              className="text-2xl md:text-4xl font-serif text-stone-800 mb-2 md:mb-4 leading-tight break-words"
             >
               {venue}
             </motion.h3>

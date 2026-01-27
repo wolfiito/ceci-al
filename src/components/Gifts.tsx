@@ -99,10 +99,10 @@ export default function Gifts({ gifts }: GiftsProps) {
   const formatClabe = (clabe: string) => clabe.replace(/(.{4})/g, '$1 ').trim();
 
   return (
-    <section className="relative py-24 md:py-32 px-4 bg-[#F9F5F0] overflow-hidden">
+    <section className="relative py-24 md:py-32 px-4 overflow-hidden" style={{ background: '#FFFFFF'}}>
       
       {/* Fondo sutil */}
-      <div className="absolute inset-0 opacity-[0.03] bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-black via-transparent to-transparent [background-size:20px_20px]" />
+      <div className="absolute inset-0 opacity-[0.03] bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))]" />
 
       <div className="max-w-4xl mx-auto relative z-10 flex flex-col items-center">
         
@@ -114,12 +114,9 @@ export default function Gifts({ gifts }: GiftsProps) {
              viewport={{ once: false, amount: 0.5 }} // once: false para repetir al scrollear
              transition={{ duration: 1, ease: EASE_LUXURY }}
           >
-             <h2 className="font-sans text-5xl md:text-7xl font-extrabold text-wedding-dark uppercase tracking-tight mb-2">
-               Detalles
-             </h2>
-             <p className="font-serif text-3xl md:text-4xl text-wedding-secondary transform -rotate-2">
+             <h2 className="font-serif text-4xl md:text-4xl text-wedding-secondary transform -rotate-2">
                Mesa de Regalos
-             </p>
+             </h2>
           </motion.div>
 
           <motion.p 
@@ -242,7 +239,7 @@ export default function Gifts({ gifts }: GiftsProps) {
                                 </div>
                                 <div className="space-y-1 z-10">
                                     <p className="font-serif text-xl opacity-90">Lluvia de Sobres</p>
-                                    <p className="font-sans text-[9px] uppercase tracking-widest opacity-50">Toca para ver datos</p>
+                                    <p className="font-sans text-[16px] uppercase tracking-widest opacity-50">Toca para ver datos</p>
                                 </div>
                                 <div className="flex justify-between items-end z-10">
                                     <p className="font-mono text-base tracking-widest opacity-80">**** 2026</p>

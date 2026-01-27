@@ -8,7 +8,7 @@ interface HeroProps {
   startAnimation?: boolean; 
 }
 
-const DUSTY_PINK_TEXT = "text-[#DB8C8A]";
+const DUSTY_PINK_TEXT = "text-[#DCC5C5]";
 
 export default function Hero({ names, date, startAnimation = false }: HeroProps) {
   const nameArray = names.split(/&| y /i).map(n => n.trim());
@@ -48,11 +48,11 @@ export default function Hero({ names, date, startAnimation = false }: HeroProps)
             className="relative z-0 flex items-center justify-center gap-4 w-full max-w-[90vw]" 
             style={{ marginTop: '-35px' }}
           >
-            <div className={`h-0.5 w-10 md:w-24 bg-[#DB8C8A]`} />
+            <div className={`h-0.5 w-10 md:w-24 bg-[#DCC5C5]`} />
             <span className={`font-(family-name:--font-bodoni) italic ${DUSTY_PINK_TEXT} text-4xl md:text-[10rem] select-none`}>
               &
             </span>
-            <div className={`h-0.5 w-10 md:w-24 bg-[#DB8C8A]`} />
+            <div className={`h-0.5 w-10 md:w-24 bg-[#DCC5C5]`} />
           </motion.div>
 
           <motion.h1 

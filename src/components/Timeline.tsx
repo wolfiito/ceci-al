@@ -8,7 +8,7 @@ import { TimelineItem as TimelineItemType } from "@/types/wedding";
 interface TimelineProps {
   items?: TimelineItemType[];
 }
-
+const DUSTY_PINK_TEXT = "text-[#DB8C8A]";
 const IMAGE_MAP: Record<string, { inactive: string; active: string }> = {
   Recepcion: { inactive: "/images/recepcion_2.png", active: "/images/recepcion_1.png" },
   Ceremonia: { inactive: "/images/ceremonia_2.png", active: "/images/ceremonia_1.png" },
@@ -17,19 +17,19 @@ const IMAGE_MAP: Record<string, { inactive: string; active: string }> = {
   Brindis: { inactive: "/images/Fiesta_2.png", active: "/images/Fiesta_1.png" },
 };
 
-// Variantes suaves para el texto
+// === MEJORA 1: Variantes más "snappy" (rápidas) ===
+// Quitamos el 'blur' que consume GPU y bajamos la duración.
 const textVariants: Variants = {
   hidden: { 
-    opacity: 0.3, 
-    filter: "blur(2px)",
-    scale: 0.95,
-    x: 0 
+    opacity: 0.2, 
+    y: 10,
+    scale: 0.98,
   },
   visible: { 
     opacity: 1, 
-    filter: "blur(0px)",
+    y: 0,
     scale: 1,
-    transition: { duration: 0.5, ease: "easeOut" }
+    transition: { duration: 0.35, ease: "easeOut" } // Más rápido
   }
 };
 
@@ -46,18 +46,16 @@ const TimelineItem = ({
     <motion.div
       initial="hidden"
       whileInView="visible"
-      // MAGIA DEL VIEWPORT:
-      // margin top: "50%" -> Expande el área de detección hacia arriba. Si el item sale por arriba, sigue "activo".
-      // margin bottom: "-50%" -> Recorta el área por abajo. Solo se activa cuando el item llega a la mitad de la pantalla.
-      // once: false -> Permite que se apague si bajas mucho (retrocedes en el scroll y sale por abajo).
-      viewport={{ once: false, margin: "50% 0px -50% 0px" }}
+      // === MEJORA 2: Ajuste del Viewport ===
+      // Hacemos que reaccione un poco antes al entrar
+      viewport={{ once: false, margin: "-35% 0px -35% 0px" }}
       className={`
-        relative z-10 w-full mb-24 md:mb-32
+        relative z-10 w-full mb-20 md:mb-32
         flex items-center justify-center gap-4 md:gap-8
         ${isEven ? "flex-row-reverse" : "flex-row"}
       `}
     >
-      {/* 1. LADO VACÍO (Mantiene el equilibrio) */}
+      {/* 1. ESPACIO VACÍO */}
       <div className="flex-1" />
 
       {/* 2. CÍRCULO CENTRAL */}
@@ -67,55 +65,74 @@ const TimelineItem = ({
             backgroundColor: "#FFF5E1", 
             borderColor: "#FFF5E1", 
             scale: 1, 
-            boxShadow: "0px 4px 10px rgba(0,0,0,0.05)" 
+            boxShadow: "0px 2px 5px rgba(0,0,0,0.05)" 
           },
           visible: { 
             backgroundColor: "#DB8C8A", 
             borderColor: "#DB8C8A", 
-            scale: 1.15, // Cuidado con escalar demasiado
-            boxShadow: "0px 10px 25px rgba(219,140,138,0.5)" 
+            scale: 1.1, 
+            boxShadow: "0px 8px 20px rgba(219,140,138,0.4)" 
           }
         }}
+        // Transición más rápida para el círculo también
+        transition={{ duration: 0.35 }}
         className="
           relative z-20 
-          w-24 h-24 sm:w-32 sm:h-32 
+          w-20 h-20 sm:w-32 sm:h-32 
           border-[3px] sm:border-[4px] rounded-full 
           flex items-center justify-center flex-none
-          overflow-hidden transition-colors duration-500
+          overflow-hidden
         "
       >
         {/* Imagen Inactiva */}
         <motion.div 
           variants={{ hidden: { opacity: 1 }, visible: { opacity: 0 } }}
+          transition={{ duration: 0.3 }}
           className="absolute inset-0 p-4"
         >
-          <Image src={images.inactive} alt={data.title} fill className="object-contain" />
+          {/* === MEJORA 3: Propiedad 'sizes' === 
+              Esto evita descargar la imagen gigante en móviles. */}
+          <Image 
+            src={images.inactive} 
+            alt={data.title} 
+            fill 
+            sizes="(max-width: 768px) 100px, 150px"
+            className="object-contain" 
+          />
         </motion.div>
 
         {/* Imagen Activa */}
         <motion.div 
-          variants={{ hidden: { opacity: 0, scale: 0.8 }, visible: { opacity: 1, scale: 1 } }}
+          variants={{ hidden: { opacity: 0, scale: 0.9 }, visible: { opacity: 1, scale: 1 } }}
+          transition={{ duration: 0.35 }}
           className="absolute inset-0 p-4"
         >
-          <Image src={images.active} alt={data.title} fill className="object-contain drop-shadow-md" />
+           {/* 'sizes' y 'priority' para que esté lista antes */}
+          <Image 
+            src={images.active} 
+            alt={data.title} 
+            fill 
+            sizes="(max-width: 768px) 100px, 150px"
+            className="object-contain drop-shadow-md" 
+          />
         </motion.div>
       </motion.div>
 
-      {/* 3. TEXTO (Ahora con flex-1 para ocupar el espacio restante sin chocar) */}
+      {/* 3. TEXTO */}
       <motion.div
         variants={textVariants}
         className={`flex-1 ${isEven ? "text-right" : "text-left"}`}
       >
         <motion.span 
           variants={{ hidden: { color: "#d6d3d1" }, visible: { color: "#DB8C8A" } }}
-          className="block font-bold tracking-widest uppercase mb-1 text-xs md:text-sm"
+          className="block font-bold tracking-widest uppercase mb-1 text-xl md:text-2xl"
         >
           {data.time}
         </motion.span>
 
         <motion.h3 
-          variants={{ hidden: { color: "#d6d3d1" }, visible: { color: "#292524" } }}
-          className="font-serif text-xl sm:text-3xl mb-2 leading-tight"
+          variants={{ hidden: { color: "#d6d3d1" }, visible: { color: "#ffffff" } }}
+          className="font-(family-name:--font-bodoni) font-bold text-2xl sm:text-3xl mb-2 leading-tight"
         >
           {data.title}
         </motion.h3>
@@ -134,24 +151,24 @@ export default function Timeline({ items = [] }: TimelineProps) {
     target: containerRef,
     offset: ["start center", "end center"]
   });
+  
   const scaleY = useTransform(scrollYProgress, [0, 1], [0, 1]);
-
+  
   if (!items.length) return null;
 
   return (
-    <section className="relative py-24 md:py-32 bg-white overflow-hidden">
-      <div className="text-center mb-24 px-4">
-        <span className="uppercase tracking-[0.3em] text-xs text-[#DB8C8A] font-bold block mb-3">
-          Agenda del Día
-        </span>
-        <h2 className="font-serif text-5xl sm:text-7xl text-stone-800">
+    <section className="relative py-6 md:py-32 overflow-hidden">
+      <div className="text-center mb-20 px-4">
+        <h2 className="font-(family-name:--font-bodoni) text-5xl sm:text-7xl text-[#DB8C8A]">
           Itinerario
         </h2>
       </div>
 
       <div className="max-w-5xl mx-auto px-4 relative" ref={containerRef}>
-        {/* Líneas Centrales */}
+        {/* Línea Base */}
         <div className="absolute left-1/2 top-0 bottom-0 w-[2px] -ml-[1px] bg-[#F5EFE6]" />
+        
+        {/* Línea de Progreso */}
         <motion.div
           style={{ scaleY, originY: 0 }}
           className="absolute left-1/2 top-0 bottom-0 w-[2px] -ml-[1px] bg-[#DB8C8A]"
