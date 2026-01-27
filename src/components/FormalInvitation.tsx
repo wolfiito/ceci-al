@@ -97,13 +97,13 @@ export default function FormalInvitation({ guestName, type = 'family' }: FormalI
                     className="text-[#59665A] text-sm md:text-base italic leading-relaxed font-light"
                     style={{ fontFamily: 'var(--font-bodoni)' }}
                   >
-                    "El amor es paciente, es bondadoso..."
+                    El amor es paciente,
                   </p>
                   <p 
                     className="text-[#59665A] text-sm md:text-base italic leading-relaxed font-light"
                     style={{ fontFamily: 'var(--font-bodoni)' }}
                   >
-                    "no es egoísta."
+                    es bondadoso... no es egoísta.
                   </p>
                   
                   <p 

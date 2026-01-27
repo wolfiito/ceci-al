@@ -75,7 +75,7 @@ export default async function Home({ searchParams }: PageProps) {
           <FormalInvitation guestName={guestData?.familyName || "Amigos"} type={guestData?.type || 'family'}/>
           <div className="h-screen w-full bg-transparent pointer-events-none" />
             <div className="shadow-[0_-25px_60px_rgba(0,0,0,0.2)] rounded-t-[2.5rem] -mt-20 relative">
-                <div className="bg-[#051602ab]">
+                <div className="bg-[#05160293]">
                   <Timeline items={eventData?.timeline} />
                 </div>
                 <div className="bg-white">

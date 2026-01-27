@@ -157,11 +157,11 @@ export default function DressCode() {
             className="text-center max-w-2xl px-4"
         >
             {/* Nota de Calzado */}
-            <div className="mb-8">
-                <span className="inline-block bg-white px-4 py-2 rounded-full shadow-sm text-xs md:text-sm uppercase tracking-widest text-stone-500 font-bold border border-stone-100">
+            <div className="mb-8 inline-block bg-white px-4 py-2 rounded-full shadow-sm text-xs md:text-sm uppercase tracking-widest text-stone-500 font-bold border border-stone-100">
+                <span> 
                     ✨ Calzado Cómodo 
                 </span>
-                <span className="inline-block bg-white px-4 py-2 rounded-full shadow-sm text-xs md:text-sm uppercase tracking-widest text-stone-500 font-bold border border-stone-100">
+                <span>
                     (Tenis permitidos) ✨
                 </span>
             </div>
