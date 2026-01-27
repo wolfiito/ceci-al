@@ -22,7 +22,7 @@ export default function Hero({ names, date, startAnimation = false }: HeroProps)
         filter: "blur(0px)", 
         opacity: 1, 
         scale: 1,
-        transition: { duration: 1.2, ease: "easeOut" }
+        transition: { duration: 1.1, ease: "easeOut" }
     }
   };
 
@@ -44,7 +44,7 @@ export default function Hero({ names, date, startAnimation = false }: HeroProps)
             initial="hidden"
             animate={startAnimation ? "visible" : "hidden"} 
             variants={blurIn}
-            transition={{ delay: 0.3 }} 
+            transition={{ delay: 0.2 }} 
             className="relative z-0 flex items-center justify-center gap-4 w-full max-w-[90vw]" 
             style={{ marginTop: '-35px' }}
           >
@@ -59,7 +59,7 @@ export default function Hero({ names, date, startAnimation = false }: HeroProps)
             initial="hidden"
             animate={startAnimation ? "visible" : "hidden"} 
             variants={blurIn}
-            transition={{ delay: 0.4}} 
+            transition={{ delay: 0.2}} 
             className="relative z-10 font-(family-name:--font-alex) text-8xl text-[#F2F0E9] drop-shadow-sm pointer-events-none" 
             style={{ marginTop: '-40px' }}
           >
@@ -71,7 +71,7 @@ export default function Hero({ names, date, startAnimation = false }: HeroProps)
         <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={startAnimation ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-            transition={{ delay: 1, duration: 1 }}
+            transition={{ delay: 0.2 }}
             className="md:mt-24 relative z-20"
         >
           <span className={`text-3xl md:text-lg font-bold font-(family-name:--font-bodoni) italic ${DUSTY_PINK_TEXT} uppercase`} style={{ marginTop: '-100px' }}>
@@ -83,12 +83,12 @@ export default function Hero({ names, date, startAnimation = false }: HeroProps)
       <motion.div 
         initial={{ opacity: 0 }}
         animate={startAnimation ? { opacity: 1 } : { opacity: 0 }}
-        transition={{ delay: 1.5 }}
+        transition={{ delay: 0.2 }}
         className={`absolute bottom-8 z-30 ${DUSTY_PINK_TEXT} opacity-70`}
       >
            <motion.div
              animate={{ y: [0, 6, 0] }} 
-             transition={{ repeat: Infinity, duration: 2.5, ease: "easeInOut" }}
+             transition={{ repeat: Infinity, duration: .5, ease: "easeInOut" }}
            >
                 <div className="flex flex-col items-center">
                     <span className="text-xl uppercase tracking-widest opacity-80">Scroll</span>

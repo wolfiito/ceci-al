@@ -209,9 +209,9 @@ export default function Gifts({ gifts }: GiftsProps) {
                     variants={slideFromBottom}
                     initial="hidden"
                     whileInView="visible"
-                    viewport={{ once: false, margin: "-50px" }} // Repite animación
+                    viewport={{ once: false, margin: "10px" }} 
                 >
-                     <div className="mb-4 flex items-center justify-center gap-2 text-wedding-primary/80">
+                     <div className="mb-2 flex items-center justify-center gap-2 text-wedding-primary/80">
                         <Sparkles size={16} />
                         <span className="text-xs font-bold uppercase tracking-widest">Transferencia Bancaria</span>
                     </div>
@@ -277,7 +277,7 @@ export default function Gifts({ gifts }: GiftsProps) {
                             </div>
                         </motion.div>
                     </div>
-                    <p className="mt-4 text-[9px] text-center text-wedding-dark/40 font-sans uppercase tracking-widest animate-pulse">
+                    <p className="mt-4 mb-16 text-[9px] text-center text-wedding-dark/40 font-sans uppercase tracking-widest animate-pulse">
                         Toca para ver cuenta
                     </p>
                 </motion.div>
