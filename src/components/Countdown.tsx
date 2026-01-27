@@ -38,21 +38,21 @@ const itemVariants: Variants = {
 };
 
 const TimeBox = ({ value, label }: { value: number; label: string }) => (
-  <motion.div variants={itemVariants} className="flex flex-col items-center justify-center relative group min-w-[60px] md:min-w-[100px]">
+  <motion.div variants={itemVariants} className="flex flex-col items-center justify-center relative group min-w-15 md:min-w-25">
     <div className="relative">
-        <span className="absolute top-1 left-1 text-4xl sm:text-6xl md:text-8xl font-serif font-medium text-black/20 select-none blur-[2px]">
+        <span className="absolute top-1 left-1 text-4xl sm:text-6xl md:text-8xl font-(family-name:--font-bodoni) font-medium text-black/20 select-none blur-[2px]">
              {value.toString().padStart(2, '0')}
         </span>
-        <span className="relative text-4xl sm:text-6xl md:text-8xl font-serif font-medium text-stone-100 tabular-nums leading-none tracking-tight drop-shadow-lg">
+        <span className="relative text-4xl sm:text-6xl md:text-8xl font-(family-name:--font-bodoni) font-medium text-stone-100 tabular-nums leading-none tracking-tight drop-shadow-lg">
              {value.toString().padStart(2, '0')}
         </span>
     </div>
     <div className="mt-1 md:mt-4 flex items-center gap-1 md:gap-2">
-        <div className="h-[1px] w-2 md:w-6 bg-stone-300/60" />
+        <div className="h-px w-2 md:w-6 bg-stone-300/60" />
         <span className="text-[8px] sm:text-xs uppercase tracking-[0.2em] md:tracking-[0.3em] text-stone-200 font-semibold drop-shadow-md">
             {label}
         </span>
-        <div className="h-[1px] w-2 md:w-6 bg-stone-300/60" />
+        <div className="h-1px w-2 md:w-6 bg-stone-300/60" />
     </div>
   </motion.div>
 );
@@ -62,7 +62,7 @@ const Separator = () => (
         variants={itemVariants} 
         className="hidden md:flex flex-col justify-start items-center h-full pt-2 md:pt-4"
     >
-        <span className="text-2xl md:text-4xl text-stone-300/80 font-serif drop-shadow-md">:</span>
+        <span className="text-2xl md:text-4xl text-stone-300/80 font-(family-name:--font-bodoni) drop-shadow-md">:</span>
     </motion.div>
 );
 
@@ -90,16 +90,12 @@ export default function Countdown({ targetDate, names, locationName }: Countdown
   };
 
   return (
-    // CAMBIO: justify-between para distribuir espacio (título arriba, resto abajo)
     <section 
         ref={containerRef} 
         className="relative w-full h-screen flex flex-col justify-between items-center overflow-hidden py-12 md:py-24 px-4"
     >
-      
-      {/* 1. FONDO CON IMAGEN RECUPERADA */}
       <div className="absolute inset-0 w-full h-full z-0">
           <motion.div style={{ y: yBg }} className="absolute inset-0 w-full h-[120%] -top-[10%]">
-             {/* IMPORTANTE PARA PRODUCCIÓN: Usa <Image /> de Next.js */}
              <Image 
                 src="/images/couple-seated.jpg" 
                 alt="Fondo Pareja"
@@ -108,9 +104,9 @@ export default function Countdown({ targetDate, names, locationName }: Countdown
                 className="w-full h-full object-cover object-center brightness-[0.70]" 
              />
           </motion.div>
-          <div className="absolute inset-x-0 bottom-0 h-[60vh] bg-gradient-to-t from-black/60 to-transparent" />
+          <div className="absolute inset-x-0 bottom-0 h-[60vh] bg-linear-to-t from-black/60 to-transparent" />
           {/* Degradado superior para que el título se lea bien arriba */}
-          <div className="absolute inset-x-0 top-0 h-[30vh] bg-gradient-to-b from-black/40 to-transparent" />
+          <div className="absolute inset-x-0 top-0 h-[30vh] bg-linear-to-b from-black/40 to-transparent" />
       </div>
 
       <div className="relative z-10 w-full max-w-5xl mx-auto text-center h-full flex flex-col justify-between">
@@ -162,7 +158,7 @@ export default function Countdown({ targetDate, names, locationName }: Countdown
                     onClick={addToCalendar}
                     className="group relative mt-4 mb-4 inline-flex items-center gap-2 md:gap-3 px-6 py-3 md:px-10 md:py-4 overflow-hidden rounded-full bg-white/90 text-stone-900 shadow-xl hover:bg-white hover:shadow-2xl transition-all duration-300 transform active:scale-95 border border-white"
                 >
-                    <CalendarDays className="w-4 h-4 md:w-[18px] md:h-[18px] text-stone-500 group-hover:text-stone-800 transition-colors" />
+                    <CalendarDays className="w-4 h-4 md:w-4.5 md:h-4.5 text-stone-500 group-hover:text-stone-800 transition-colors" />
                     <span className="font-sans text-[10px] md:text-sm uppercase tracking-[0.2em] font-bold">
                         Agendar Fecha
                     </span>

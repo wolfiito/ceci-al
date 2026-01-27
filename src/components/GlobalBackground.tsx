@@ -47,13 +47,11 @@ export default function GlobalBackground() {
             className="object-cover object-center" 
             priority 
          />
-         
-         {/* Capas de oscurecimiento */}
+
          <div className="absolute inset-0 bg-[#1A2621]/40 mix-blend-multiply" />
-         {/* Gradiente inferior más fuerte para que el texto resalte ahí abajo */}
          <div className="absolute inset-0 bg-gradient-to-t from-[#1A2621] via-transparent to-transparent" />
 
-         {/* --- TEXTO FLOTANTE --- */}
+
          <motion.div 
             style={{ y: textY }}
             // CAMBIO CLAVE: items-end (abajo) y pb-[10px] (separación exacta)

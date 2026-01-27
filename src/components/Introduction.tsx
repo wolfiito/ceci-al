@@ -3,7 +3,6 @@
 import { motion, Variants } from "framer-motion";
 import Image from "next/image";
 
-// 1. ANIMACIONES
 const containerVariants: Variants = {
   hidden: { opacity: 0 },
   visible: {
@@ -26,7 +25,7 @@ const itemVariants: Variants = {
     y: 0, 
     filter: "blur(0px)",
     transition: { 
-      duration: 1.1, 
+      duration: .9, 
       ease: "easeOut" 
     }
   },
@@ -35,7 +34,6 @@ const itemVariants: Variants = {
 export default function Introduction() {
   return (
     <section 
-        // CAMBIO 1: Reduje el padding vertical de py-24 a py-12 para quitar aire extra
         className="relative w-full z-20 py-12 px-6 flex justify-center items-center overflow-hidden"
         style={{ backgroundColor: '#FDFBF7' }} 
     >
@@ -44,7 +42,6 @@ export default function Introduction() {
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, amount: 0.3 }} 
-        // CAMBIO 2: Quitamos el 'gap' de flexbox para controlar la distancia solo con márgenes
         className="flex flex-col items-center relative z-10 max-w-3xl"
       >
         
@@ -52,7 +49,6 @@ export default function Introduction() {
         <motion.div 
             variants={itemVariants} 
             className="relative flex justify-center z-10"
-            // SOLUCIÓN: Usamos marginBottom negativo aquí para "chupar" el espacio hacia arriba
             style={{ marginBottom: '-30px' }} 
         >
             <Image
@@ -69,7 +65,6 @@ export default function Introduction() {
         <motion.div 
             variants={itemVariants} 
             className="relative flex justify-center z-20"
-            // SOLUCIÓN: Este margen negativo sube la siguiente imagen (Títulos) y elimina el hueco abajo
             style={{ marginBottom: '-60px', marginTop: '-120px'}}
         >
             <Image
@@ -85,7 +80,6 @@ export default function Introduction() {
         <motion.div 
             variants={itemVariants} 
             className="relative flex justify-center z-30" style={{ marginBottom: '-120px', marginTop: '-190px'}}
-            // La última imagen no necesita margen negativo abajo
         >
             <Image
                 src="/images/iconos_Titulos-14.png"

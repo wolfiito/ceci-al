@@ -14,10 +14,9 @@ const alexBrush = Alex_Brush({
   display: "swap", 
 });
 
-// 3. Configuramos la fuente Serif (Para los Nombres)
 const bodoni = Bodoni_Moda({
   subsets: ["latin"],
-  variable: "--font-bodoni", // AHORA SÍ: Esta es una serif real
+  variable: "--font-bodoni", 
   display: "swap",
 });
 
