@@ -15,6 +15,7 @@ const IMAGE_MAP: Record<string, { inactive: string; active: string }> = {
   Fotos: { inactive: "/images/fotos_2.png", active: "/images/fotos_1.png" },
   Comida: { inactive: "/images/Banquete_2.png", active: "/images/Banquete_1.png" },
   Brindis: { inactive: "/images/Fiesta_2.png", active: "/images/Fiesta_1.png" },
+  Salida: { inactive: "/images/recien-casados.png", active: "/images/recien-casados.png"}
 };
 
 // === MEJORA 1: Variantes más "snappy" (rápidas) ===
