@@ -3,6 +3,7 @@
 import { motion, Variants } from "framer-motion";
 import Image from "next/image";
 
+// 1. ANIMACIONES
 const containerVariants: Variants = {
   hidden: { opacity: 0 },
   visible: {
@@ -25,7 +26,7 @@ const itemVariants: Variants = {
     y: 0, 
     filter: "blur(0px)",
     transition: { 
-      duration: .9, 
+      duration: 2.0, 
       ease: "easeOut" 
     }
   },
@@ -34,7 +35,7 @@ const itemVariants: Variants = {
 export default function Introduction() {
   return (
     <section 
-        className="relative w-full z-20 py-12 px-6 flex justify-center items-center overflow-hidden"
+        className="relative w-full z-20 h-2/4 "
         style={{ backgroundColor: '#FDFBF7' }} 
     >
       <motion.div
@@ -42,21 +43,18 @@ export default function Introduction() {
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, amount: 0.3 }} 
-        className="flex flex-col items-center relative z-10 max-w-3xl"
+        className=""
       >
-        
-        {/* --- IMAGEN 1: CORAZÓN --- */}
         <motion.div 
             variants={itemVariants} 
-            className="relative flex justify-center z-10"
-            style={{ marginBottom: '-30px' }} 
+            className="relative flex justify-center z-10" 
         >
             <Image
                 src="/images/iconos_corazon.png"
                 alt="Corazón Decorativo"
-                width={150} 
-                height={150}
-                className="w-auto h-auto object-contain drop-shadow-sm"style={{ marginTop: '-60px' }}
+                width={170} 
+                height={170}
+                className="w-auto h-auto mt-5 object-contain drop-shadow-sm"
                 priority
             />
         </motion.div>
@@ -65,31 +63,29 @@ export default function Introduction() {
         <motion.div 
             variants={itemVariants} 
             className="relative flex justify-center z-20"
-            style={{ marginBottom: '-60px', marginTop: '-120px'}}
-        >
+            >
             <Image
                 src="/images/iconos_versiculo.png"
                 alt="Versículo Bíblico"
                 width={500} 
                 height={200}
-                className="w-auto h-auto object-contain drop-shadow-sm" 
+                className="w-auto h-auto -mt-44 md:-mt-72  drop-shadow-sm" 
             />
         </motion.div>
 
         {/* --- IMAGEN 3: TÍTULOS --- */}
         <motion.div 
             variants={itemVariants} 
-            className="relative flex justify-center z-30" style={{ marginBottom: '-120px', marginTop: '-190px'}}
+            className="relative flex justify-center z-30" 
         >
             <Image
                 src="/images/iconos_Titulos-14.png"
                 alt="Títulos"
                 width={350} 
                 height={150}
-                className="w-auto h-auto object-contain drop-shadow-sm"
+                className="w-auto h-auto -mt-74 md:-mt-90 object-contain drop-shadow-sm"
             />
         </motion.div>
-
       </motion.div>
     </section>
   );

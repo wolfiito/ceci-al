@@ -4,19 +4,13 @@ import { useRef, useState, useEffect } from "react";
 import { motion, useScroll, useTransform, Variants } from "framer-motion";
 import { CalendarDays, Clock } from "lucide-react"; 
 import Image from "next/image";
-
-// --- 1. LÓGICA DEL HOOK (Versión Local para Preview) ---
-// En tu proyecto real, descomenta la siguiente línea y borra esta función local:
 import { useCountdown } from "@/hooks/useCountdown";
-
-// --- 2. COMPONENTES VISUALES ---
 
 interface CountdownProps {
   targetDate: string; 
   names: string;      
   locationName?: string; 
 }
-
 const containerVariants: Variants = {
   hidden: { opacity: 0 },
   visible: {
@@ -38,7 +32,7 @@ const itemVariants: Variants = {
 };
 
 const TimeBox = ({ value, label }: { value: number; label: string }) => (
-  <motion.div variants={itemVariants} className="flex flex-col items-center justify-center relative group min-w-15 md:min-w-25">
+  <motion.div variants={itemVariants} className="flex flex-col items-center justify-center relative group min-w-15 md:min-w-20">
     <div className="relative">
         <span className="absolute top-1 left-1 text-4xl sm:text-6xl md:text-8xl font-(family-name:--font-bodoni) font-medium text-black/20 select-none blur-[2px]">
              {value.toString().padStart(2, '0')}
@@ -49,7 +43,7 @@ const TimeBox = ({ value, label }: { value: number; label: string }) => (
     </div>
     <div className="mt-1 md:mt-4 flex items-center gap-1 md:gap-2">
         <div className="h-px w-2 md:w-6 bg-stone-300/60" />
-        <span className="text-[8px] sm:text-xs uppercase tracking-[0.2em] md:tracking-[0.3em] text-stone-200 font-semibold drop-shadow-md">
+        <span className="text-[8px] md:text-xl font-(family-name:--font-bodoni) uppercase tracking-[0.2em] md:tracking-[0.3em] text-stone-200 font-semibold drop-shadow-md">
             {label}
         </span>
         <div className="h-1px w-2 md:w-6 bg-stone-300/60" />
@@ -119,24 +113,23 @@ export default function Countdown({ targetDate, names, locationName }: Countdown
             transition={{ duration: 0.8 }}
             className="pt-8 md:pt-12" // Padding superior extra
         >
-            <div className="inline-flex items-center gap-2 text-stone-200 mb-2 md:mb-3 bg-white/10 px-3 py-1 rounded-full border border-white/10 backdrop-blur-md">
+            <div className="inline-flex md:hidden items-center gap-2 text-stone-200 mb-2 md:mb-3 bg-white/10 px-3 py-1 rounded-full border border-white/10 backdrop-blur-md">
                 <Clock size={10} className="md:w-3 md:h-3" />
                 <span className="text-[10px] md:text-[10px] uppercase tracking-[0.2em] font-bold">La Cuenta Regresiva</span>
             </div>
-            <h2 className="font-serif text-5xl md:text-6xl text-white italic tracking-tight drop-shadow-lg">
+            <h2 className="font-serif text-5xl md:mt-50 text-white italic tracking-tight drop-shadow-lg">
                 Solo faltan...
             </h2>
         </motion.div>
-
-        {/* PARTE INFERIOR: CONTADOR + BOTÓN */}
-        <div className="md:pb-12"> {/* Padding inferior para separarlo del borde */}
+        <div className="md:pb-12"> 
             {/* CONTADOR */}
             <motion.div 
                 variants={containerVariants}
                 initial="hidden"
                 whileInView="visible"
                 viewport={{ margin: "-50px" }}
-                className="flex flex-nowrap justify-center items-start gap-3 md:gap-10 mb-2 md:mb-12"
+                className="flex flex-nowrap justify-center items-start gap-3 md:gap-
+                10 mb-2 md:mb-12"
             >
                 <TimeBox value={timeLeft.days} label="Días" />
                 <Separator />
@@ -156,7 +149,7 @@ export default function Countdown({ targetDate, names, locationName }: Countdown
             >
                 <button 
                     onClick={addToCalendar}
-                    className="group relative mt-4 mb-4 inline-flex items-center gap-2 md:gap-3 px-6 py-3 md:px-10 md:py-4 overflow-hidden rounded-full bg-white/90 text-stone-900 shadow-xl hover:bg-white hover:shadow-2xl transition-all duration-300 transform active:scale-95 border border-white"
+                    className="group relative mt-4 mb-4 inline-flex items-center gap-2 md:gap-3 md:hidden px-6 py-3 md:px-10 md:py-4 overflow-hidden rounded-full bg-white/90 text-stone-900 shadow-xl hover:bg-white hover:shadow-2xl transition-all duration-300 transform active:scale-95 border border-white"
                 >
                     <CalendarDays className="w-4 h-4 md:w-4.5 md:h-4.5 text-stone-500 group-hover:text-stone-800 transition-colors" />
                     <span className="font-sans text-[10px] md:text-sm uppercase tracking-[0.2em] font-bold">
@@ -164,7 +157,7 @@ export default function Countdown({ targetDate, names, locationName }: Countdown
                     </span>
                 </button>
                 
-                <p className="mt-3 md:mt-4 text-[10px] md:text-xs text-stone-300 font-medium tracking-wide opacity-80 drop-shadow-md">
+                <p className="mt-3 md:mt-4 md:hidden text-[10px] md:text-xs text-stone-300 font-medium tracking-wide opacity-80 drop-shadow-md">
                     ¡Reserva este día en tu calendario!
                 </p>
             </motion.div>

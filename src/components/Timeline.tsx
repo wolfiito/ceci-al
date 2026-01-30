@@ -18,8 +18,6 @@ const IMAGE_MAP: Record<string, { inactive: string; active: string }> = {
   Salida: { inactive: "/images/recien-casados.png", active: "/images/recien-casados.png"}
 };
 
-// === MEJORA 1: Variantes más "snappy" (rápidas) ===
-// Quitamos el 'blur' que consume GPU y bajamos la duración.
 const textVariants: Variants = {
   hidden: { 
     opacity: 0.2, 
@@ -47,8 +45,6 @@ const TimelineItem = ({
     <motion.div
       initial="hidden"
       whileInView="visible"
-      // === MEJORA 2: Ajuste del Viewport ===
-      // Hacemos que reaccione un poco antes al entrar
       viewport={{ once: false, margin: "-35% 0px -35% 0px" }}
       className={`
         relative z-10 w-full mb-20 md:mb-32
@@ -56,10 +52,8 @@ const TimelineItem = ({
         ${isEven ? "flex-row-reverse" : "flex-row"}
       `}
     >
-      {/* 1. ESPACIO VACÍO */}
       <div className="flex-1" />
 
-      {/* 2. CÍRCULO CENTRAL */}
       <motion.div 
         variants={{
           hidden: { 
@@ -75,24 +69,21 @@ const TimelineItem = ({
             boxShadow: "0px 8px 20px rgba(219,140,138,0.4)" 
           }
         }}
-        // Transición más rápida para el círculo también
+
         transition={{ duration: 0.35 }}
         className="
           relative z-20 
-          w-20 h-20 sm:w-32 sm:h-32 
-          border-[3px] sm:border-[4px] rounded-full 
+          w-20 h-20 
+          rounded-full 
           flex items-center justify-center flex-none
           overflow-hidden
         "
       >
-        {/* Imagen Inactiva */}
         <motion.div 
           variants={{ hidden: { opacity: 1 }, visible: { opacity: 0 } }}
-          transition={{ duration: 0.3 }}
-          className="absolute inset-0 p-4"
+          transition={{ duration: 0.2 }}
+          className="absolute inset-0 p-0"
         >
-          {/* === MEJORA 3: Propiedad 'sizes' === 
-              Esto evita descargar la imagen gigante en móviles. */}
           <Image 
             src={images.inactive} 
             alt={data.title} 
@@ -102,13 +93,11 @@ const TimelineItem = ({
           />
         </motion.div>
 
-        {/* Imagen Activa */}
         <motion.div 
           variants={{ hidden: { opacity: 0, scale: 0.9 }, visible: { opacity: 1, scale: 1 } }}
           transition={{ duration: 0.35 }}
-          className="absolute inset-0 p-4"
+          className="absolute inset-0"
         >
-           {/* 'sizes' y 'priority' para que esté lista antes */}
           <Image 
             src={images.active} 
             alt={data.title} 
@@ -119,7 +108,6 @@ const TimelineItem = ({
         </motion.div>
       </motion.div>
 
-      {/* 3. TEXTO */}
       <motion.div
         variants={textVariants}
         className={`flex-1 ${isEven ? "text-right" : "text-left"}`}
@@ -133,7 +121,7 @@ const TimelineItem = ({
 
         <motion.h3 
           variants={{ hidden: { color: "#d6d3d1" }, visible: { color: "#ffffff" } }}
-          className="font-(family-name:--font-bodoni) font-bold text-2xl sm:text-3xl mb-2 leading-tight"
+          className="font-(family-name:--font-bodoni) font-bold text-xl mb-2 leading-tight"
         >
           {data.title}
         </motion.h3>

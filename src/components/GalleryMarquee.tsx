@@ -66,7 +66,6 @@ const ROW_2 = [
   "/images/carrusel1.jpeg",
 ];
 
-// --- COMPONENTE DE LA BANDA DESLIZANTE (PARALLAX) ---
 interface ParallaxProps {
   images: string[];
   baseVelocity: number;
@@ -99,7 +98,7 @@ function ParallaxSlider({ images, baseVelocity = 100, onImageClick }: ParallaxPr
 
   return (
     <div className="flex flex-nowrap overflow-hidden py-4">
-      <motion.div className="flex flex-nowrap gap-4 md:gap-8" style={{ x }}>
+      <motion.div className="flex flex-nowrap gap-2 md:gap-4" style={{ x }}>
         {[...images, ...images, ...images, ...images].map((src, idx) => (
           <GalleryItem key={idx} src={src} onImageClick={onImageClick} />
         ))}
@@ -112,7 +111,7 @@ function ParallaxSlider({ images, baseVelocity = 100, onImageClick }: ParallaxPr
 const GalleryItem = ({ src, onImageClick }: { src: string; onImageClick: (s: string) => void }) => {
     return (
         <motion.div
-            className="relative w-[200px] md:w-[350px] aspect-[4/3] md:aspect-[16/10] shrink-0 rounded-lg overflow-hidden cursor-pointer group hover:grayscale-0 transition-all duration-700 ease-out shadow-lg"
+            className="relative w-50 md:w-87.5 aspect-[4/3] md:aspect-[16/10] shrink-0 rounded-3xl overflow-hidden cursor-pointer group transition-all duration-700 ease-out shadow-lg"
             onClick={() => onImageClick(src)}
             whileHover={{ scale: 1.02 }}
         >
@@ -134,19 +133,19 @@ export default function GalleryMarquee() {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
   return (
-    <section className="relative overflow-hidden py-10 min-h-100 flex flex-col justify-center">
+    <section className="relative overflow-hidden flex flex-col justify-center">
       <div className="relative z-10">
-          <motion.h2 
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2 }}
-                className="font-(family-name:--font-bodoni) w-100 text-3xl md:text-5xl text-stone-100 italic drop-shadow-l" style={{ marginTop: '-40px' }}
-              >
-                <div className="container mx-auto px-4 py-10 mb-20 text-center bg-[#DB8C8A]" style={{marginTop: '-5px'}}>
-                  Momentos Inolvidables
-                </div>
-
-              </motion.h2>
+      <motion.h2 
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+          className="font-(family-name:--font-bodoni) text-3xl md:text-5xl text-stone-100 italic drop-shadow-l w-full" // Agregué w-full aquí por seguridad
+      >
+          {/* CAMBIO AQUÍ: Quité 'container' y puse 'w-full' */}
+          <div className="w-full py-3.5 mb-10 text-center bg-[#DB8C8A]">
+              Momentos Inolvidables
+          </div>
+      </motion.h2>
 
           {/* --- SLIDERS DE VELOCIDAD --- */}
           <div className="relative flex flex-col gap-6 w-full transform scale-100 origin-center"> 
@@ -158,8 +157,8 @@ export default function GalleryMarquee() {
             <ParallaxSlider images={ROW_2} baseVelocity={0.4} onImageClick={setSelectedImage} />
 
             {/* Gradientes laterales actualizados para coincidir con la transparencia */}
-            <div className="absolute inset-y-0 left-0 w-24 bg-linear-to-r from-[#726f6b] to-transparent z-10 pointer-events-none" />
-            <div className="absolute inset-y-0 right-0 w-24 bg-linear-to-l from-[#726f6b] to-transparent z-10 pointer-events-none" />
+            <div className="absolute inset-y-0 left-0 w-24 bg-linear-to-r from-[#f9b5ff] to-transparent z-10 pointer-events-none" />
+            <div className="absolute inset-y-0 right-0 w-24 bg-linear-to-l from-[#f9b5ff] to-transparent z-10 pointer-events-none" />
           </div>
       </div>
 

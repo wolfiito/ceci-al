@@ -12,7 +12,6 @@ interface LocationProps {
   wazeUrl?: string;
 }
 
-// --- Componente de Botón Interno ---
 const ActionButton = ({ 
   children, 
   onClick, 
