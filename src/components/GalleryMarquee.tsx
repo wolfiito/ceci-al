@@ -157,8 +157,8 @@ export default function GalleryMarquee() {
             <ParallaxSlider images={ROW_2} baseVelocity={0.4} onImageClick={setSelectedImage} />
 
             {/* Gradientes laterales actualizados para coincidir con la transparencia */}
-            <div className="absolute inset-y-0 left-0 w-24 bg-linear-to-r from-[#f9b5ff] to-transparent z-10 pointer-events-none" />
-            <div className="absolute inset-y-0 right-0 w-24 bg-linear-to-l from-[#f9b5ff] to-transparent z-10 pointer-events-none" />
+            <div className="absolute inset-y-0 left-0 w-12 bg-linear-to-r from-[#f9b5ff] to-transparent z-10 pointer-events-none" />
+            <div className="absolute inset-y-0 right-0 w-12 bg-linear-to-l from-[#f9b5ff] to-transparent z-10 pointer-events-none" />
           </div>
       </div>
 
