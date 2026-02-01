@@ -34,7 +34,12 @@ interface RSVPSectionProps {
 }
 
 export default function RSVPSection({ guestData }: RSVPSectionProps) {
-  // 1. Consumimos el hook (Lógica de Negocio)
+  if (!guestData) return null;
+  
+  const textoRechazo = guestData?.type === 'individual' 
+    ? "Lamentablemente no podré asistir" 
+    : "Lamentablemente no podremos asistir";
+
   const {
     step, setStep,
     isConfirming, isFinished,
@@ -174,8 +179,15 @@ export default function RSVPSection({ guestData }: RSVPSectionProps) {
                           <Users strokeWidth={1.5} size={20} />
                         </div>
                         <h3 className="font-serif text-2xl text-stone-800">¿Cuántos asistirán?</h3>
+                        
                         <p className="text-sm text-stone-500 font-light">
                           Reservados: <span className="font-bold text-stone-700">{maxTickets}</span>
+                        </p>
+
+                        {/* --- AGREGADO: FECHA LÍMITE --- */}
+                        {/* Usamos un tono rojizo/rosa para llamar la atención pero manteniendo la elegancia */}
+                        <p className="text-[10px] text-[#DB8C8A] font-bold uppercase tracking-widest pt-2">
+                            Favor de confirmar antes del 01 de Abril
                         </p>
                       </div>
 
@@ -197,14 +209,27 @@ export default function RSVPSection({ guestData }: RSVPSectionProps) {
                       </div>
 
                       <div className="space-y-3 pt-2">
+                        {/* BOTÓN PRINCIPAL (Sólido) */}
                         <Interactive className="w-full">
-                          <button onClick={handleConfirmClick} className="w-full bg-[#2C3E2E] text-[#F2F0E9] py-3.5 text-xs uppercase tracking-widest font-bold rounded-xl shadow-lg hover:bg-[#1a251b] transition-all">
+                          <button 
+                            onClick={handleConfirmClick} 
+                            className="w-full bg-[#2C3E2E] text-[#F2F0E9] py-3.5 text-xs uppercase tracking-widest font-bold rounded-xl shadow-lg hover:bg-[#1a251b] transition-all transform active:scale-[0.98]"
+                          >
                             Confirmar Asistencia
                           </button>
                         </Interactive>
+
+                        {/* BOTÓN SECUNDARIO (Mejorado) */}
                         <Interactive className="w-full">
-                          <button onClick={handleNoAsistireClick} className="w-full py-2 text-[10px] uppercase tracking-widest font-bold text-stone-400 hover:text-stone-600 transition-colors">
-                            Lamentablemente no podremos asistir
+                          <button 
+                            onClick={handleNoAsistireClick} 
+                            // CAMBIOS AQUÍ:
+                            // 1. border border-[#DCC5C5]: Le damos un borde del color de acento
+                            // 2. rounded-xl: Misma forma que el de arriba
+                            // 3. hover:bg-[#DCC5C5]/10: Un fondo sutil al pasar el mouse
+                            className="w-full py-3.5 border border-[#DCC5C5] text-[#8fa88f] hover:text-[#2C3E2E] hover:bg-[#2C3E2E]/5 hover:border-[#2C3E2E]/30 rounded-xl text-[10px] uppercase tracking-widest font-bold transition-all transform active:scale-[0.98]"
+                          >
+                            {textoRechazo}
                           </button>
                         </Interactive>
                       </div>

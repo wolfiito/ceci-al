@@ -159,11 +159,11 @@ export default function DressCode() {
             {/* Nota de Calzado */}
             <div className="mb-8 inline-block bg-white px-4 py-2 rounded-full shadow-sm text-xs md:text-sm uppercase tracking-widest text-stone-500 font-bold border border-stone-100">
                 <span> 
-                    ✨ Calzado Cómodo 
+                    Calzado Cómodo 
                 </span>
                 <br />
                 <span>
-                    (Tenis permitidos) ✨
+                    (Tenis permitidos)
                 </span>
             </div>
 
@@ -184,10 +184,11 @@ export default function DressCode() {
                     Colores Reservados (Corte Nupcial)
                 </p>
                 <div className="flex justify-center gap-6">
-                    <ColorSwatch color="#D4B9B9" label="Rosa" delay={0.1} />
-                    <ColorSwatch color="#8F9E8B" label="Verde" delay={0.2} />
-                    <ColorSwatch color="#E6DCCA" label="Beige" delay={0.3} />
-                    <ColorSwatch color="#FFFFFF" label="Blanco" delay={0.4} isWhite />
+                    <ColorSwatch color="#FFFFFF" label="Blanco" delay={0.1} isWhite />
+                    <ColorSwatch color="#D4B9B9" label="Rosa" delay={0.2} />
+                    <ColorSwatch color="#8F9E8B" label="Verde" delay={0.3} />
+                    <ColorSwatch color="#E6DCCA" label="Beige" delay={0.4} />
+                    <ColorSwatch color="#9C9C9C" label="Gris" delay={0.5} />
                 </div>
             </div>
 
