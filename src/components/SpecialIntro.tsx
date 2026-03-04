@@ -5,17 +5,27 @@ import { cn } from "@/lib/utils";
 export default function SpecialIntro({ onComplete }: { onComplete: () => void }) {
   const [isExiting, setIsExiting] = useState(false);
   const [isReady, setIsReady] = useState(false);
+  const [showLoader, setShowLoader] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
     document.body.style.overflow = "hidden";
 
-    // Fail-safe: Si en 8s no carga, continuamos para no bloquear al invitado
+    // Si en 2 segundos no ha cargado, mostramos un indicador sutil
+    const loaderTimer = setTimeout(() => {
+      if (!isReady) setShowLoader(true);
+    }, 2000);
+
+    // Aumentamos el margen de espera a 15 segundos para redes muy lentas
     const fallback = setTimeout(() => {
-      if (!isReady) handleComplete();
-    }, 8000);
+      if (!isReady) {
+        console.warn("Red lenta detectada - saltando al sobre");
+        handleComplete();
+      }
+    }, 15000);
 
     return () => {
+      clearTimeout(loaderTimer);
       clearTimeout(fallback);
       document.body.style.overflow = "unset";
     };
@@ -23,16 +33,20 @@ export default function SpecialIntro({ onComplete }: { onComplete: () => void })
 
   const handleComplete = () => {
     setIsExiting(true);
-    // Tiempo para el fade-out final
     setTimeout(onComplete, 800);
   };
 
   return (
-    <div className={cn(
-      "fixed inset-0 z-[100] bg-black flex items-center justify-center transition-opacity duration-1000 ease-in-out",
-      // El contenedor solo se vuelve opaco cuando el video está listo Y no estamos saliendo
-      (isReady && !isExiting) ? "opacity-100" : "opacity-0"
-    )}>
+    <div className="fixed inset-0 z-[100] bg-black flex items-center justify-center">
+      {/* Indicador de carga elegante (solo se ve en internet lento) */}
+      {showLoader && !isReady && (
+        <div className="absolute inset-0 flex items-center justify-center z-10">
+          <p className="font-serif text-wedding-gold/40 animate-pulse tracking-[0.2em] text-sm uppercase">
+            Preparando tu invitación...
+          </p>
+        </div>
+      )}
+
       <video 
         ref={videoRef}
         src="/video/intro.mp4" 
@@ -40,18 +54,18 @@ export default function SpecialIntro({ onComplete }: { onComplete: () => void })
         muted 
         playsInline 
         preload="auto"
+        // className con fade-in suave cuando esté listo
+        className={cn(
+          "w-full h-full object-cover transition-opacity duration-1000",
+          (isReady && !isExiting) ? "opacity-100" : "opacity-0"
+        )}
         onLoadedMetadata={() => {
-          if (videoRef.current) {
-            videoRef.current.currentTime = 1;
-          }
+          if (videoRef.current) videoRef.current.currentTime = 1;
         }}
-        onCanPlayThrough={() => {
-          // Solo cuando el video está listo para fluir, activamos el fade-in
-          setIsReady(true);
-        }}
-        onError={() => handleComplete()}
+        // onCanPlay es más rápido que onCanPlayThrough en 4G lento
+        onCanPlay={() => setIsReady(true)}
         onEnded={handleComplete}
-        className="w-full h-full object-cover"
+        onError={handleComplete}
       />
     </div>
   );
