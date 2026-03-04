@@ -11,17 +11,12 @@ export default function SpecialIntro({ onComplete }: { onComplete: () => void })
   useEffect(() => {
     document.body.style.overflow = "hidden";
 
-    // Si en 2 segundos no ha cargado, mostramos un indicador sutil
     const loaderTimer = setTimeout(() => {
       if (!isReady) setShowLoader(true);
     }, 2000);
 
-    // Aumentamos el margen de espera a 15 segundos para redes muy lentas
     const fallback = setTimeout(() => {
-      if (!isReady) {
-        console.warn("Red lenta detectada - saltando al sobre");
-        handleComplete();
-      }
+      if (!isReady) handleComplete();
     }, 15000);
 
     return () => {
@@ -37,36 +32,37 @@ export default function SpecialIntro({ onComplete }: { onComplete: () => void })
   };
 
   return (
-    <div className="fixed inset-0 z-[100] bg-black flex items-center justify-center">
-      {/* Indicador de carga elegante (solo se ve en internet lento) */}
+    <> {/* <--- Agregamos este Fragment para envolver todo */}
+      {/* Loader: Se muestra si el video tarda. Usamos fixed y z-[110] */}
       {showLoader && !isReady && (
-        <div className="absolute inset-0 flex items-center justify-center z-10">
-          <p className="font-serif text-wedding-gold/40 animate-pulse tracking-[0.2em] text-sm uppercase">
+        <div className="fixed inset-0 flex items-center justify-center z-[110] bg-black">
+          <p className="font-serif text-[#C5A25D]/40 animate-pulse tracking-[0.2em] text-sm uppercase text-center px-4">
             Preparando tu invitación...
           </p>
         </div>
       )}
 
-      <video 
-        ref={videoRef}
-        src="/video/intro.mp4" 
-        autoPlay 
-        muted 
-        playsInline 
-        preload="auto"
-        // className con fade-in suave cuando esté listo
-        className={cn(
-          "w-full h-full object-cover transition-opacity duration-1000",
-          (isReady && !isExiting) ? "opacity-100" : "opacity-0"
-        )}
-        onLoadedMetadata={() => {
-          if (videoRef.current) videoRef.current.currentTime = 1;
-        }}
-        // onCanPlay es más rápido que onCanPlayThrough en 4G lento
-        onCanPlay={() => setIsReady(true)}
-        onEnded={handleComplete}
-        onError={handleComplete}
-      />
-    </div>
+      {/* Video Container */}
+      <div className={cn(
+        "fixed inset-0 z-[100] bg-black flex items-center justify-center transition-opacity duration-1000",
+        (isReady && !isExiting) ? "opacity-100" : "opacity-0"
+      )}>
+        <video 
+          ref={videoRef}
+          src="/video/intro.mp4" 
+          autoPlay 
+          muted 
+          playsInline 
+          preload="auto"
+          className="w-full h-full object-cover"
+          onLoadedMetadata={() => {
+            if (videoRef.current) videoRef.current.currentTime = 1;
+          }}
+          onCanPlay={() => setIsReady(true)}
+          onEnded={handleComplete}
+          onError={handleComplete}
+        />
+      </div>
+    </>
   );
 }

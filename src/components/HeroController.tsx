@@ -1,3 +1,4 @@
+// src/components/HeroController.tsx
 "use client";
 
 import { useState } from "react";
@@ -14,28 +15,26 @@ interface HeroControllerProps {
 
 export default function HeroController({ names, date, guestData }: HeroControllerProps) {
   const [startAnimation, setStartAnimation] = useState(false);
-  
-  // Estado inicial: Si tiene intro, showIntro es true y showEnvelope es false
   const [showIntro, setShowIntro] = useState(!!guestData.hasSpecialIntro);
   const [showEnvelope, setShowEnvelope] = useState(!guestData.hasSpecialIntro);
 
   const handleIntroComplete = () => {
     setShowIntro(false);
-    // Pequeño delay de 100ms para asegurar que el componente Intro se desmonte antes
     setTimeout(() => {
       setShowEnvelope(true);
-    }, 100);
+    }, 50);
   };
 
   return (
-    <div className="relative w-full min-h-screen bg-black">
+    // CAMBIO: Quitamos bg-black de aquí para que se vea la GlobalBackground
+    <div className="relative w-full">
       
-      {/* 1. La Intro tiene prioridad absoluta */}
+      {/* 1. Intro (Él sí tiene su propio fondo negro z-100) */}
       {guestData.hasSpecialIntro && showIntro && (
         <SpecialIntro onComplete={handleIntroComplete} />
       )}
 
-      {/* 2. El Sobre SOLO nace cuando la intro termina */}
+      {/* 2. El Sobre */}
       {showEnvelope && (
         <EnvelopeOverlay 
           showEnvelope={showEnvelope} 
@@ -43,7 +42,7 @@ export default function HeroController({ names, date, guestData }: HeroControlle
         />
       )}
 
-      {/* 3. El Hero siempre está debajo */}
+      {/* 3. El Hero (Ahora será visible porque el padre es transparente) */}
       <Hero 
         names={names} 
         date={date} 
