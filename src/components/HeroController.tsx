@@ -13,39 +13,42 @@ interface HeroControllerProps {
 }
 
 export default function HeroController({ names, date, guestData }: HeroControllerProps) {
-  // 1. Estado para la animación del Hero (final de todo el flujo)
   const [startAnimation, setStartAnimation] = useState(false);
   
-  // 2. Lógica de Intro: Solo si el invitado tiene el flag 'hasSpecialIntro'
+  // Estado inicial: Si tiene intro, showIntro es true y showEnvelope es false
   const [showIntro, setShowIntro] = useState(!!guestData.hasSpecialIntro);
-  
-  // 3. Lógica del Sobre: Solo se muestra si NO hay intro, o si la intro ya terminó
   const [showEnvelope, setShowEnvelope] = useState(!guestData.hasSpecialIntro);
 
   const handleIntroComplete = () => {
     setShowIntro(false);
-    setShowEnvelope(true); // Ahora sí, mostramos el sobre
+    // Pequeño delay de 100ms para asegurar que el componente Intro se desmonte antes
+    setTimeout(() => {
+      setShowEnvelope(true);
+    }, 100);
   };
 
   return (
-    <>
-      {/* PASO 1: Intro Especial */}
+    <div className="relative w-full min-h-screen bg-black">
+      
+      {/* 1. La Intro tiene prioridad absoluta */}
       {guestData.hasSpecialIntro && showIntro && (
         <SpecialIntro onComplete={handleIntroComplete} />
       )}
 
-      {/* PASO 2: El Sobre (Envelope) */}
-      <EnvelopeOverlay 
-        showEnvelope={showEnvelope} 
-        onOpenComplete={() => setStartAnimation(true)} 
-      />
+      {/* 2. El Sobre SOLO nace cuando la intro termina */}
+      {showEnvelope && (
+        <EnvelopeOverlay 
+          showEnvelope={showEnvelope} 
+          onOpenComplete={() => setStartAnimation(true)} 
+        />
+      )}
 
-      {/* PASO 3: El Hero (Contenido principal) */}
+      {/* 3. El Hero siempre está debajo */}
       <Hero 
         names={names} 
         date={date} 
         startAnimation={startAnimation} 
       />
-    </>
+    </div>
   );
 }

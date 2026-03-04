@@ -59,8 +59,7 @@ export default function EnvelopeOverlay({ onOpenComplete, showEnvelope }: Envelo
     }, 1500); // 1.5 segundos de animación
   };
 
-  if (!isVisible) return null;
-
+  if (!isVisible || !showEnvelope) return null;
   return (
     <div className="fixed inset-0 z-50 overflow-hidden flex flex-col h-full w-full touch-none">
         {/* --- MITAD SUPERIOR (Se va hacia arriba) --- */}

@@ -10,12 +10,9 @@ export default function SpecialIntro({ onComplete }: { onComplete: () => void })
   useEffect(() => {
     document.body.style.overflow = "hidden";
 
-    // Aumentamos a 8 segundos para dar tiempo en conexiones móviles
+    // Fail-safe: Si en 8s no carga, continuamos para no bloquear al invitado
     const fallback = setTimeout(() => {
-      if (!isReady) {
-        console.warn("Video timeout - Forzando continuación");
-        handleComplete();
-      }
+      if (!isReady) handleComplete();
     }, 8000);
 
     return () => {
@@ -26,13 +23,15 @@ export default function SpecialIntro({ onComplete }: { onComplete: () => void })
 
   const handleComplete = () => {
     setIsExiting(true);
-    setTimeout(onComplete, 600);
+    // Tiempo para el fade-out final
+    setTimeout(onComplete, 800);
   };
 
   return (
     <div className={cn(
-      "fixed inset-0 z-[100] bg-black flex items-center justify-center transition-opacity duration-700",
-      (isExiting || !isReady) ? "opacity-0" : "opacity-100"
+      "fixed inset-0 z-[100] bg-black flex items-center justify-center transition-opacity duration-1000 ease-in-out",
+      // El contenedor solo se vuelve opaco cuando el video está listo Y no estamos saliendo
+      (isReady && !isExiting) ? "opacity-100" : "opacity-0"
     )}>
       <video 
         ref={videoRef}
@@ -41,22 +40,16 @@ export default function SpecialIntro({ onComplete }: { onComplete: () => void })
         muted 
         playsInline 
         preload="auto"
-        // 1. Cargamos metadatos (duración, dimensiones)
         onLoadedMetadata={() => {
-          console.log("Metadatos cargados, saltando al segundo 1");
           if (videoRef.current) {
             videoRef.current.currentTime = 1;
           }
         }}
-        // 2. El video ya puede reproducirse sin interrupciones
         onCanPlayThrough={() => {
-          console.log("Video listo para reproducir");
+          // Solo cuando el video está listo para fluir, activamos el fade-in
           setIsReady(true);
         }}
-        onError={(e) => {
-          console.error("Error fatal cargando video. Revisa la ruta /video/intro.mp4");
-          handleComplete();
-        }}
+        onError={() => handleComplete()}
         onEnded={handleComplete}
         className="w-full h-full object-cover"
       />
