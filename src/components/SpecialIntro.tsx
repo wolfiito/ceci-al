@@ -1,4 +1,3 @@
-// src/components/SpecialIntro.tsx
 "use client";
 import { useEffect, useState, useRef } from "react";
 import { cn } from "@/lib/utils";
@@ -11,13 +10,13 @@ export default function SpecialIntro({ onComplete }: { onComplete: () => void })
   useEffect(() => {
     document.body.style.overflow = "hidden";
 
-    // FAIL-SAFE: Si en 4 segundos no ha cargado nada, saltamos para no bloquear al usuario
+    // Aumentamos a 8 segundos para dar tiempo en conexiones móviles
     const fallback = setTimeout(() => {
       if (!isReady) {
-        console.warn("Video timed out, skipping intro...");
+        console.warn("Video timeout - Forzando continuación");
         handleComplete();
       }
-    }, 4000);
+    }, 8000);
 
     return () => {
       clearTimeout(fallback);
@@ -41,17 +40,21 @@ export default function SpecialIntro({ onComplete }: { onComplete: () => void })
         autoPlay 
         muted 
         playsInline 
-        loop={false}
-        // Usamos onCanPlay que es más fiable que onLoadedData en redes lentas
-        onCanPlay={() => {
+        preload="auto"
+        // 1. Cargamos metadatos (duración, dimensiones)
+        onLoadedMetadata={() => {
+          console.log("Metadatos cargados, saltando al segundo 1");
           if (videoRef.current) {
             videoRef.current.currentTime = 1;
-            setIsReady(true);
           }
         }}
-        // Si hay error en la ruta, saltamos al sobre de inmediato
+        // 2. El video ya puede reproducirse sin interrupciones
+        onCanPlayThrough={() => {
+          console.log("Video listo para reproducir");
+          setIsReady(true);
+        }}
         onError={(e) => {
-          console.error("Error loading video:", e);
+          console.error("Error fatal cargando video. Revisa la ruta /video/intro.mp4");
           handleComplete();
         }}
         onEnded={handleComplete}
