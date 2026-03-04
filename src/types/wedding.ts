@@ -43,6 +43,7 @@ export interface GuestData {
   hasArrived?: boolean;
   message?: string;
   isLongDistance?: boolean;
+  hasSpecialIntro?: boolean;
 }
 
 export interface EventData {

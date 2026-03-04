@@ -7,9 +7,10 @@ import { useWedding } from "@/context/WeddingContext";
 
 interface EnvelopeOverlayProps {
   onOpenComplete?: () => void;
+  showEnvelope: boolean;
 }
 
-export default function EnvelopeOverlay({ onOpenComplete }: EnvelopeOverlayProps) {
+export default function EnvelopeOverlay({ onOpenComplete, showEnvelope }: EnvelopeOverlayProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
   
@@ -28,6 +29,7 @@ export default function EnvelopeOverlay({ onOpenComplete }: EnvelopeOverlayProps
     }
 
     // 3. Bloquear el scroll si el sobre es visible
+    if (!isVisible || !showEnvelope) return;
     if (isVisible) {
       document.body.style.overflow = "hidden";
       document.body.style.height = "100vh"; // Evita saltos en móviles
@@ -41,7 +43,7 @@ export default function EnvelopeOverlay({ onOpenComplete }: EnvelopeOverlayProps
       document.body.style.overflow = "unset";
       document.body.style.height = "auto";
     };
-  }, [isVisible]);
+  }, [isVisible, showEnvelope]);
   
   const handleOpen = () => {
     setIsOpen(true);

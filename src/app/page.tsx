@@ -69,9 +69,9 @@ export default async function Home({ searchParams }: PageProps) {
     <main className="w-full bg-transparent relative">
         <GlobalBackground />
         <div className="relative z-10">
-          <HeroController names={eventNames} date={eventDate} />
+          <HeroController names={eventNames} date={eventDate} guestData={guestData} />
           <Introduction />
-          <Countdown targetDate={eventDate} names={eventNames} />
+          <Countdown targetDate={eventDate} names={eventNames}  />
           <FormalInvitation guestName={guestData?.familyName || "Amigos"} type={guestData?.type || 'family'}/>
           <div className="h-screen w-full bg-transparent pointer-events-none" />
             <div className="shadow-[0_-25px_60px_rgba(0,0,0,0.2)] rounded-t-[2.5rem] -mt-20 relative">
