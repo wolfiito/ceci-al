@@ -41,6 +41,7 @@ export default function SpecialIntro({ onComplete }: { onComplete: () => void })
         autoPlay 
         muted 
         playsInline 
+        loop={false}
         // Usamos onCanPlay que es más fiable que onLoadedData en redes lentas
         onCanPlay={() => {
           if (videoRef.current) {
