@@ -67,7 +67,6 @@ export default async function Home({ searchParams }: PageProps) {
 
   return (
     <main className="w-full bg-transparent relative">
-        <GlobalBackground />
         <div className="relative z-10">
           <HeroController names={eventNames} date={eventDate} guestData={guestData} />
           <Introduction />

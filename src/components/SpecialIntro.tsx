@@ -1,3 +1,4 @@
+// src/components/SpecialIntro.tsx
 "use client";
 import { useEffect, useState, useRef } from "react";
 import { cn } from "@/lib/utils";
@@ -10,14 +11,8 @@ export default function SpecialIntro({ onComplete }: { onComplete: () => void })
 
   useEffect(() => {
     document.body.style.overflow = "hidden";
-
-    const loaderTimer = setTimeout(() => {
-      if (!isReady) setShowLoader(true);
-    }, 2000);
-
-    const fallback = setTimeout(() => {
-      if (!isReady) handleComplete();
-    }, 15000);
+    const loaderTimer = setTimeout(() => { if (!isReady) setShowLoader(true); }, 2000);
+    const fallback = setTimeout(() => { if (!isReady) handleComplete(); }, 15000);
 
     return () => {
       clearTimeout(loaderTimer);
@@ -32,17 +27,17 @@ export default function SpecialIntro({ onComplete }: { onComplete: () => void })
   };
 
   return (
-    <> {/* <--- Agregamos este Fragment para envolver todo */}
-      {/* Loader: Se muestra si el video tarda. Usamos fixed y z-[110] */}
+    <>
+      {/* Loader elegante para conexiones lentas */}
       {showLoader && !isReady && (
         <div className="fixed inset-0 flex items-center justify-center z-[110] bg-black">
-          <p className="font-serif text-[#C5A25D]/40 animate-pulse tracking-[0.2em] text-sm uppercase text-center px-4">
+          <p className="font-serif text-[#C5A25D]/40 animate-pulse tracking-[0.2em] text-sm uppercase">
             Preparando tu invitación...
           </p>
         </div>
       )}
 
-      {/* Video Container */}
+      {/* Contenedor del Video */}
       <div className={cn(
         "fixed inset-0 z-[100] bg-black flex items-center justify-center transition-opacity duration-1000",
         (isReady && !isExiting) ? "opacity-100" : "opacity-0"
