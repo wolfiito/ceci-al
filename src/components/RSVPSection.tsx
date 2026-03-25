@@ -187,7 +187,7 @@ export default function RSVPSection({ guestData }: RSVPSectionProps) {
                         {/* --- AGREGADO: FECHA LÍMITE --- */}
                         {/* Usamos un tono rojizo/rosa para llamar la atención pero manteniendo la elegancia */}
                         <p className="text-[12px] text-[#DB8C8A] font-bold uppercase tracking-widest pt-2">
-                            Favor de confirmar antes del 10 de Abril
+                            Favor de confirmar antes del 01 de Abril
                         </p>
                       </div>
 
