@@ -188,7 +188,6 @@ export default function DressCode() {
                     <ColorSwatch color="#D4B9B9" label="Rosa" delay={0.2} />
                     <ColorSwatch color="#8F9E8B" label="Verde" delay={0.3} />
                     <ColorSwatch color="#E6DCCA" label="Beige" delay={0.4} />
-                    <ColorSwatch color="#9C9C9C" label="Gris" delay={0.5} />
                 </div>
             </div>
 
