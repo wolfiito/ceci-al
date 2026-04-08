@@ -37,7 +37,7 @@ export default function RSVPSection({ guestData }: RSVPSectionProps) {
   if (!guestData) return null;
 
   // FECHA LÍMITE: 10 de Abril de 2026
-  const RSVP_DEADLINE = new Date(2026, 3, 8); // 3 es Abril (0-indexed)
+  const RSVP_DEADLINE = new Date(2026, 3, 10); // 3 es Abril (0-indexed)
   const now = new Date();
   const isDeadlinePassed = now >= RSVP_DEADLINE;
 
@@ -174,8 +174,55 @@ export default function RSVPSection({ guestData }: RSVPSectionProps) {
           {/* CONTENIDO */}
           <div className={`${isFinished ? "p-0" : "p-6 md:p-8"}`}>
             <AnimatePresence mode="wait">
-              {/* CASO: FUERA DE TIEMPO (Solo si no ha terminado) */}
-              {!isFinished && isDeadlinePassed ? (
+              {isFinished ? (
+                /* VISTA FINAL (TICKET o RECHAZO) */
+                <motion.div
+                  key="finished"
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.4 }}
+                >
+                  {ticketCount > 0 ? (
+                    <div className="bg-[#EAE7DF]">
+                      <div className="bg-green-600 p-2 text-center flex items-center justify-center gap-2 shadow-sm relative z-10">
+                        <CheckCircle2 size={14} className="text-white" />
+                        <p className="text-white text-[10px] font-bold uppercase tracking-widest">Confirmado</p>
+                      </div>
+                      <div className="p-4">
+                        <TicketReveal>
+                          <div className="shadow-2xl rounded-xl overflow-hidden">
+                            <DigitalTicket guest={updatedGuestData} />
+                          </div>
+                        </TicketReveal>
+                        <div className="mt-5 flex justify-center">
+                          <button onClick={handleDownloadPDF} disabled={isDownloading} className="flex items-center gap-2 bg-[#2C3E2E] text-[#F2F0E9] px-5 py-2.5 rounded-full text-[10px] font-bold uppercase tracking-widest shadow-lg hover:bg-black transition-all active:scale-95 disabled:opacity-70">
+                            {isDownloading ? <Loader2 size={14} className="animate-spin" /> : <Download size={14} />}
+                            {isDownloading ? "Generando..." : "Descargar Pase"}
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="py-12 px-6 text-center">
+                      <div className="mx-auto w-14 h-14 bg-[#f5f5f4] rounded-full flex items-center justify-center mb-3">
+                        <Heart className="text-[#a8a29e] w-6 h-6" strokeWidth={1} />
+                      </div>
+                      <h3 className="font-serif text-lg text-[#44403c] mb-1">Gracias por avisar</h3>
+                      <p className="text-[#78716c] text-xs font-light">Lamentamos que no puedan acompañarnos.</p>
+                    </div>
+                  )}
+
+                  {/* Botón Modificar - Solo visible si NO ha pasado la fecha límite */}
+                  {!isDeadlinePassed && (
+                    <div className="bg-[#FDFBF7] p-2 text-center border-t border-[#e7e5e4]">
+                      <button onClick={handleEdit} className="text-[#a8a29e] hover:text-[#57534e] text-[10px] font-bold uppercase tracking-widest flex items-center justify-center gap-1 mx-auto transition-colors">
+                        <Edit2 size={10} /> Modificar
+                      </button>
+                    </div>
+                  )}
+                </motion.div>
+              ) : isDeadlinePassed ? (
+                /* CASO: FUERA DE TIEMPO */
                 <motion.div
                   key="expired"
                   initial={{ opacity: 0, scale: 0.95 }}
@@ -197,7 +244,8 @@ export default function RSVPSection({ guestData }: RSVPSectionProps) {
                     </p>
                   </div>
                 </motion.div>
-              ) : !isFinished ? (
+              ) : (
+                /* FLUJO RSVP NORMAL */
                 <>
                   {/* PASO 1: Cantidad */}
                   {step === 1 && (
@@ -213,7 +261,6 @@ export default function RSVPSection({ guestData }: RSVPSectionProps) {
                         </p>
 
                         {/* --- AGREGADO: FECHA LÍMITE --- */}
-                        {/* Usamos un tono rojizo/rosa para llamar la atención pero manteniendo la elegancia */}
                         <p className="text-[12px] text-[#DB8C8A] font-bold uppercase tracking-widest pt-2">
                           Favor de confirmar antes del 10 de Abril
                         </p>
@@ -237,7 +284,6 @@ export default function RSVPSection({ guestData }: RSVPSectionProps) {
                       </div>
 
                       <div className="space-y-3 pt-2">
-                        {/* BOTÓN PRINCIPAL (Sólido) */}
                         <Interactive className="w-full">
                           <button
                             onClick={handleConfirmClick}
@@ -247,14 +293,9 @@ export default function RSVPSection({ guestData }: RSVPSectionProps) {
                           </button>
                         </Interactive>
 
-                        {/* BOTÓN SECUNDARIO (Mejorado) */}
                         <Interactive className="w-full">
                           <button
                             onClick={handleNoAsistireClick}
-                            // CAMBIOS AQUÍ:
-                            // 1. border border-[#DCC5C5]: Le damos un borde del color de acento
-                            // 2. rounded-xl: Misma forma que el de arriba
-                            // 3. hover:bg-[#DCC5C5]/10: Un fondo sutil al pasar el mouse
                             className="w-full py-3.5 border border-[#DCC5C5] text-[#8fa88f] hover:text-[#2C3E2E] hover:bg-[#2C3E2E]/5 hover:border-[#2C3E2E]/30 rounded-xl text-[10px] uppercase tracking-widest font-bold transition-all transform active:scale-[0.98]"
                           >
                             {textoRechazo}
@@ -341,50 +382,6 @@ export default function RSVPSection({ guestData }: RSVPSectionProps) {
                     </motion.div>
                   )}
                 </>
-              )}
-
-              {/* VISTA FINAL (TICKET o RECHAZO) */}
-              {isFinished && (
-                <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.4 }}>
-                  {ticketCount > 0 ? (
-                    <div className="bg-[#EAE7DF]">
-                      <div className="bg-green-600 p-2 text-center flex items-center justify-center gap-2 shadow-sm relative z-10">
-                        <CheckCircle2 size={14} className="text-white" />
-                        <p className="text-white text-[10px] font-bold uppercase tracking-widest">Confirmado</p>
-                      </div>
-                      <div className="p-4">
-                        <TicketReveal>
-                          <div className="shadow-2xl rounded-xl overflow-hidden">
-                            <DigitalTicket guest={updatedGuestData} />
-                          </div>
-                        </TicketReveal>
-                        <div className="mt-5 flex justify-center">
-                          <button onClick={handleDownloadPDF} disabled={isDownloading} className="flex items-center gap-2 bg-[#2C3E2E] text-[#F2F0E9] px-5 py-2.5 rounded-full text-[10px] font-bold uppercase tracking-widest shadow-lg hover:bg-black transition-all active:scale-95 disabled:opacity-70">
-                            {isDownloading ? <Loader2 size={14} className="animate-spin" /> : <Download size={14} />}
-                            {isDownloading ? "Generando..." : "Descargar Pase"}
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="py-12 px-6 text-center">
-                      <div className="mx-auto w-14 h-14 bg-[#f5f5f4] rounded-full flex items-center justify-center mb-3">
-                        <Heart className="text-[#a8a29e] w-6 h-6" strokeWidth={1} />
-                      </div>
-                      <h3 className="font-serif text-lg text-[#44403c] mb-1">Gracias por avisar</h3>
-                      <p className="text-[#78716c] text-xs font-light">Lamentamos que no puedan acompañarnos.</p>
-                    </div>
-                  )}
-
-                  {/* Botón Modificar - Solo visible si NO ha pasado la fecha límite */}
-                  {!isDeadlinePassed && (
-                    <div className="bg-[#FDFBF7] p-2 text-center border-t border-[#e7e5e4]">
-                      <button onClick={handleEdit} className="text-[#a8a29e] hover:text-[#57534e] text-[10px] font-bold uppercase tracking-widest flex items-center justify-center gap-1 mx-auto transition-colors">
-                        <Edit2 size={10} /> Modificar
-                      </button>
-                    </div>
-                  )}
-                </motion.div>
               )}
             </AnimatePresence>
           </div>
