@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import dynamic from "next/dynamic";
 import {
   MessageCircle, CheckCircle2, Loader2, Heart, Users, Minus, Plus, Edit2,
-  MonitorPlay, Download
+  MonitorPlay, Download, Clock
 } from "lucide-react";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
@@ -35,9 +35,14 @@ interface RSVPSectionProps {
 
 export default function RSVPSection({ guestData }: RSVPSectionProps) {
   if (!guestData) return null;
-  
-  const textoRechazo = guestData?.type === 'individual' 
-    ? "Lamentablemente no podré asistir" 
+
+  // FECHA LÍMITE: 10 de Abril de 2026
+  const RSVP_DEADLINE = new Date(2026, 3, 8); // 3 es Abril (0-indexed)
+  const now = new Date();
+  const isDeadlinePassed = now >= RSVP_DEADLINE;
+
+  const textoRechazo = guestData?.type === 'individual'
+    ? "Lamentablemente no podré asistir"
     : "Lamentablemente no podremos asistir";
 
   const {
@@ -56,7 +61,7 @@ export default function RSVPSection({ guestData }: RSVPSectionProps) {
   const ticketRef = useRef<HTMLDivElement>(null);
 
   // --- EFECTOS DE UI (Confetti & PDF) ---
-  
+
   const triggerConfetti = async () => {
     const confettiModule = await import("canvas-confetti");
     const confetti = confettiModule.default;
@@ -106,17 +111,17 @@ export default function RSVPSection({ guestData }: RSVPSectionProps) {
       } as any); // <--- EL TRUCO: Casteamos las opciones a 'any' para silenciar el error de 'scale'
 
       const imgData = canvas.toDataURL("image/png");
-      
+
       // Cálculo dinámico para mantener la proporción exacta del ticket
-      const pdfWidth = canvas.width / 3; 
+      const pdfWidth = canvas.width / 3;
       const pdfHeight = canvas.height / 3;
-      
+
       const pdf = new jsPDF({
         orientation: "p",
         unit: "px",
         format: [pdfWidth, pdfHeight],
       });
-      
+
       pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
       pdf.save(`Pase_Boda_${guestData?.familyName.replace(/\s+/g, "_")}.pdf`);
     } catch (error) {
@@ -141,7 +146,7 @@ export default function RSVPSection({ guestData }: RSVPSectionProps) {
   // --- RENDER ---
   return (
     <section className="relative py-16 flex items-center justify-center overflow-hidden" id="rsvp">
-      
+
       {/* Fondo */}
       <div className="absolute inset-0 z-0">
         <div className="absolute inset-0 bg-[#2C3E2E]/80 mix-blend-multiply z-10" />
@@ -158,7 +163,7 @@ export default function RSVPSection({ guestData }: RSVPSectionProps) {
 
       <div className={`relative z-20 w-full mx-4 transition-all duration-500 ${isFinished ? "max-w-md" : "max-w-lg"}`}>
         <motion.div layout className="bg-[#FDFBF7] rounded-[2rem] shadow-2xl overflow-hidden border border-white/20 ring-1 ring-black/5">
-          
+
           {/* HEADER */}
           {!isFinished && (
             <div className="bg-[#2C3E2E] py-4 text-center text-[#F2F0E9] relative overflow-hidden">
@@ -169,7 +174,30 @@ export default function RSVPSection({ guestData }: RSVPSectionProps) {
           {/* CONTENIDO */}
           <div className={`${isFinished ? "p-0" : "p-6 md:p-8"}`}>
             <AnimatePresence mode="wait">
-              {!isFinished && (
+              {/* CASO: FUERA DE TIEMPO (Solo si no ha terminado) */}
+              {!isFinished && isDeadlinePassed ? (
+                <motion.div
+                  key="expired"
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  className="py-12 px-8 text-center space-y-6"
+                >
+                  <div className="mx-auto w-16 h-16 bg-[#2C3E2E]/5 rounded-full flex items-center justify-center mb-2 text-[#DB8C8A]">
+                    <Clock strokeWidth={1.5} size={32} />
+                  </div>
+                  <div className="space-y-4">
+                    <h3 className="font-serif text-2xl text-[#2C3E2E]">Tiempo de confirmación finalizado</h3>
+                    <div className="w-12 h-[1px] bg-[#DCC5C5] mx-auto my-4" />
+                    <p className="text-stone-600 font-light leading-relaxed text-sm">
+                      Lamentamos que no hayas podido confirmar tu asistencia a tiempo. Para fines de organización,
+                      hemos tomado tu falta de respuesta como una inasistencia y tu lugar ha sido reasignado.
+                    </p>
+                    <p className="text-[#DB8C8A] font-medium text-[13px] pt-4 italic">
+                      Si esto es un error o hubo un contratiempo, por favor comunícate directamente con tu anfitrión.
+                    </p>
+                  </div>
+                </motion.div>
+              ) : !isFinished ? (
                 <>
                   {/* PASO 1: Cantidad */}
                   {step === 1 && (
@@ -179,7 +207,7 @@ export default function RSVPSection({ guestData }: RSVPSectionProps) {
                           <Users strokeWidth={1.5} size={20} />
                         </div>
                         <h3 className="font-serif text-2xl text-stone-800">¿Cuántos asistirán?</h3>
-                        
+
                         <p className="text-sm text-stone-500 font-light">
                           Reservados: <span className="font-bold text-stone-700">{maxTickets}</span>
                         </p>
@@ -187,7 +215,7 @@ export default function RSVPSection({ guestData }: RSVPSectionProps) {
                         {/* --- AGREGADO: FECHA LÍMITE --- */}
                         {/* Usamos un tono rojizo/rosa para llamar la atención pero manteniendo la elegancia */}
                         <p className="text-[12px] text-[#DB8C8A] font-bold uppercase tracking-widest pt-2">
-                            Favor de confirmar antes del 10 de Abril
+                          Favor de confirmar antes del 10 de Abril
                         </p>
                       </div>
 
@@ -211,8 +239,8 @@ export default function RSVPSection({ guestData }: RSVPSectionProps) {
                       <div className="space-y-3 pt-2">
                         {/* BOTÓN PRINCIPAL (Sólido) */}
                         <Interactive className="w-full">
-                          <button 
-                            onClick={handleConfirmClick} 
+                          <button
+                            onClick={handleConfirmClick}
                             className="w-full bg-[#2C3E2E] text-[#F2F0E9] py-3.5 text-xs uppercase tracking-widest font-bold rounded-xl shadow-lg hover:bg-[#1a251b] transition-all transform active:scale-[0.98]"
                           >
                             Confirmar Asistencia
@@ -221,8 +249,8 @@ export default function RSVPSection({ guestData }: RSVPSectionProps) {
 
                         {/* BOTÓN SECUNDARIO (Mejorado) */}
                         <Interactive className="w-full">
-                          <button 
-                            onClick={handleNoAsistireClick} 
+                          <button
+                            onClick={handleNoAsistireClick}
                             // CAMBIOS AQUÍ:
                             // 1. border border-[#DCC5C5]: Le damos un borde del color de acento
                             // 2. rounded-xl: Misma forma que el de arriba
@@ -236,13 +264,13 @@ export default function RSVPSection({ guestData }: RSVPSectionProps) {
 
                       {guestData.isLongDistance && (
                         <div className="mt-4 p-4 bg-[#F9F5F0] border border-[#E8E4D8] rounded-xl flex items-start gap-3">
-                            <div className="text-[#DCC5C5] shrink-0 mt-0.5"><MonitorPlay size={18} /></div>
-                            <div>
-                                <h4 className="font-serif text-base text-stone-800 mb-1">Desde la distancia</h4>
-                                <p className="font-sans text-xs text-stone-500 leading-relaxed text-justify">
-                                    Intentaremos habilitar una transmisión de la ceremonia. Pero si no se puede, te pedimos te unas a nosotros en oración para que nuestro matrimonio de gloria a Dios.
-                                </p>
-                            </div>
+                          <div className="text-[#DCC5C5] shrink-0 mt-0.5"><MonitorPlay size={18} /></div>
+                          <div>
+                            <h4 className="font-serif text-base text-stone-800 mb-1">Desde la distancia</h4>
+                            <p className="font-sans text-xs text-stone-500 leading-relaxed text-justify">
+                              Intentaremos habilitar una transmisión de la ceremonia. Pero si no se puede, te pedimos te unas a nosotros en oración para que nuestro matrimonio de gloria a Dios.
+                            </p>
+                          </div>
                         </div>
                       )}
                     </motion.div>
@@ -263,9 +291,8 @@ export default function RSVPSection({ guestData }: RSVPSectionProps) {
                           <button
                             key={m.name}
                             onClick={() => toggleMember(m.name)}
-                            className={`w-full p-3 rounded-lg border flex items-center justify-between transition-all duration-200 ${
-                              attendance[m.name] ? "border-[#2C3E2E]/30 bg-[#2C3E2E]/5" : "border-stone-100 bg-stone-50 opacity-60"
-                            }`}
+                            className={`w-full p-3 rounded-lg border flex items-center justify-between transition-all duration-200 ${attendance[m.name] ? "border-[#2C3E2E]/30 bg-[#2C3E2E]/5" : "border-stone-100 bg-stone-50 opacity-60"
+                              }`}
                           >
                             <span className={`text-sm font-serif ${attendance[m.name] ? "text-stone-800 font-medium" : "text-stone-400"}`}>
                               {m.name}
@@ -348,13 +375,15 @@ export default function RSVPSection({ guestData }: RSVPSectionProps) {
                       <p className="text-[#78716c] text-xs font-light">Lamentamos que no puedan acompañarnos.</p>
                     </div>
                   )}
-                  
-                  {/* Botón Modificar siempre visible al final */}
-                  <div className="bg-[#FDFBF7] p-2 text-center border-t border-[#e7e5e4]">
-                    <button onClick={handleEdit} className="text-[#a8a29e] hover:text-[#57534e] text-[10px] font-bold uppercase tracking-widest flex items-center justify-center gap-1 mx-auto transition-colors">
-                      <Edit2 size={10} /> Modificar
-                    </button>
-                  </div>
+
+                  {/* Botón Modificar - Solo visible si NO ha pasado la fecha límite */}
+                  {!isDeadlinePassed && (
+                    <div className="bg-[#FDFBF7] p-2 text-center border-t border-[#e7e5e4]">
+                      <button onClick={handleEdit} className="text-[#a8a29e] hover:text-[#57534e] text-[10px] font-bold uppercase tracking-widest flex items-center justify-center gap-1 mx-auto transition-colors">
+                        <Edit2 size={10} /> Modificar
+                      </button>
+                    </div>
+                  )}
                 </motion.div>
               )}
             </AnimatePresence>
