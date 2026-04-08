@@ -37,13 +37,13 @@ export default function RSVPSection({ guestData }: RSVPSectionProps) {
   if (!guestData) return null;
 
   // FECHA LÍMITE: 10 de Abril de 2026
-  const RSVP_DEADLINE = new Date(2026, 3, 8); // 3 es Abril (0-indexed)
+  const RSVP_DEADLINE = new Date(2026, 3, 10); // 3 es Abril (0-indexed)
   const now = new Date();
   const isDeadlinePassed = now >= RSVP_DEADLINE;
 
   // EXENCIÓN: Invitados creados a partir del 8 de abril de 2026
   const EXEMPTION_DATE = new Date(2026, 3, 8); // 8 de Abril
-  
+
   // Manejo de createdAt (puede ser string o objeto Timestamp de Firestore Serializado)
   const getCreatedAtDate = (val: any) => {
     if (!val) return null;
