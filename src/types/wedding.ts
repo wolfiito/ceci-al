@@ -44,6 +44,7 @@ export interface GuestData {
   message?: string;
   isLongDistance?: boolean;
   hasSpecialIntro?: boolean;
+  createdAt?: string;
 }
 
 export interface EventData {
